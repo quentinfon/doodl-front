@@ -4,6 +4,7 @@ import {
     Routes,
     Route
 } from "react-router-dom";
+import GamePage from './route/GamePage';
 import HomePage from './route/HomePage';
 
 const App = () => {
@@ -12,6 +13,8 @@ const App = () => {
             
             <Routes>
             
+                <Route path="/play/:gameId" element={<GamePage/>}/>
+                
                 <Route path="/" element={<HomePage/>}/>
 
             </Routes>
