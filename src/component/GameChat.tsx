@@ -1,23 +1,33 @@
-import { Avatar, List, Card, Comment, Form, Input } from "antd";
+import { Avatar, List, Card, Comment, Form, Input, Button, Row } from "antd";
 import React, { useState } from "react";
-import { GameMessage } from "../types/message";
+import { GameMessage, SocketMessage } from "../types/message";
 
 const { TextArea } = Input;
 
 interface GameChatProps {
-    messages: GameMessage[]
+    messages: GameMessage[],
+    sendMessage: (message: SocketMessage) => any
 }
 
 const GameChat = ({
-    messages
+    messages,
+    sendMessage
 }: GameChatProps) => {
 
     const [currentMsg, setCurrentMessage] = useState<string>("");
 
+    const sendCurrentMsg = () => {
+        sendMessage({
+            channel: "chat",
+            data: currentMsg
+        });
+        setCurrentMessage("");
+    }
+
     return (
         <>
         
-            <div
+            <Row
                 style={{
                     height: "700px"
                 }}
@@ -42,8 +52,8 @@ const GameChat = ({
                         </Card>
                     )}
                 />
-            </div>
-            <div>
+            </Row>
+            <Row>
                  <Card>
                     <Comment
                         avatar={<Avatar src="https://joeschmoe.io/api/v1/random" alt="Han Solo" />}
@@ -54,11 +64,12 @@ const GameChat = ({
                                     onChange={(e: any) => setCurrentMessage(e.target.value)} 
                                     value={currentMsg} 
                                 />
+                                <Button onClick={sendCurrentMsg}>Send</Button>
                             </Form.Item>
                         }
                     />
                  </Card>
-            </div>
+            </Row>
         
         </>
     )
