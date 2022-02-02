@@ -1,31 +1,42 @@
-import { Avatar, List, Card, Comment, Form, Input } from "antd";
+import { Avatar, List, Card, Comment, Form, Input, Button, Row } from "antd";
 import React, { useState } from "react";
-import { GameMessage } from "../types/message";
+import { GameMessage, SocketMessage } from "../types/message";
 
 const { TextArea } = Input;
 
 interface GameChatProps {
-    messages: GameMessage[]
+    messages: GameMessage[],
+    sendMessage: (message: SocketMessage) => any
 }
 
 const GameChat = ({
-    messages
+    messages,
+    sendMessage
 }: GameChatProps) => {
 
     const [currentMsg, setCurrentMessage] = useState<string>("");
+
+    const sendCurrentMsg = () => {
+        sendMessage({
+            channel: "chat",
+            data: currentMsg
+        });
+        setCurrentMessage("");
+    }
 
     return (
         <>
         
             <div
                 style={{
-                    height: "700px"
+                    height: "500px"
                 }}
             >
                 <List
                     dataSource={messages}
                     style={{
-                        overflow: "scroll",
+                        overflowY: "scroll",
+                        overflowX: "hidden",
                         maxHeight: "100%"
                     }}
                     renderItem={(msg: GameMessage, idx: number) => (
@@ -44,7 +55,9 @@ const GameChat = ({
                 />
             </div>
             <div>
-                 <Card>
+                <Card
+                    size="small"
+                >
                     <Comment
                         avatar={<Avatar src="https://joeschmoe.io/api/v1/random" alt="Han Solo" />}
                         content={
@@ -54,10 +67,11 @@ const GameChat = ({
                                     onChange={(e: any) => setCurrentMessage(e.target.value)} 
                                     value={currentMsg} 
                                 />
+                                <Button onClick={sendCurrentMsg}>Send</Button>
                             </Form.Item>
                         }
                     />
-                 </Card>
+                </Card>
             </div>
         
         </>
