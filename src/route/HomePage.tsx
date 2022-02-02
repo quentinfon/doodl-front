@@ -1,14 +1,34 @@
+import { Card, Col, Divider, Row } from "antd";
 import React from "react";
-import Home from "../component/Home";
+import JoinGame from "../component/JoinGame";
+import NewGame from "../component/NewGame";
 
 const HomePage = () => {
 
     return (
         <>
 
-            Welcome at the home page
+            <Row
+                style={{
+                    marginTop: "5%"
+                }}
+            >
+                <Col span={20} offset={2}>
+                    <NewGame />
+                </Col>
+            </Row>
 
-            <Home/>
+            <Divider> Or </Divider>
+
+            <Row
+                style={{
+                    marginTop: "5%"
+                }}
+            >
+                <Col span={20} offset={2}>
+                    <JoinGame />
+                </Col>
+            </Row>
         
         </>
     )
