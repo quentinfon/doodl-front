@@ -6,7 +6,11 @@ import {
 } from "react-router-dom";
 import GamePage from './route/GamePage';
 import HomePage from './route/HomePage';
-import { Layout } from 'antd';
+import { Layout, Row, Col } from 'antd';
+import { Typography } from 'antd';
+import Avatar from 'antd/lib/avatar/avatar';
+
+const { Title } = Typography;
 
 const { Header, Footer, Sider, Content } = Layout;
 
@@ -16,7 +20,17 @@ const App = () => {
         <Router>
 
             <Layout>
-                <Header>Header</Header>
+                <Header>
+                    <nav className="menuBar">
+                        <div className="logo">
+                            <a href="">
+                                        <Avatar 
+                                            src="/logo.png"
+                                        />
+                            </a>
+                        </div>                    
+                    </nav>
+                </Header>
                 <Content>
                     
                 <Routes>
