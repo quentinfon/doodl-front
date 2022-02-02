@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Layout, Row, Col } from 'antd';
+import { Row, Col } from 'antd';
 import { GameMessage, SocketMessage } from "../types/message";
 import GameChat from "../component/GameChat";
-
-const { Header, Footer, Sider, Content } = Layout;
 
 const GamePage = () => {
 
@@ -133,29 +131,19 @@ const GamePage = () => {
 
             Id de la partie : {gameId}
 
-            <Layout>
-                <Header>Header</Header>
-                <Layout>
-                    <Content>
-                        <Row>
-                            <Col span={18}>
+            <Row>
+                <Col span={18}>
 
 
-                            </Col>
+                </Col>
 
-                            <Col span={6}>
-                                <GameChat 
-                                    messages={fakeMsg}
-                                    sendMessage={sendMessage}
-                                />
-                            </Col>
-                        </Row>
-
-                    </Content>
-                  
-                </Layout>
-                <Footer>Footer</Footer>
-            </Layout>
+                <Col span={6}>
+                    <GameChat 
+                        messages={fakeMsg}
+                        sendMessage={sendMessage}
+                    />
+                </Col>
+            </Row>
         
         </>
     )

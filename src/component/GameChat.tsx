@@ -27,15 +27,16 @@ const GameChat = ({
     return (
         <>
         
-            <Row
+            <div
                 style={{
-                    height: "700px"
+                    height: "500px"
                 }}
             >
                 <List
                     dataSource={messages}
                     style={{
-                        overflow: "scroll",
+                        overflowY: "scroll",
+                        overflowX: "hidden",
                         maxHeight: "100%"
                     }}
                     renderItem={(msg: GameMessage, idx: number) => (
@@ -52,8 +53,8 @@ const GameChat = ({
                         </Card>
                     )}
                 />
-            </Row>
-            <Row>
+            </div>
+            <div>
                  <Card>
                     <Comment
                         avatar={<Avatar src="https://joeschmoe.io/api/v1/random" alt="Han Solo" />}
@@ -69,7 +70,7 @@ const GameChat = ({
                         }
                     />
                  </Card>
-            </Row>
+            </div>
         
         </>
     )
