@@ -1,9 +1,14 @@
+import React, { useState } from "react";
 import { Card, Typography, Row, Col, Input, Button, Divider } from "antd";
-import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const { Title, Text } = Typography;
 
 const JoinGame = () => {
+
+    const navigate = useNavigate();
+
+    const [roomId, setRoomId] = useState<string>("");
 
     return (
         <>
@@ -27,13 +32,18 @@ const JoinGame = () => {
                         <Input.Group
                             style={{ width: "100%" }}
                         >
-                            <Input />
+                            <Input
+                                value={roomId}
+                                onChange={(e) => setRoomId(e.target.value)}
+                                onPressEnter={() => navigate(`/play/${roomId}`)}
+                            />
                         </Input.Group>
                     </Col>
 
                     <Col>
                         <Button
                             type="primary"
+                            onClick={() => navigate(`/play/${roomId}`)}
                         >
                             Join
                         </Button>

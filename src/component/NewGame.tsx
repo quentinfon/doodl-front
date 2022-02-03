@@ -4,11 +4,14 @@ import { IRoomConfig, GameMode, RoomConfig } from "../types/game";
 import { UserOutlined, FieldTimeOutlined } from '@ant-design/icons';
 import { fetchUtil } from "../api/request";
 import { getRoomCreationConfig, createNewRoom } from "../api/gameService";
+import { useNavigate } from 'react-router-dom';
 
 const { Title, Text } = Typography;
 const { Option } = Select;
 
 const NewGame = () => {
+
+    const navigate = useNavigate();
 
     const [newGameConfig, setNewGameConfig] = useState<IRoomConfig>({
         gameMode: GameMode.CLASSIC,
@@ -32,7 +35,7 @@ const NewGame = () => {
 
     const createRoom = () => {
         fetchUtil( createNewRoom({roomId: "", config: newGameConfig}),
-            (data) => console.log(data),
+            (data) => navigate(`/play/${data.roomId}`),
             setLoadingNewRoom,
             setErrorNewRoom
         )
@@ -50,7 +53,7 @@ const NewGame = () => {
                 <Title level={3}>Create a game</Title>
 
                 <Divider/>
-                
+
                 <Row 
                     gutter={20}
                     style={{
