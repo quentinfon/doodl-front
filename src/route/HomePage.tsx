@@ -12,23 +12,18 @@ const HomePage = () => {
                 style={{
                     marginTop: "5%"
                 }}
+                justify="center"
             >
-                <Col span={20} offset={2}>
+                <Col lg={10} md={20} sm={24}>
                     <JoinGame />
                 </Col>
-            </Row>
 
-            <Divider> Or </Divider>
-
-            <Row
-                style={{
-                    marginTop: "5%"
-                }}
-            >
-                <Col span={20} offset={2}>                    
+                <Col lg={10} md={20} sm={24}>                    
                     <NewGame />
                 </Col>
+
             </Row>
+
         
         </>
     )

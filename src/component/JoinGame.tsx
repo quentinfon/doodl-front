@@ -1,4 +1,4 @@
-import { Card, Typography, Row, Col, Input, Button } from "antd";
+import { Card, Typography, Row, Col, Input, Button, Divider } from "antd";
 import React from "react";
 
 const { Title, Text } = Typography;
@@ -7,18 +7,23 @@ const JoinGame = () => {
 
     return (
         <>
-            <Card>
-
+            <Card
+                style={{height: "100%"}}
+            >
+                
                 <Title level={3}>Join a game with a code</Title>
+
+                <Divider/>
 
                 <Row 
                     gutter={20}
                     style={{
                         marginBottom: 20
                     }}
+                    align="bottom"
                 >
-                    <Col sm={24} md={12} lg={6}>
-                        <Text>Max players</Text>
+                    <Col sm={24} md={12}>
+                        <Text>Room id</Text>
                         <Input.Group
                             style={{ width: "100%" }}
                         >
@@ -26,14 +31,14 @@ const JoinGame = () => {
                         </Input.Group>
                     </Col>
 
-                </Row>
+                    <Col>
+                        <Button
+                            type="primary"
+                        >
+                            Join
+                        </Button>
+                    </Col>
 
-                <Row justify="end">
-                    <Button
-                        type="primary"
-                    >
-                        Join
-                    </Button>
                 </Row>
                      
             </Card>

@@ -1,4 +1,4 @@
-import { Button, Card, Row, Col, Typography, Input, InputNumber, Select } from "antd";
+import { Button, Card, Row, Col, Typography, Input, InputNumber, Select, Divider } from "antd";
 import React, { useEffect, useState } from "react";
 import { IRoomConfig, GameMode, RoomConfig } from "../types/game";
 import { UserOutlined, FieldTimeOutlined } from '@ant-design/icons';
@@ -44,16 +44,20 @@ const NewGame = () => {
 
     return (
         <>
-            <Card>
+            <Card
+                style={{height: "100%"}}
+            >
                 <Title level={3}>Create a game</Title>
 
+                <Divider/>
+                
                 <Row 
                     gutter={20}
                     style={{
                         marginBottom: 20
                     }}
                 >
-                    <Col sm={24} md={12} lg={6}>
+                    <Col sm={24} md={12} lg={8}>
                         <Text>Max players</Text>
                         <InputNumber 
                             style={{ width: "100%" }}
@@ -65,7 +69,7 @@ const NewGame = () => {
                         />
                     </Col>
 
-                    <Col sm={24} md={12} lg={6}>
+                    <Col sm={24} md={12} lg={8}>
                         <Text>Time by turn</Text>
                         <InputNumber 
                             style={{ width: "100%" }}
@@ -78,7 +82,7 @@ const NewGame = () => {
                         />
                     </Col>
 
-                    <Col sm={24} md={12} lg={6}>
+                    <Col sm={24} md={12} lg={8}>
                         <Text>Game mode</Text>
                         <Input.Group>
                             <Select 
