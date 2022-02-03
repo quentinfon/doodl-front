@@ -1,6 +1,5 @@
-import { Button, Card, Row, Col } from "antd";
+import { Button, Card, Row, Col, Typography, Input, InputNumber, Select } from "antd";
 import React, { useEffect, useState } from "react";
-import { Typography, Input, InputNumber, Select } from 'antd';
 import { IRoomConfig, GameMode, RoomConfig } from "../types/game";
 import { UserOutlined, FieldTimeOutlined } from '@ant-design/icons';
 import { fetchUtil } from "../api/request";
@@ -32,7 +31,7 @@ const NewGame = () => {
     const [errorNewRoom, setErrorNewRoom] = useState<string>("");
 
     const createRoom = () => {
-        fetchUtil( createNewRoom(newGameConfig),
+        fetchUtil( createNewRoom({roomId: "", config: newGameConfig}),
             (data) => console.log(data),
             setLoadingNewRoom,
             setErrorNewRoom
@@ -101,8 +100,8 @@ const NewGame = () => {
                 
                 <Row justify="end">
                     <Button
-                        type="primary"
                         disabled={loadingNewRoom}
+                        loading={loadingNewRoom}
                         onClick={createRoom}
                     >
                         Create

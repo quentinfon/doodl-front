@@ -14,7 +14,7 @@ const HomePage = () => {
                 }}
             >
                 <Col span={20} offset={2}>
-                    <NewGame />
+                    <JoinGame />
                 </Col>
             </Row>
 
@@ -25,8 +25,8 @@ const HomePage = () => {
                     marginTop: "5%"
                 }}
             >
-                <Col span={20} offset={2}>
-                    <JoinGame />
+                <Col span={20} offset={2}>                    
+                    <NewGame />
                 </Col>
             </Row>
         

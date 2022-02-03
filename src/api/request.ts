@@ -23,6 +23,7 @@ export function fetchURL(url: string, httpMethod: HttpMethod, headers?: Headers,
     if (body != null) {
         params.body = JSON.stringify(body);
     }
+    console.debug(url, params)
     return fetch(url, params);
 }
 
