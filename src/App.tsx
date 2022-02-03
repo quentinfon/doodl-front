@@ -2,7 +2,8 @@ import React from 'react';
 import {
     BrowserRouter as Router,
     Routes,
-    Route
+    Route,
+    Navigate,
 } from "react-router-dom";
 import GamePage from './route/GamePage';
 import HomePage from './route/HomePage';
@@ -38,6 +39,11 @@ const App = () => {
                     <Route path="/play/:gameId" element={<GamePage/>}/>
                     
                     <Route path="/" element={<HomePage/>}/>
+
+                    <Route
+                        path="*"
+                        element={<Navigate to="/" />}
+                    />
 
                 </Routes>
 

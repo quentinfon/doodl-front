@@ -13,3 +13,7 @@ export const createNewRoom = (roomData: RoomData) => {
     });
     return fetchURL(`${service_endpoint}/room`, HttpMethod.POST, headers, roomData);
 }
+
+export const getRoomData = (roomId: string) => {
+    return fetchURL(`${service_endpoint}/room/${roomId}`, HttpMethod.GET);
+}
