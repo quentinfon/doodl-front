@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Card, Typography, Row, Col, Input, Button, Divider } from "antd";
+import { Card, Typography, Row, Col, Input, Button, Divider, message } from "antd";
 import { useNavigate } from "react-router-dom";
 import { getRoomData } from "../api/gameService";
 
@@ -17,7 +17,7 @@ const JoinGame = () => {
         setLoadingJoin(true);
         getRoomData(roomId)
             .then(async res => await res.json()).then(data => navigate(`/play/${data.roomId}`))
-            .catch(e => setErrorJoiningRoom(e))
+            .catch(e => message.error("This room doesn't exist."))
             .finally(() => setLoadingJoin(false));
     }
 

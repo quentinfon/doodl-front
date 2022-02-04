@@ -7,7 +7,7 @@ import {
 } from "react-router-dom";
 import GamePage from './route/GamePage';
 import HomePage from './route/HomePage';
-import { Layout, Row, Col } from 'antd';
+import { Layout } from 'antd';
 import { Typography } from 'antd';
 import Avatar from 'antd/lib/avatar/avatar';
 

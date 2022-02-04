@@ -1,7 +1,10 @@
 import { Button, Result } from "antd";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const RoomUnvailable = () => {
+
+    const navigate = useNavigate();
 
     return (
 
@@ -9,7 +12,7 @@ const RoomUnvailable = () => {
             status="warning"
             title="The room you are asking for doesn't exist."
             extra={
-            <Button key="console">
+            <Button key="console" onClick={() => navigate('/')}>
                 Home page
             </Button>
             }

@@ -1,23 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { Row, Col } from 'antd';
-import { GameMessage, SocketMessage } from "../types/message";
+import { SocketMessage } from "../types/message";
 import GameChat from "../component/GameChat";
-import { RoomData } from "../types/game";
-import { fetchUtil } from "../api/request";
+import { IPlayer, RoomData } from "../types/game";
 import { getRoomData } from "../api/gameService";
 import RoomUnvailable from "../component/Room/RoomUnvailabale";
+import PlayerCreation from "../component/Room/PlayerCreation";
 
 const GamePage = () => {
 
     const { gameId } = useParams<{gameId: string}>();
 
-    const navigate = useNavigate();
-
     const [ws, setWs] = useState<WebSocket>();
 
     const [roomData, setRoomData] = useState<RoomData>();
     const [loadingRoom, setLoadingRoom] = useState<boolean>(false);
+    const [loadingConnexion, setLoadingConnexion] = useState<boolean>(false);
 
     const getRoom = () => {
         setLoadingRoom(true);
@@ -35,10 +34,30 @@ const GamePage = () => {
         }
     }, [])
 
-    const createSocket = () => {
+    const sendMessage = (message: SocketMessage) => {
+        ws?.send(JSON.stringify(message));
+    }
+
+    const createSocket = (player: IPlayer) => {
 
         let webSocket = new WebSocket(process.env.REACT_APP_WEBSOCKET_ENDPOINT as string);
-        webSocket.onopen = () => console.log('ws opened');
+
+        setLoadingConnexion(true);
+
+        webSocket.onopen = () => {
+            webSocket?.send(JSON.stringify({
+                channel: "INIT",
+                data: {
+                    roomId: gameId,
+                    name: player.name,
+                    imgUrl: player.imgUrl
+                }
+            }));
+
+            setWs(webSocket);
+            setLoadingConnexion(false);
+        };
+
         webSocket.onclose = () => console.log('ws closed');
     
         webSocket.onmessage = e => {
@@ -46,13 +65,9 @@ const GamePage = () => {
             const message = JSON.parse(e.data);
             console.log('e', message);
         };
-    
-        setWs(webSocket);
     }
 
-    const sendMessage = (message: SocketMessage) => {
-        ws?.send(JSON.stringify(message));
-    }
+    useEffect(() => console.log(ws), [ws])
 
     return (
         <>
@@ -66,19 +81,30 @@ const GamePage = () => {
                         <RoomUnvailable />
                         :
                         <>
-                            <Row>
-                                <Col span={18}>
+                            { ws === undefined ?
 
-
-                                </Col>
-
-                                <Col span={6}>
-                                    <GameChat 
-                                        messages={[]}
-                                        sendMessage={sendMessage}
+                                <>
+                                    <PlayerCreation 
+                                        createPlayer={createSocket}
+                                        loadingConnexion={loadingConnexion}
                                     />
-                                </Col>
-                            </Row>
+                                </>
+
+                                :
+                                <Row>
+                                    <Col span={18}>
+
+
+                                    </Col>
+
+                                    <Col span={6}>
+                                        <GameChat 
+                                            messages={[]}
+                                            sendMessage={sendMessage}
+                                        />
+                                    </Col>
+                                </Row>
+                            }
                         </>
                     }
                 </>
