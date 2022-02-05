@@ -63,10 +63,11 @@ const GamePage = () => {
         webSocket.onclose = () => console.log('ws closed');
     
         webSocket.onmessage = e => {
-            let msg : ISocketMessageResponse = e.data;
+            let msg : ISocketMessageResponse = JSON.parse(e.data);
 
             if (msg.channel == SocketChannel.CHAT) {
-                setMessages([...messages, msg.data as IDataChatResponse])
+                messages.push(msg.data as IDataChatResponse)
+                setMessages([...messages])
             }
             const message = JSON.parse(e.data);
             console.log('e', message);
@@ -105,7 +106,7 @@ const GamePage = () => {
 
                                     <Col span={6}>
                                         <GameChat 
-                                            messages={[]}
+                                            messages={messages}
                                             sendMessage={sendMessage}
                                         />
                                     </Col>
