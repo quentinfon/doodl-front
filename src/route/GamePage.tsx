@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Row, Col } from 'antd';
-import { SocketMessage } from "../types/message";
+import { IDataChatResponse, ISocketMessageRequest, ISocketMessageResponse, SocketChannel } from "../types/message";
 import GameChat from "../component/GameChat";
 import { IPlayer, RoomData } from "../types/game";
 import { getRoomData } from "../api/gameService";
@@ -17,6 +17,8 @@ const GamePage = () => {
     const [roomData, setRoomData] = useState<RoomData>();
     const [loadingRoom, setLoadingRoom] = useState<boolean>(false);
     const [loadingConnexion, setLoadingConnexion] = useState<boolean>(false);
+
+    const [messages, setMessages] = useState<IDataChatResponse[]>([]);
 
     const getRoom = () => {
         setLoadingRoom(true);
@@ -34,7 +36,7 @@ const GamePage = () => {
         }
     }, [])
 
-    const sendMessage = (message: SocketMessage) => {
+    const sendMessage = (message: ISocketMessageRequest) => {
         ws?.send(JSON.stringify(message));
     }
 
@@ -46,7 +48,7 @@ const GamePage = () => {
 
         webSocket.onopen = () => {
             webSocket?.send(JSON.stringify({
-                channel: "INIT",
+                channel: SocketChannel.INIT,
                 data: {
                     roomId: gameId,
                     name: player.name,
@@ -61,7 +63,11 @@ const GamePage = () => {
         webSocket.onclose = () => console.log('ws closed');
     
         webSocket.onmessage = e => {
-            if (webSocket) return;
+            let msg : ISocketMessageResponse = e.data;
+
+            if (msg.channel == SocketChannel.CHAT) {
+                setMessages([...messages, msg.data as IDataChatResponse])
+            }
             const message = JSON.parse(e.data);
             console.log('e', message);
         };

@@ -1,14 +1,42 @@
-export interface SocketMessage {
-    channel: string;
-    data: string | DrawData;
+export interface ISocketMessage {
+    channel: SocketChannel;
 }
 
-export interface DrawData {
-    
+export interface ISocketMessageRequest extends ISocketMessage {
+    data: IDataInitRequest | IDataChatRequest;
 }
 
-export interface GameMessage {
+export interface ISocketMessageResponse extends ISocketMessage {
+    data: IDataInitResponse | IDataChatResponse;
+}
+
+export interface IDataInitRequest {
+    roomId: string;
+    name: string;
+    imgUrl: string;
+}
+
+export interface IDataInitResponse {
+    playerId: string;
+}
+
+export interface IDataChatRequest {
     message: string;
-    author: string;
-    authorImg: string;
+}
+
+export interface IMessageAuthor {
+    name: string;
+    imgUrl: string;
+}
+
+export interface IDataChatResponse {
+    author: IMessageAuthor;
+    message: string;
+    timestamp: Date;
+}
+
+export enum SocketChannel {
+    INIT = "INIT",
+    CHAT = "CHAT",
+    DRAW = "DRAW"
 }
