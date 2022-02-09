@@ -1,5 +1,5 @@
-import { Card, Col, Divider, Row } from "antd";
 import React from "react";
+import { Col, Row } from "antd";
 import JoinGame from "../component/JoinGame";
 import NewGame from "../component/NewGame";
 

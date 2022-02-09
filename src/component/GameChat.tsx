@@ -1,12 +1,12 @@
 import { Avatar, List, Card, Comment, Form, Input, Button, Row } from "antd";
 import React, { useState } from "react";
-import { GameMessage, SocketMessage } from "../types/message";
+import { ISocketMessageRequest, IDataChatResponse, SocketChannel } from "../types/message";
 
 const { TextArea } = Input;
 
 interface GameChatProps {
-    messages: GameMessage[],
-    sendMessage: (message: SocketMessage) => any
+    messages: IDataChatResponse[],
+    sendMessage: (message: ISocketMessageRequest) => any
 }
 
 const GameChat = ({
@@ -18,8 +18,10 @@ const GameChat = ({
 
     const sendCurrentMsg = () => {
         sendMessage({
-            channel: "chat",
-            data: currentMsg
+            channel: SocketChannel.CHAT,
+            data: {
+                message: currentMsg
+            }
         });
         setCurrentMessage("");
     }
@@ -39,14 +41,14 @@ const GameChat = ({
                         overflowX: "hidden",
                         maxHeight: "100%"
                     }}
-                    renderItem={(msg: GameMessage, idx: number) => (
+                    renderItem={(msg: IDataChatResponse, idx: number) => (
                         <Card 
                             size="small"
                         >
                             <List.Item key={idx}>
                                 <List.Item.Meta
-                                    avatar={<Avatar src={msg.authorImg} />}
-                                    title={<>{msg.author}</>}
+                                    avatar={<Avatar src={msg.author.imgUrl} />}
+                                    title={<>{msg.author.name}</>}
                                     description={msg.message}
                                 />
                             </List.Item>

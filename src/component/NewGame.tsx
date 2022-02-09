@@ -1,5 +1,5 @@
-import { Button, Card, Row, Col, Typography, Input, InputNumber, Select, Divider } from "antd";
 import React, { useEffect, useState } from "react";
+import { Button, Card, Row, Col, Typography, Input, InputNumber, Select, Divider } from "antd";
 import { IRoomConfig, GameMode, RoomConfig } from "../types/game";
 import { UserOutlined, FieldTimeOutlined } from '@ant-design/icons';
 import { fetchUtil } from "../api/request";
@@ -93,9 +93,9 @@ const NewGame = () => {
                                 value={newGameConfig.gameMode}
                                 onChange={(e) => setNewGameConfig({...newGameConfig, gameMode: e})}
                             >
-                                {Object.keys(GameMode).map((mode: string) => {
+                                {Object.keys(GameMode).map((mode: string, idx: number) => {
                                     return(
-                                        <Option value={mode}>{mode.charAt(0).toUpperCase() + mode.slice(1).toLowerCase()}</Option>
+                                        <Option key={idx} value={mode}>{mode.charAt(0).toUpperCase() + mode.slice(1).toLowerCase()}</Option>
                                     )
                                 })}
                             </Select>

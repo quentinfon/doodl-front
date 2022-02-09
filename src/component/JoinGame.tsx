@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { Card, Typography, Row, Col, Input, Button, Divider } from "antd";
+import { Card, Typography, Row, Col, Input, Button, Divider, message } from "antd";
 import { useNavigate } from "react-router-dom";
+import { getRoomData } from "../api/gameService";
 
 const { Title, Text } = Typography;
 
@@ -9,6 +10,16 @@ const JoinGame = () => {
     const navigate = useNavigate();
 
     const [roomId, setRoomId] = useState<string>("");
+    const [errorJoiningRoom, setErrorJoiningRoom] = useState<string>("");
+    const [loadingJoin, setLoadingJoin] = useState<boolean>(false);
+
+    const goToRoom = () => {
+        setLoadingJoin(true);
+        getRoomData(roomId)
+            .then(async res => await res.json()).then(data => navigate(`/play/${data.roomId}`))
+            .catch(e => message.error("This room doesn't exist."))
+            .finally(() => setLoadingJoin(false));
+    }
 
     return (
         <>
@@ -35,7 +46,7 @@ const JoinGame = () => {
                             <Input
                                 value={roomId}
                                 onChange={(e) => setRoomId(e.target.value)}
-                                onPressEnter={() => navigate(`/play/${roomId}`)}
+                                onPressEnter={goToRoom}
                             />
                         </Input.Group>
                     </Col>
@@ -43,7 +54,9 @@ const JoinGame = () => {
                     <Col>
                         <Button
                             type="primary"
-                            onClick={() => navigate(`/play/${roomId}`)}
+                            onClick={goToRoom}
+                            loading={loadingJoin}
+                            disabled={loadingJoin}
                         >
                             Join
                         </Button>

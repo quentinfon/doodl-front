@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Row, Col } from 'antd';
-import { GameMessage, SocketMessage } from "../types/message";
+import { IDataChatResponse, ISocketMessageRequest, ISocketMessageResponse, SocketChannel } from "../types/message";
 import GameChat from "../component/GameChat";
+import { IPlayer, RoomData } from "../types/game";
+import { getRoomData } from "../api/gameService";
+import RoomUnvailable from "../component/Room/RoomUnvailabale";
+import PlayerCreation from "../component/Room/PlayerCreation";
 
 const GamePage = () => {
 
@@ -10,140 +14,108 @@ const GamePage = () => {
 
     const [ws, setWs] = useState<WebSocket>();
 
+    const [roomData, setRoomData] = useState<RoomData>();
+    const [loadingRoom, setLoadingRoom] = useState<boolean>(false);
+    const [loadingConnexion, setLoadingConnexion] = useState<boolean>(false);
+
+    const [messages, setMessages] = useState<IDataChatResponse[]>([]);
+
+    const getRoom = () => {
+        setLoadingRoom(true);
+        getRoomData(gameId ?? "")
+            .then(async res => setRoomData(await res.json()))
+            .catch(e => {})
+            .finally(() => setLoadingRoom(false));
+    }
+
     useEffect(() => {
-        let webSocket = new WebSocket(process.env.REACT_APP_WEBSOCKET_ENDPOINT as string);
-        webSocket.onopen = () => console.log('ws opened');
-        webSocket.onclose = () => console.log('ws closed');
-    
-        webSocket.onmessage = e => {
-          if (webSocket) return;
-          const message = JSON.parse(e.data);
-          console.log('e', message);
-        };
-    
-        setWs(webSocket);
+        getRoom();
 
         return () => {
-            webSocket.close();
+            ws?.close();
         }
-    }, []);
+    }, [])
 
-    const sendMessage = (message: SocketMessage) => {
+    const sendMessage = (message: ISocketMessageRequest) => {
         ws?.send(JSON.stringify(message));
     }
 
-    const fakeMsg : GameMessage[] = [
-        {
-            authorImg: 'https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG.png',
-            author: 'Bob',
-            message: 'Salut tout le monde'
-        },
-        {
-            authorImg: 'https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG.png',
-            author: 'Bob',
-            message: 'Salut tout le monde'
-        },
-        {
-            authorImg: 'https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG.png',
-            author: 'Bob',
-            message: 'Salut tout le monde'
-        },
-        {
-            authorImg: 'https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG.png',
-            author: 'Bob',
-            message: 'Salut tout le monde'
-        },
-        {
-            authorImg: 'https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG.png',
-            author: 'Bob',
-            message: 'Salut tout le monde'
-        },
+    const createSocket = (player: IPlayer) => {
 
-        {
-            authorImg: 'https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG.png',
-            author: 'Bob',
-            message: 'Salut tout le monde'
-        },
-        {
-            authorImg: 'https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG.png',
-            author: 'Bob',
-            message: 'Salut tout le monde'
-        },
-        {
-            authorImg: 'https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG.png',
-            author: 'Bob',
-            message: 'Salut tout le monde'
-        },
-        {
-            authorImg: 'https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG.png',
-            author: 'Bob',
-            message: 'Salut tout le monde'
-        },
-        {
-            authorImg: 'https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG.png',
-            author: 'Bob',
-            message: 'Salut tout le monde'
-        },
-        {
-            authorImg: 'https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG.png',
-            author: 'Bob',
-            message: 'Salut tout le monde'
-        },
-        {
-            authorImg: 'https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG.png',
-            author: 'Bob',
-            message: 'Salut tout le monde'
-        },
-        {
-            authorImg: 'https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG.png',
-            author: 'Bob',
-            message: 'Salut tout le monde'
-        },
-        {
-            authorImg: 'https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG.png',
-            author: 'Bob',
-            message: 'Salut tout le monde'
-        },
-        {
-            authorImg: 'https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG.png',
-            author: 'Bob',
-            message: 'Salut tout le monde'
-        },
-        {
-            authorImg: 'https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG.png',
-            author: 'Bob',
-            message: 'Salut tout le monde'
-        },
-        {
-            authorImg: 'https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG.png',
-            author: 'Bob',
-            message: 'Salut tout le monde'
-        },
-        {
-            authorImg: 'https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG.png',
-            author: 'Bob',
-            message: 'Salut tout le monde ferfeeeeeeeeeeeeeeeeehb hbjhre bfjhrebfnjhr ebnfhjubn ferhjuf '
-        }
-    ]
+        let webSocket = new WebSocket(process.env.REACT_APP_WEBSOCKET_ENDPOINT as string);
+
+        setLoadingConnexion(true);
+
+        webSocket.onopen = () => {
+            webSocket?.send(JSON.stringify({
+                channel: SocketChannel.INIT,
+                data: {
+                    roomId: gameId,
+                    name: player.name,
+                    imgUrl: player.imgUrl
+                }
+            }));
+
+            setWs(webSocket);
+            setLoadingConnexion(false);
+        };
+
+        webSocket.onclose = () => console.log('ws closed');
+    
+        webSocket.onmessage = e => {
+            let msg : ISocketMessageResponse = JSON.parse(e.data);
+
+            if (msg.channel == SocketChannel.CHAT) {
+                messages.push(msg.data as IDataChatResponse)
+                setMessages([...messages])
+            }
+            const message = JSON.parse(e.data);
+            console.log('e', message);
+        };
+    }
+
+    useEffect(() => console.log(ws), [ws])
 
     return (
         <>
+            { loadingRoom ?
+                <>
 
-            Id de la partie : {gameId}
+                </>
+                :
+                <>
+                    {!roomData ? 
+                        <RoomUnvailable />
+                        :
+                        <>
+                            { ws === undefined ?
 
-            <Row>
-                <Col span={18}>
+                                <>
+                                    <PlayerCreation 
+                                        createPlayer={createSocket}
+                                        loadingConnexion={loadingConnexion}
+                                    />
+                                </>
+
+                                :
+                                <Row>
+                                    <Col span={18}>
 
 
-                </Col>
+                                    </Col>
 
-                <Col span={6}>
-                    <GameChat 
-                        messages={fakeMsg}
-                        sendMessage={sendMessage}
-                    />
-                </Col>
-            </Row>
+                                    <Col span={6}>
+                                        <GameChat 
+                                            messages={messages}
+                                            sendMessage={sendMessage}
+                                        />
+                                    </Col>
+                                </Row>
+                            }
+                        </>
+                    }
+                </>
+            }
         
         </>
     )
