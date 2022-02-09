@@ -7,6 +7,7 @@ import { IPlayer, RoomData } from "../types/game";
 import { getRoomData } from "../api/gameService";
 import RoomUnvailable from "../component/Room/RoomUnvailabale";
 import PlayerCreation from "../component/Room/PlayerCreation";
+import DrawingCanva from "../component/DrawingCanva";
 
 const GamePage = () => {
 
@@ -100,7 +101,7 @@ const GamePage = () => {
                                 :
                                 <Row>
                                     <Col span={18}>
-
+                                        <DrawingCanva />
 
                                     </Col>
 
