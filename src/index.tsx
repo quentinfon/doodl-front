@@ -4,6 +4,7 @@ import App from './App';
 import 'antd/dist/antd.min.css'
 
 import reportWebVitals from './reportWebVitals';
+import './floodfill.js';
 
 ReactDOM.render(
   <React.StrictMode>
