@@ -40,3 +40,16 @@ export enum SocketChannel {
     CHAT = "CHAT",
     DRAW = "DRAW"
 }
+
+
+export interface Coordinate {
+    x: number;
+    y: number;
+}
+export interface IDraw {
+    tool: string;
+    color: string;
+    lineWidth?: number;
+    originalCord?: Coordinate;
+    newCord?: Coordinate;
+}

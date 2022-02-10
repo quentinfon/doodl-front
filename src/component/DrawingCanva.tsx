@@ -1,10 +1,7 @@
 import { Select } from "antd";
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { Coordinate } from "../types/message";
 
-interface Coordinate {
-    x: number;
-    y: number;
-}
 
 const { Option } = Select;
 
@@ -15,9 +12,9 @@ const DrawingCanva = () => {
     const [mode, setMode] = useState<string>("brush");
     const [lineWidth, setlineWidth] = useState<number>(5);
     const [color, setColor] = useState<string>("black");
-    const [isPainting, setIsPainting] = useState<boolean>(false);
-    const [mousePosition, setMousePosition] = useState<Coordinate | undefined>(undefined);
 
+    const modeRef = useRef(mode);
+    
     const clearCanva = () => {
         if (!canvasRef.current) return;
         const canvas: HTMLCanvasElement = canvasRef.current;
@@ -29,7 +26,7 @@ const DrawingCanva = () => {
         }
     }
 
-    const getCoordinates = (event: MouseEvent): Coordinate | undefined => {
+    const getCoordinates = (event: PointerEvent): Coordinate | undefined => {
 
         if (!canvasRef.current) return;
 
@@ -39,103 +36,99 @@ const DrawingCanva = () => {
         return {x:event.pageX - rect.left, y:event.pageY - rect.top};
     }
 
+    let mouse : Coordinate = {
+        x: 0,
+        y: 0
+    }
 
-    const startPaint = useCallback((event: MouseEvent) => {
-        const coordinates = getCoordinates(event);
-        
-        if (coordinates) {
-            setIsPainting(true);
-            setMousePosition(coordinates);
-        }
-    }, []);   
-
-    useEffect(() => {
-
-        if (!canvasRef.current) return;
-        
-        const canvas: HTMLCanvasElement = canvasRef.current;
-        canvas.addEventListener("mousedown", startPaint);
-        
-        return () => {
-            canvas.removeEventListener("mousedown", startPaint);
-        };
-        
-    }, [startPaint]);
-
-
-    const paint = useCallback((event: MouseEvent) => {        
-        if (isPainting) {
-        
-            const newMousePosition = getCoordinates(event);
-
-            if (mousePosition && newMousePosition) {
-                drawLine(mousePosition, newMousePosition);
-                setMousePosition(newMousePosition);
-            }
-        
-        }
-    }, [isPainting, mousePosition]);
-            
-    
-    const drawLine = (originalMousePosition: Coordinate, newMousePosition: Coordinate) => {
-        
+    const onPaint = (evt: PointerEvent) => {
         if (!canvasRef.current) return;
         
         const canvas: HTMLCanvasElement = canvasRef.current;
         const context = canvas.getContext("2d");
+
+        const coor = getCoordinates(evt);
         
         if (context) {
-        
-            context.strokeStyle = color;
-            context.lineWidth = lineWidth;
-            context.lineJoin = "round";
-    
-    
-            context.beginPath();
-            context.moveTo(originalMousePosition.x, originalMousePosition.y);
-            context.lineTo(newMousePosition.x, newMousePosition.y);
-            context.closePath();
-    
-            context.stroke();
+            context.lineTo(mouse.x, mouse.y);
+            context.stroke();            
         }
-    };
+    }
 
-    useEffect(() => {
+    const draw = () => {
         if (!canvasRef.current) return;
-
+    
         const canvas: HTMLCanvasElement = canvasRef.current;
-        canvas.addEventListener("mousemove", paint);
+        const context = canvas.getContext("2d");
         
-        return () => {
-            canvas.removeEventListener("mousemove", paint);
-        };
-        
-    }, [paint]);
+        if (context) {
+            let currentMode = modeRef.current;
 
+            if (currentMode === 'fill') {
+                context.fillStyle = color;
+                (context as any).fillFlood(mouse.x, mouse.y);
+            } else {
+                if (currentMode === 'brush') {
+                    context.globalCompositeOperation = "source-over";
+                } else if (currentMode === 'eraser') {
+                    context.globalCompositeOperation = "destination-out";
+                }
 
-    const exitPaint = useCallback(() => {
-        setIsPainting(false);
-    }, []);
+                context.strokeStyle = color;
+                context.lineWidth = lineWidth;
+                context.lineJoin = "round";
 
-    useEffect(() => {
+                context.beginPath();
+                context.moveTo(mouse.x, mouse.y);
+                context.closePath();
 
-        if (!canvasRef.current) return;
-        
-        const canvas: HTMLCanvasElement = canvasRef.current;
+                canvas.addEventListener("pointermove", onPaint, false);
 
-        canvas.addEventListener("mouseup", exitPaint);
-        canvas.addEventListener("mouseleave", exitPaint);
-        
-        return () => {
-            canvas.removeEventListener("mouseup", exitPaint);        
-            canvas.removeEventListener("mouseleave", exitPaint);
-        };
-        
-    }, [exitPaint]);
+            }
+            
+        }
+    }
+
+    const onMove = (evt: PointerEvent) => {
+        let coor = getCoordinates(evt);
+        mouse.x = coor?.x ?? 0;
+        mouse.y = coor?.y ?? 0;
+    }
+
+    const onPointerDown = (evt: PointerEvent) => {
+        let coor = getCoordinates(evt);
+        mouse.x = coor?.x ?? 0;
+        mouse.y = coor?.y ?? 0;
+        draw();
+    }
+
+    const onPointerUp = () => {
+        let canvas = canvasRef.current;
+        if (canvas){
+            canvas.removeEventListener('pointermove', onPaint, false);
+        }
+    }
 
     useEffect(() => {
         clearCanva();
-        //Todo Init to current dessins
+
+        let canvas = canvasRef.current;
+        if (canvas){
+            canvas.addEventListener('pointermove', onMove, false);        
+            canvas.addEventListener('pointerdown', onPointerDown, false);        
+            canvas.addEventListener('pointerup', onPointerUp, false);
+        }
+        
+        return () => {
+            let canvas = canvasRef.current;
+            if(canvas){
+                canvas.removeEventListener('pointermove', onMove, false);
+                canvas.removeEventListener('pointerdown', onPointerDown, false);
+                canvas.removeEventListener('pointerup', onPointerUp, false);
+            }
+            
+        }
+
     }, [canvasRef])
 
     return(
@@ -146,7 +139,10 @@ const DrawingCanva = () => {
                 Tool:
                 <Select 
                     value={mode}
-                    onChange={(e: string) => setMode(e)}
+                    onChange={(e: string) => {
+                        modeRef.current = e;
+                        setMode(e);
+                    }}
                 >
                     
                     <Option value="brush">Brush</Option>
