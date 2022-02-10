@@ -1,19 +1,25 @@
-import { Select } from "antd";
+import { Divider, Layout, List, Menu, Row, Select, Typography } from "antd";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Coordinate } from "../types/message";
+import { Coordinate } from "../../../types/message";
+import ColorPicker from "./ColorPicker";
+import SizePicker from "./SizePicker";
+import ToolPicker from "./ToolPicker";
 
-
+const { Header, Content, Footer, Sider } = Layout;
 const { Option } = Select;
+const { Title } = Typography;
 
 const DrawingCanva = () => {
 
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
     const [mode, setMode] = useState<string>("brush");
-    const [lineWidth, setlineWidth] = useState<number>(5);
+    const [lineWidth, setlineWidth] = useState<number>(10);
     const [color, setColor] = useState<string>("black");
 
     const modeRef = useRef(mode);
+    const lineWidthRef = useRef(lineWidth);
+    const colorRef = useRef(color);
     
     const clearCanva = () => {
         if (!canvasRef.current) return;
@@ -46,8 +52,6 @@ const DrawingCanva = () => {
         
         const canvas: HTMLCanvasElement = canvasRef.current;
         const context = canvas.getContext("2d");
-
-        const coor = getCoordinates(evt);
         
         if (context) {
             context.lineTo(mouse.x, mouse.y);
@@ -65,7 +69,7 @@ const DrawingCanva = () => {
             let currentMode = modeRef.current;
 
             if (currentMode === 'fill') {
-                context.fillStyle = color;
+                context.fillStyle = colorRef.current;
                 (context as any).fillFlood(mouse.x, mouse.y);
             } else {
                 if (currentMode === 'brush') {
@@ -74,8 +78,8 @@ const DrawingCanva = () => {
                     context.globalCompositeOperation = "destination-out";
                 }
 
-                context.strokeStyle = color;
-                context.lineWidth = lineWidth;
+                context.strokeStyle = colorRef.current;
+                context.lineWidth = lineWidthRef.current;
                 context.lineJoin = "round";
 
                 context.beginPath();
@@ -102,7 +106,7 @@ const DrawingCanva = () => {
         draw();
     }
 
-    const onPointerUp = () => {
+    const removeEvent = () => {
         let canvas = canvasRef.current;
         if (canvas){
             canvas.removeEventListener('pointermove', onPaint, false);
@@ -116,7 +120,8 @@ const DrawingCanva = () => {
         if (canvas){
             canvas.addEventListener('pointermove', onMove, false);        
             canvas.addEventListener('pointerdown', onPointerDown, false);        
-            canvas.addEventListener('pointerup', onPointerUp, false);
+            canvas.addEventListener('pointerup', removeEvent, false);
+            canvas.addEventListener('pointerleave', removeEvent, false);
         }
         
         return () => {
@@ -124,7 +129,8 @@ const DrawingCanva = () => {
             if(canvas){
                 canvas.removeEventListener('pointermove', onMove, false);
                 canvas.removeEventListener('pointerdown', onPointerDown, false);
-                canvas.removeEventListener('pointerup', onPointerUp, false);
+                canvas.removeEventListener('pointerup', removeEvent, false);
+                canvas.addEventListener('pointerleave', removeEvent, false);
             }
             
         }
@@ -158,7 +164,60 @@ const DrawingCanva = () => {
                     <output>5</output>
                 </div>
 
-                <canvas ref={canvasRef} height="600" width="800"/>
+
+                <Layout className="site-layout-background" style={{ padding: '24px 0' }}>
+                    <Sider className="site-layout-background">
+                        <Menu
+                            mode="inline"
+                            defaultSelectedKeys={[mode]}
+                            style={{ height: '100%' }}
+                        >
+                            
+                            <Divider orientation="center">
+                                Tool
+                            </Divider>
+                            
+                            <ToolPicker 
+                                currentTool={mode}
+                                setTool={(t: string) => {
+                                    modeRef.current = t;
+                                    setMode(t);
+                                }}
+                            />
+
+                            <Divider orientation="center">
+                                Size
+                            </Divider>
+
+                            <SizePicker 
+                                currentSize={lineWidth}
+                                setSize={(s: number) => {
+                                    lineWidthRef.current = s;
+                                    setlineWidth(s);
+                                }}
+                            />
+
+                            <Divider orientation="center">
+                                Color
+                            </Divider>
+
+                            <ColorPicker 
+                                currentColor={color}
+                                setColor={(c: string) => {
+                                    colorRef.current = c;
+                                    setColor(c);
+                                }}
+                            />
+                           
+                        </Menu>
+                    </Sider>
+                    <Content style={{ padding: '0 24px', minHeight: 280 }}>
+                        <canvas ref={canvasRef} height="600" width="800"/>
+                    </Content>
+                </Layout>
+
+
+               
               
             </div>
 

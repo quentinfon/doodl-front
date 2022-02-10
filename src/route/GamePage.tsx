@@ -7,7 +7,7 @@ import { IPlayer, RoomData } from "../types/game";
 import { getRoomData } from "../api/gameService";
 import RoomUnvailable from "../component/Room/RoomUnvailabale";
 import PlayerCreation from "../component/Room/PlayerCreation";
-import DrawingCanva from "../component/DrawingCanva";
+import DrawingCanva from "../component/Room/Canva/DrawingCanva";
 
 const GamePage = () => {
 
