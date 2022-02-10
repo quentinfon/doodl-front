@@ -54,10 +54,10 @@ const ColorPicker = ({
                             margin: '0'
                         }}
                     >
-                        <svg viewBox="0 0 100 100">
+                        <svg viewBox="0 0 100 100" className={currentColor === color ? "selectedColor" : "selectableColor"}>
                             <rect x="0" y="0" width="100" height="100" rx="15" ry="15" 
                                 fill={color} 
-                                opacity={currentColor === color ? 1 : 0.3}
+                                
                             />
                         </svg>
                     </List.Item>

@@ -1,13 +1,13 @@
-import { Divider, Layout, List, Menu, Row, Select, Typography } from "antd";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { Button, Divider, Layout, Menu, Select } from "antd";
+import { DeleteOutlined } from '@ant-design/icons';
 import { Coordinate } from "../../../types/message";
 import ColorPicker from "./ColorPicker";
 import SizePicker from "./SizePicker";
 import ToolPicker from "./ToolPicker";
 
-const { Header, Content, Footer, Sider } = Layout;
+const { Content, Sider } = Layout;
 const { Option } = Select;
-const { Title } = Typography;
 
 const DrawingCanva = () => {
 
@@ -172,7 +172,14 @@ const DrawingCanva = () => {
                             defaultSelectedKeys={[mode]}
                             style={{ height: '100%' }}
                         >
-                            
+                            <Button 
+                                icon={<DeleteOutlined />}
+                                style={{width: '100%'}}
+                                danger
+                                onClick={clearCanva}
+                            >
+                                Clear all
+                            </Button>
                             <Divider orientation="center">
                                 Tool
                             </Divider>

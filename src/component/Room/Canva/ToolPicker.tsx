@@ -1,8 +1,8 @@
 import React from "react";
-import { HighlightOutlined, BgColorsOutlined, EditOutlined } from '@ant-design/icons';
-import { Button, List, Menu, Typography } from "antd";
+import { HighlightOutlined, BgColorsOutlined } from '@ant-design/icons';
+import { List, Menu, Typography } from "antd";
 
-const { Title, Text } = Typography;
+const { Title } = Typography;
 
 const { SubMenu } = Menu;
 
