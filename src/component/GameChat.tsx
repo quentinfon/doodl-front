@@ -26,6 +26,14 @@ const GameChat = ({
         setCurrentMessage("");
     }
 
+    const onKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        // 'keypress' event misbehaves on mobile so we track 'Enter' key via 'keydown' event
+        if (event.key === 'Enter') {
+            sendCurrentMsg()
+        }
+    }
+
+    // @ts-ignore
     return (
         <>
         
@@ -63,14 +71,15 @@ const GameChat = ({
                     <Comment
                         avatar={<Avatar src="https://joeschmoe.io/api/v1/random" alt="Han Solo" />}
                         content={
-                            <Form.Item>
-                                <TextArea 
-                                    rows={3} 
-                                    onChange={(e: any) => setCurrentMessage(e.target.value)} 
-                                    value={currentMsg} 
+                            <form >
+                                <TextArea
+                                    onKeyDown={onKeyDown}
+                                    rows={3}
+                                    onChange={(e: any) => setCurrentMessage(e.target.value)}
+                                    value={currentMsg}
                                 />
-                                <Button onClick={sendCurrentMsg}>Send</Button>
-                            </Form.Item>
+                                <Button onClick={sendCurrentMsg} onKeyDown={onKeyDown}>Send</Button>
+                            </form>
                         }
                     />
                 </Card>
