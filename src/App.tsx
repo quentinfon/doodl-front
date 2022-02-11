@@ -8,12 +8,8 @@ import {
 import GamePage from './route/GamePage';
 import HomePage from './route/HomePage';
 import { Layout } from 'antd';
-import { Typography } from 'antd';
 import Avatar from 'antd/lib/avatar/avatar';
-
-const { Title } = Typography;
-
-const { Header, Footer, Sider, Content } = Layout;
+const { Header, Footer, Content } = Layout;
 
 const App = () => {
 

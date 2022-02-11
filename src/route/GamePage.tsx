@@ -65,7 +65,7 @@ const GamePage = () => {
         webSocket.onmessage = e => {
             let msg : ISocketMessageResponse = JSON.parse(e.data);
 
-            if (msg.channel == SocketChannel.CHAT) {
+            if (msg.channel === SocketChannel.CHAT) {
                 messages.push(msg.data as IDataChatResponse)
                 setMessages([...messages])
             }
