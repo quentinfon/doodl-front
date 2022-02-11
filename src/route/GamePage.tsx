@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Row, Col } from 'antd';
-import { IDataChatResponse, IDraw, ISocketMessageRequest, ISocketMessageResponse, SocketChannel } from "../types/message";
+import { IDataChatResponse, ISocketMessageRequest, ISocketMessageResponse, SocketChannel } from "../types/message";
 import GameChat from "../component/GameChat";
 import { IPlayer, RoomData } from "../types/game";
 import { getRoomData } from "../api/gameService";
@@ -39,10 +39,6 @@ const GamePage = () => {
 
     const sendMessage = (message: ISocketMessageRequest) => {
         ws?.send(JSON.stringify(message));
-    }
-
-    const sendDraw = (draw: IDraw) => {
-        ws?.send(JSON.stringify(draw));
     }
 
     const createSocket = (player: IPlayer) => {
@@ -105,8 +101,9 @@ const GamePage = () => {
                                 :
                                 <Row>
                                     <Col span={18}>
-                                        <DrawingCanva />
-
+                                        <DrawingCanva
+                                            webSocket={ws}
+                                        />
                                     </Col>
 
                                     <Col span={6}>

@@ -33,3 +33,21 @@ export interface RoomData {
     config?: IRoomConfig,
     status?: IRoomStatus
 }
+
+export interface Coordinate {
+    x: number;
+    y: number;
+}
+
+export enum DrawTool {
+    BRUSH = "BRUSH",
+    ERASER = "ERASER",
+    FILL = "FILL"
+}
+
+export interface IDraw {
+    tool: DrawTool;
+    coords: Coordinate;
+    color?: string;
+    lineWidth?: number;
+}

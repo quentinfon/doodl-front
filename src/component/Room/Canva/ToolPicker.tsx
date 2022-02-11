@@ -1,6 +1,7 @@
 import React from "react";
 import { HighlightOutlined, BgColorsOutlined } from '@ant-design/icons';
 import { List, Menu, Typography } from "antd";
+import { DrawTool } from "../../../types/game";
 
 const { Title } = Typography;
 
@@ -23,11 +24,11 @@ const ToolPicker = ({
 
     const tools : ToolsListItem[] = [
         {
-            toolName: "brush",
+            toolName: DrawTool.BRUSH,
             toolIcon: <HighlightOutlined className="canvasItemsIcon" />
         },
         {
-            toolName: "fill",
+            toolName: DrawTool.FILL,
             toolIcon: <BgColorsOutlined className="canvasItemsIcon" />
         }
     ]

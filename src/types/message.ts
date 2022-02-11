@@ -1,13 +1,15 @@
+import { IDraw } from "./game";
+
 export interface ISocketMessage {
     channel: SocketChannel;
 }
 
 export interface ISocketMessageRequest extends ISocketMessage {
-    data: IDataInitRequest | IDataChatRequest;
+    data: IDataInitRequest | IDataChatRequest | IDraw;
 }
 
 export interface ISocketMessageResponse extends ISocketMessage {
-    data: IDataInitResponse | IDataChatResponse;
+    data: IDataInitResponse | IDataChatResponse | IDraw;
 }
 
 export interface IDataInitRequest {
@@ -39,17 +41,4 @@ export enum SocketChannel {
     INIT = "INIT",
     CHAT = "CHAT",
     DRAW = "DRAW"
-}
-
-
-export interface Coordinate {
-    x: number;
-    y: number;
-}
-export interface IDraw {
-    tool: string;
-    color: string;
-    lineWidth?: number;
-    originalCord?: Coordinate;
-    newCord?: Coordinate;
 }

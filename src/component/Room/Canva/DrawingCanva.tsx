@@ -1,15 +1,22 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Button, Divider, Layout, Menu, Select } from "antd";
 import { DeleteOutlined } from '@ant-design/icons';
-import { Coordinate } from "../../../types/message";
+import { Coordinate, DrawTool, IDraw } from "../../../types/game";
 import ColorPicker from "./ColorPicker";
 import SizePicker from "./SizePicker";
 import ToolPicker from "./ToolPicker";
+import { ISocketMessageRequest, SocketChannel } from "../../../types/message";
 
 const { Content, Sider } = Layout;
 const { Option } = Select;
 
-const DrawingCanva = () => {
+interface DrawingCanvaProps {
+    webSocket: WebSocket
+}
+
+const DrawingCanva = ({
+    webSocket
+}: DrawingCanvaProps) => {
 
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -20,6 +27,27 @@ const DrawingCanva = () => {
     const modeRef = useRef(mode);
     const lineWidthRef = useRef(lineWidth);
     const colorRef = useRef(color);
+
+    const onDrawReceived = (event: any) => {
+        console.log(event);
+    }
+
+    useEffect(() => {
+        webSocket.addEventListener("message", onDrawReceived);
+
+        return(() => {
+            webSocket.removeEventListener("message", onDrawReceived);
+        })
+    }, [webSocket]);
+
+    const sendDrawData = (drawData: IDraw) => {
+        let message: ISocketMessageRequest = {
+            channel: SocketChannel.DRAW,
+            data: drawData
+        }
+        
+        webSocket?.send(JSON.stringify(message))
+    }
     
     const clearCanva = () => {
         if (!canvasRef.current) return;
@@ -55,7 +83,14 @@ const DrawingCanva = () => {
         
         if (context) {
             context.lineTo(mouse.x, mouse.y);
-            context.stroke();            
+            context.stroke();
+
+            sendDrawData({
+                tool: modeRef.current as DrawTool,
+                coords: {x: mouse.x, y: mouse.y},
+                color: colorRef.current,
+                lineWidth: lineWidthRef.current
+            });
         }
     }
 
@@ -68,13 +103,13 @@ const DrawingCanva = () => {
         if (context) {
             let currentMode = modeRef.current;
 
-            if (currentMode === 'fill') {
+            if (currentMode === DrawTool.FILL) {
                 context.fillStyle = colorRef.current;
                 (context as any).fillFlood(mouse.x, mouse.y);
             } else {
-                if (currentMode === 'brush') {
+                if (currentMode === DrawTool.BRUSH) {
                     context.globalCompositeOperation = "source-over";
-                } else if (currentMode === 'eraser') {
+                } else if (currentMode === DrawTool.ERASER) {
                     context.globalCompositeOperation = "destination-out";
                 }
 
@@ -140,31 +175,7 @@ const DrawingCanva = () => {
     return(
         <>
             <div>
-
-                <button onClick={clearCanva}>Clear</button>
-                Tool:
-                <Select 
-                    value={mode}
-                    onChange={(e: string) => {
-                        modeRef.current = e;
-                        setMode(e);
-                    }}
-                >
-                    
-                    <Option value="brush">Brush</Option>
-                    <Option value="eraser">Eraser</Option>
-                    <Option value="fill">Fill</Option>
-                        
-                </Select>
-                <select id="color">
-
-                </select>
-                <div>
-                    <input type="range" id="strokeWidth" min="1" max="50" value="5" step="1" />
-                    <output>5</output>
-                </div>
-
-
+                
                 <Layout className="site-layout-background" style={{ padding: '24px 0' }}>
                     <Sider className="site-layout-background">
                         <Menu
