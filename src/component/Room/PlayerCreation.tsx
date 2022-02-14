@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button, Row, Col, Card, Typography, Input } from "antd";
-import { IPlayer } from "../../types/game";
+import { IPlayer } from "../../types/GameModel";
 
 const { Title, Text } = Typography;
 interface PlayerCreationProps {
@@ -11,20 +11,20 @@ interface PlayerCreationProps {
 const PlayerCreation = ({
     createPlayer,
     loadingConnexion
-} : PlayerCreationProps) => {
+}: PlayerCreationProps) => {
 
     const [player, setPlayer] = useState<IPlayer>({
         playerId: "",
         name: "Bob",
         imgUrl: "",
     })
-    
+
     return (
         <>
 
-            <Row 
+            <Row
                 justify="center"
-                style={{marginTop: "5%"}}
+                style={{ marginTop: "5%" }}
             >
                 <Col lg={22}>
 
@@ -41,7 +41,7 @@ const PlayerCreation = ({
                                 >
                                     <Input
                                         value={player.name}
-                                        onChange={(e) => setPlayer({...player, name: e.target.value})}
+                                        onChange={(e) => setPlayer({ ...player, name: e.target.value })}
                                     />
                                 </Input.Group>
                             </Col>
@@ -53,21 +53,21 @@ const PlayerCreation = ({
                                 marginTop: "15px"
                             }}
                         >
-                            <Button 
+                            <Button
                                 onClick={() => createPlayer(player)}
                                 disabled={loadingConnexion}
                                 loading={loadingConnexion}
-                            > 
+                            >
                                 Join
                             </Button>
                         </Row>
 
                     </Card>
-                
+
                 </Col>
             </Row>
-           
-        
+
+
         </>
     )
 

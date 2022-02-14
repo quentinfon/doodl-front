@@ -1,26 +1,30 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Button, Divider, Layout, Menu, Select } from "antd";
+import { Button, Divider, Layout, Menu, message, Select } from "antd";
 import { DeleteOutlined } from '@ant-design/icons';
-import { Coordinate, DrawTool, IDraw } from "../../../types/game";
+import { ICoordinate, DrawTool, IDraw, IPlayer } from "../../../types/GameModel";
 import ColorPicker from "./ColorPicker";
 import SizePicker from "./SizePicker";
 import ToolPicker from "./ToolPicker";
-import { ISocketMessageRequest, SocketChannel } from "../../../types/message";
+import { IDataDrawResponse, ISocketMessageRequest, ISocketMessageResponse, SocketChannel } from "../../../types/SocketModel";
 
 const { Content, Sider } = Layout;
 const { Option } = Select;
 
 interface DrawingCanvaProps {
-    webSocket: WebSocket
+    initDraw: IDraw[],
+    webSocket: WebSocket,
+    player: IPlayer | undefined
 }
 
 const DrawingCanva = ({
-    webSocket
+    initDraw,
+    webSocket,
+    player
 }: DrawingCanvaProps) => {
 
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
-    const [mode, setMode] = useState<string>("brush");
+    const [mode, setMode] = useState<DrawTool>(DrawTool.BRUSH);
     const [lineWidth, setlineWidth] = useState<number>(10);
     const [color, setColor] = useState<string>("black");
 
@@ -29,102 +33,135 @@ const DrawingCanva = ({
     const colorRef = useRef(color);
 
     const onDrawReceived = (event: any) => {
-        console.log(event);
+        const msg: ISocketMessageResponse = JSON.parse(event.data);
+        if (!canvasRef.current || msg.channel !== SocketChannel.DRAW) return;
+
+        const data: IDataDrawResponse = msg.data as IDataDrawResponse;
+        if (!data) return;
+
+        if (data.draftsman.playerId !== player?.playerId) {
+            draw(data, false);
+        }
     }
 
     useEffect(() => {
         webSocket.addEventListener("message", onDrawReceived);
 
-        return(() => {
+        return (() => {
             webSocket.removeEventListener("message", onDrawReceived);
         })
     }, [webSocket]);
 
     const sendDrawData = (drawData: IDraw) => {
-        let message: ISocketMessageRequest = {
+        const message: ISocketMessageRequest = {
             channel: SocketChannel.DRAW,
             data: drawData
         }
-        
+
         webSocket?.send(JSON.stringify(message))
     }
-    
+
     const clearCanva = () => {
         if (!canvasRef.current) return;
         const canvas: HTMLCanvasElement = canvasRef.current;
         const context = canvas.getContext("2d");
 
-        if(context){
+        if (context) {
             context.fillStyle = "white";
             context.fillRect(0, 0, canvas.width, canvas.height);
         }
     }
 
-    const getCoordinates = (event: PointerEvent): Coordinate | undefined => {
+    const getCoordinates = (event: PointerEvent): ICoordinate | undefined => {
 
         if (!canvasRef.current) return;
 
         const canvas: HTMLCanvasElement = canvasRef.current;
-        var rect = canvas.getBoundingClientRect();
+        const rect = canvas.getBoundingClientRect();
 
-        return {x:event.pageX - rect.left, y:event.pageY - rect.top};
+        return { x: event.pageX - rect.left, y: event.pageY - rect.top };
     }
 
-    let mouse : Coordinate = {
+    let mouse: ICoordinate = {
+        x: 0,
+        y: 0
+    }
+
+    let mouseFrom: ICoordinate = {
         x: 0,
         y: 0
     }
 
     const onPaint = (evt: PointerEvent) => {
         if (!canvasRef.current) return;
-        
+
         const canvas: HTMLCanvasElement = canvasRef.current;
         const context = canvas.getContext("2d");
-        
+
         if (context) {
             context.lineTo(mouse.x, mouse.y);
             context.stroke();
 
             sendDrawData({
                 tool: modeRef.current as DrawTool,
-                coords: {x: mouse.x, y: mouse.y},
+                coordsFrom: { x: mouseFrom.x, y: mouseFrom.y },
+                coordsTo: { x: mouse.x, y: mouse.y },
                 color: colorRef.current,
                 lineWidth: lineWidthRef.current
             });
+
+            mouseFrom.x = mouse.x;
+            mouseFrom.y = mouse.y;
         }
     }
 
-    const draw = () => {
+    const draw = (data: IDraw, clientSide: boolean) => {
+        //console.log(data);
         if (!canvasRef.current) return;
-    
+
         const canvas: HTMLCanvasElement = canvasRef.current;
         const context = canvas.getContext("2d");
-        
-        if (context) {
-            let currentMode = modeRef.current;
 
-            if (currentMode === DrawTool.FILL) {
-                context.fillStyle = colorRef.current;
-                (context as any).fillFlood(mouse.x, mouse.y);
+        if (context) {
+
+            if (data.tool === DrawTool.CLEAR) {
+                clearCanva();
+            } else if (data.tool === DrawTool.FILL) {
+                if (!data.coordsTo || !data.color) return;
+                context.fillStyle = data.color;
+                (context as any).fillFlood(data.coordsTo.x, data.coordsTo.y);
+                if (clientSide) {
+                    sendDrawData({
+                        tool: DrawTool.FILL,
+                        color: data.color,
+                        coordsTo: data.coordsTo
+                    })
+                }
             } else {
-                if (currentMode === DrawTool.BRUSH) {
+                if (data.tool === DrawTool.BRUSH) {
                     context.globalCompositeOperation = "source-over";
-                } else if (currentMode === DrawTool.ERASER) {
+                } else if (data.tool === DrawTool.ERASER) {
                     context.globalCompositeOperation = "destination-out";
                 }
 
-                context.strokeStyle = colorRef.current;
-                context.lineWidth = lineWidthRef.current;
+                if (!data.coordsFrom || !data.coordsTo) return;
+
+                context.strokeStyle = data.color ?? "";
+                context.lineWidth = data.lineWidth ?? 5;
                 context.lineJoin = "round";
 
                 context.beginPath();
-                context.moveTo(mouse.x, mouse.y);
                 context.closePath();
+                context.moveTo(data.coordsFrom.x, data.coordsFrom.y);
 
-                canvas.addEventListener("pointermove", onPaint, false);
-
+                if (clientSide) {
+                    canvas.addEventListener("pointermove", onPaint, false);
+                } else {
+                    if (!data.coordsTo) return;
+                    context.lineTo(data.coordsTo.x, data.coordsTo.y);
+                    context.stroke();
+                }
             }
-            
         }
     }
 
@@ -138,12 +175,22 @@ const DrawingCanva = ({
         let coor = getCoordinates(evt);
         mouse.x = coor?.x ?? 0;
         mouse.y = coor?.y ?? 0;
-        draw();
+
+        mouseFrom.x = coor?.x ?? 0;
+        mouseFrom.y = coor?.y ?? 0;
+
+        draw({
+            tool: modeRef.current,
+            coordsFrom: mouse,
+            coordsTo: mouse,
+            color: colorRef.current,
+            lineWidth: lineWidthRef.current
+        }, true);
     }
 
     const removeEvent = () => {
         let canvas = canvasRef.current;
-        if (canvas){
+        if (canvas) {
             canvas.removeEventListener('pointermove', onPaint, false);
         }
     }
@@ -152,30 +199,36 @@ const DrawingCanva = ({
         clearCanva();
 
         let canvas = canvasRef.current;
-        if (canvas){
-            canvas.addEventListener('pointermove', onMove, false);        
-            canvas.addEventListener('pointerdown', onPointerDown, false);        
+        if (canvas) {
+            canvas.addEventListener('pointermove', onMove, false);
+            canvas.addEventListener('pointerdown', onPointerDown, false);
             canvas.addEventListener('pointerup', removeEvent, false);
             canvas.addEventListener('pointerleave', removeEvent, false);
         }
-        
+
         return () => {
             let canvas = canvasRef.current;
-            if(canvas){
+            if (canvas) {
                 canvas.removeEventListener('pointermove', onMove, false);
                 canvas.removeEventListener('pointerdown', onPointerDown, false);
                 canvas.removeEventListener('pointerup', removeEvent, false);
                 canvas.addEventListener('pointerleave', removeEvent, false);
             }
-            
+
         }
 
     }, [canvasRef])
 
-    return(
+    useEffect(() => {
+        initDraw.forEach((data: IDraw) => {
+            draw(data, false);
+        })
+    }, [initDraw]);
+
+    return (
         <>
             <div>
-                
+
                 <Layout className="site-layout-background" style={{ padding: '24px 0' }}>
                     <Sider className="site-layout-background">
                         <Menu
@@ -183,21 +236,23 @@ const DrawingCanva = ({
                             defaultSelectedKeys={[mode]}
                             style={{ height: '100%' }}
                         >
-                            <Button 
+                            <Button
                                 icon={<DeleteOutlined />}
-                                style={{width: '100%'}}
+                                style={{ width: '100%' }}
                                 danger
-                                onClick={clearCanva}
+                                onClick={() => {
+                                    sendDrawData({ tool: DrawTool.CLEAR })
+                                }}
                             >
                                 Clear all
                             </Button>
                             <Divider orientation="center">
                                 Tool
                             </Divider>
-                            
-                            <ToolPicker 
+
+                            <ToolPicker
                                 currentTool={mode}
-                                setTool={(t: string) => {
+                                setTool={(t: DrawTool) => {
                                     modeRef.current = t;
                                     setMode(t);
                                 }}
@@ -207,7 +262,7 @@ const DrawingCanva = ({
                                 Size
                             </Divider>
 
-                            <SizePicker 
+                            <SizePicker
                                 currentSize={lineWidth}
                                 setSize={(s: number) => {
                                     lineWidthRef.current = s;
@@ -219,24 +274,24 @@ const DrawingCanva = ({
                                 Color
                             </Divider>
 
-                            <ColorPicker 
+                            <ColorPicker
                                 currentColor={color}
                                 setColor={(c: string) => {
                                     colorRef.current = c;
                                     setColor(c);
                                 }}
                             />
-                           
+
                         </Menu>
                     </Sider>
                     <Content style={{ padding: '0 24px', minHeight: 280 }}>
-                        <canvas ref={canvasRef} height="600" width="800"/>
+                        <canvas ref={canvasRef} height="600" width="800" />
                     </Content>
                 </Layout>
 
 
-               
-              
+
+
             </div>
 
         </>

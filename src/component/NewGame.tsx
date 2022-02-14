@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Button, Card, Row, Col, Typography, Input, InputNumber, Select, Divider } from "antd";
-import { IRoomConfig, GameMode, RoomConfig } from "../types/game";
+import { IRoomConfig, GameMode } from "../types/GameModel";
 import { UserOutlined, FieldTimeOutlined } from '@ant-design/icons';
 import { fetchUtil } from "../api/request";
 import { getRoomCreationConfig, createNewRoom } from "../api/gameService";
 import { useNavigate } from 'react-router-dom';
+import { IRoomServerConfig } from "../types/ConfigModel";
 
 const { Title, Text } = Typography;
 const { Option } = Select;
@@ -19,12 +20,12 @@ const NewGame = () => {
         timeByTurn: 60
     })
 
-    const [roomConfigParam, setRoomConfigParam] = useState<RoomConfig>();
+    const [roomConfigParam, setRoomConfigParam] = useState<IRoomServerConfig>();
     const [loadingParams, setLoadingParams] = useState<boolean>(false);
     const [error, setError] = useState<string>("");
 
     const getRoomConfigParam = () => {
-        fetchUtil( getRoomCreationConfig(),
+        fetchUtil(getRoomCreationConfig(),
             setRoomConfigParam,
             setLoadingParams,
             setError);
@@ -34,7 +35,7 @@ const NewGame = () => {
     const [errorNewRoom, setErrorNewRoom] = useState<string>("");
 
     const createRoom = () => {
-        fetchUtil( createNewRoom({roomId: "", config: newGameConfig}),
+        fetchUtil(createNewRoom(),
             (data) => navigate(`/play/${data.roomId}`),
             setLoadingNewRoom,
             setErrorNewRoom
@@ -48,13 +49,13 @@ const NewGame = () => {
     return (
         <>
             <Card
-                style={{height: "100%"}}
+                style={{ height: "100%" }}
             >
                 <Title level={3}>Create a game</Title>
 
-                <Divider/>
+                <Divider />
 
-                <Row 
+                <Row
                     gutter={20}
                     style={{
                         marginBottom: 20
@@ -62,25 +63,25 @@ const NewGame = () => {
                 >
                     <Col sm={24} md={12} lg={8}>
                         <Text>Max players</Text>
-                        <InputNumber 
+                        <InputNumber
                             style={{ width: "100%" }}
-                            prefix={<UserOutlined style={{paddingRight: "5px"}} />}
+                            prefix={<UserOutlined style={{ paddingRight: "5px" }} />}
                             min={roomConfigParam?.minMaxPlayer}
                             max={roomConfigParam?.maxMaxPlayer}
-                            value={newGameConfig.maxPlayer} 
-                            onChange={(e) => setNewGameConfig({...newGameConfig, maxPlayer: e}) } 
+                            value={newGameConfig.maxPlayer}
+                            onChange={(e) => setNewGameConfig({ ...newGameConfig, maxPlayer: e })}
                         />
                     </Col>
 
                     <Col sm={24} md={12} lg={8}>
                         <Text>Time by turn</Text>
-                        <InputNumber 
+                        <InputNumber
                             style={{ width: "100%" }}
                             min={roomConfigParam?.minTimeByTurn}
                             max={roomConfigParam?.maxTimeByTurn}
-                            value={newGameConfig.timeByTurn} 
-                            onChange={(e) => setNewGameConfig({...newGameConfig, timeByTurn: e}) } 
-                            prefix={<FieldTimeOutlined style={{paddingRight: "5px"}} />}
+                            value={newGameConfig.timeByTurn}
+                            onChange={(e) => setNewGameConfig({ ...newGameConfig, timeByTurn: e })}
+                            prefix={<FieldTimeOutlined style={{ paddingRight: "5px" }} />}
                             addonAfter="seconds"
                         />
                     </Col>
@@ -88,13 +89,13 @@ const NewGame = () => {
                     <Col sm={24} md={12} lg={8}>
                         <Text>Game mode</Text>
                         <Input.Group>
-                            <Select 
+                            <Select
                                 style={{ width: "100%" }}
                                 value={newGameConfig.gameMode}
-                                onChange={(e) => setNewGameConfig({...newGameConfig, gameMode: e})}
+                                onChange={(e) => setNewGameConfig({ ...newGameConfig, gameMode: e })}
                             >
                                 {Object.keys(GameMode).map((mode: string, idx: number) => {
-                                    return(
+                                    return (
                                         <Option key={idx} value={mode}>{mode.charAt(0).toUpperCase() + mode.slice(1).toLowerCase()}</Option>
                                     )
                                 })}
@@ -104,7 +105,7 @@ const NewGame = () => {
 
                 </Row>
 
-                
+
                 <Row justify="end">
                     <Button
                         disabled={loadingNewRoom}
@@ -114,7 +115,7 @@ const NewGame = () => {
                         Create
                     </Button>
                 </Row>
-                          
+
             </Card>
         </>
     )

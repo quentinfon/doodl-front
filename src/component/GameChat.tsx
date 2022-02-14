@@ -1,11 +1,12 @@
 import { Avatar, List, Card, Comment, Form, Input, Button, Row } from "antd";
 import React, { useState } from "react";
-import { ISocketMessageRequest, IDataChatResponse, SocketChannel } from "../types/message";
+import { IMessage } from "../types/GameModel";
+import { ISocketMessageRequest, SocketChannel } from "../types/SocketModel";
 
 const { TextArea } = Input;
 
 interface GameChatProps {
-    messages: IDataChatResponse[],
+    messages: IMessage[],
     sendMessage: (message: ISocketMessageRequest) => any
 }
 
@@ -28,7 +29,7 @@ const GameChat = ({
 
     return (
         <>
-        
+
             <div
                 style={{
                     height: "500px"
@@ -41,8 +42,8 @@ const GameChat = ({
                         overflowX: "hidden",
                         maxHeight: "100%"
                     }}
-                    renderItem={(msg: IDataChatResponse, idx: number) => (
-                        <Card 
+                    renderItem={(msg: IMessage, idx: number) => (
+                        <Card
                             size="small"
                         >
                             <List.Item key={idx}>
@@ -64,10 +65,10 @@ const GameChat = ({
                         avatar={<Avatar src="https://joeschmoe.io/api/v1/random" alt="Han Solo" />}
                         content={
                             <Form.Item>
-                                <TextArea 
-                                    rows={3} 
-                                    onChange={(e: any) => setCurrentMessage(e.target.value)} 
-                                    value={currentMsg} 
+                                <TextArea
+                                    rows={3}
+                                    onChange={(e: any) => setCurrentMessage(e.target.value)}
+                                    value={currentMsg}
                                 />
                                 <Button onClick={sendCurrentMsg}>Send</Button>
                             </Form.Item>
@@ -75,7 +76,7 @@ const GameChat = ({
                     />
                 </Card>
             </div>
-        
+
         </>
     )
 }
