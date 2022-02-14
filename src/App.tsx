@@ -21,18 +21,21 @@ const App = () => {
         <Router>
 
             <Layout>
-                <Header>
-                    <nav className="menuBar">
-                        <div className="logo">
-                            <a href="">
-                                        <Avatar 
-                                            src="/logo.png"
-                                        />
-                            </a>
-                        </div>                    
+                    <nav>
+                        <ul>
+                            <li><a href="">
+                                <Avatar
+                                    src="/logo.png"
+                                />
+                            </a></li>
+                            <li><a href="">Gitlab</a></li>
+                            <li><a href="">Contact</a></li>
+                            <li><a href="">A propos</a></li>
+                            <li className="share"><a href="">Partager la partie</a></li>
+                        </ul>
                     </nav>
-                </Header>
                 <Content>
+
                     
                 <Routes>
             
@@ -48,7 +51,7 @@ const App = () => {
                 </Routes>
 
                 </Content>
-                <Footer>Footer</Footer>
+                <Footer className="Footer">Footer</Footer>
             </Layout>
 
         </Router>
