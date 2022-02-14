@@ -63,7 +63,10 @@ const GamePage = () => {
             setLoadingConnexion(false);
         };
 
-        webSocket.onclose = () => console.log('ws closed');
+        webSocket.onclose = () =>{
+            console.log('ws closed');
+            setWs(undefined);
+        } 
 
         webSocket.onmessage = e => {
             let msg: ISocketMessageResponse = JSON.parse(e.data);
@@ -87,8 +90,6 @@ const GamePage = () => {
             console.log('e', message);
         };
     }
-
-    useEffect(() => console.log(ws), [ws])
 
     return (
         <>

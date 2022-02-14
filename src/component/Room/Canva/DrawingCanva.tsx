@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Button, Divider, Layout, Menu, message, Select } from "antd";
+import { Button, Col, Divider, Layout, Menu, message, Row, Select } from "antd";
 import { DeleteOutlined } from '@ant-design/icons';
 import { ICoordinate, DrawTool, IDraw, IPlayer } from "../../../types/GameModel";
 import ColorPicker from "./ColorPicker";
@@ -225,8 +225,8 @@ const DrawingCanva = ({
         <>
             <div>
 
-                <Layout className="site-layout-background" style={{ padding: '24px 0' }}>
-                    <Sider className="site-layout-toolbox">
+                <Row>
+                    <Col span={6}>
                         <Menu
                             mode="inline"
                             defaultSelectedKeys={[mode]}
@@ -280,11 +280,11 @@ const DrawingCanva = ({
                             />
 
                         </Menu>
-                    </Sider>
-                    <Content style={{ padding: '0 24px', minHeight: 280 }}>
+                    </Col>
+                    <Col span={18}>
                         <canvas ref={canvasRef} height="600" width="800" />
-                    </Content>
-                </Layout>
+                    </Col>
+                </Row>
 
 
 
