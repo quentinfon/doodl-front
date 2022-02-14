@@ -1,63 +1,10 @@
 canvas {
     touch-action: none;
     border: 2px solid;
-    margin-left: 5%;
-    margin-bottom: 5%;
-    margin-top: 3%;
-}
-
-#components-layout-demo-top-side .logo {
-    float: left;
-    width: 120px;
-    height: 31px;
-    margin: 16px 24px 16px 0;
-    background: rgba(88, 17, 255, 0.3);
-}
-  
-.ant-row-rtl #components-layout-demo-top-side .logo {
-float: right;
-margin: 16px 0 16px 24px;
 }
 
 .site-layout-background {
     background: #cce1dc;
-}
-
-.Footer {
-    padding-top: -10%;
-}
-
-.site-layout-toolbox {
-    background: #cce1dc;
-    border: 2px solid;
-    margin-left: 10%;
-    margin-bottom: 8%;
-    margin-top: 7%;
-}
-
-.Menu {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background-color: #333;
-}
-
-li {
-    float: left;
-}
-
-li a {
-    display: block;
-    color: white;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-}
-
-/* Change the link color to #111 (black) on hover */
-li a:hover {
-    background-color: #111;
 }
 
 .canvasItemsIcon {
@@ -73,10 +20,6 @@ li a:hover {
 .selectedColor{
     filter: drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4));
     transform: scale(1.1);
-}
-
-.share{
-    float : right;
 }
 
 .selectableColor {
