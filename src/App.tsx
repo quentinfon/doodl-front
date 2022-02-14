@@ -22,16 +22,16 @@ const App = () => {
 
             <Layout>
                     <nav>
-                        <ul>
-                            <li><a href="">
+                        <ul className={"Menu"}>
+                            <li className="MenuElement" ><a href="">
                                 <Avatar
                                     src="/logo.png"
                                 />
                             </a></li>
-                            <li><a href="">Gitlab</a></li>
-                            <li><a href="">Contact</a></li>
-                            <li><a href="">A propos</a></li>
-                            <li className="share"><a href="">Partager la partie</a></li>
+                            <li><a className={"MenuElement"} href="">Gitlab</a></li>
+                            <li><a className={"MenuElement"} href="">Contact</a></li>
+                            <li><a className={"MenuElement"} href="">A propos</a></li>
+                            <li className={"MenuElement share"}><a href="">Partager la partie</a></li>
                         </ul>
                     </nav>
                 <Content>
