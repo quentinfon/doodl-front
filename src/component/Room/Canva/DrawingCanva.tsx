@@ -75,7 +75,7 @@ const DrawingCanva = ({
     const getCoordinates = (event: PointerEvent): ICoordinate | undefined => {
         if (!canvasRef.current) return;
         const canvas: HTMLCanvasElement = canvasRef.current;
-        return { x: event.pageX - canvas.offsetLeft, y: event.pageY - canvas.offsetTop };
+        return { x: event.offsetX, y: event.offsetY};
     }
 
     let mouse: ICoordinate = {
@@ -285,12 +285,7 @@ const DrawingCanva = ({
                         <canvas ref={canvasRef} height="600" width="800" />
                     </Content>
                 </Layout>
-
-
-
-
             </div>
-
         </>
     )
 }
