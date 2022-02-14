@@ -114,7 +114,7 @@ const GamePage = () => {
 
                                 :
                                 <Row>
-                                    <Col span={18}>
+                                    <Col xxl={18}>
                                         <DrawingCanva
                                             initDraw={initDraws}
                                             webSocket={ws}
@@ -122,7 +122,7 @@ const GamePage = () => {
                                         />
                                     </Col>
 
-                                    <Col span={6}>
+                                    <Col xxl={6}>
                                         <GameChat
                                             messages={messages}
                                             sendMessage={sendMessage}

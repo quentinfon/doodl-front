@@ -49,6 +49,7 @@ const GameChat = ({
                         overflowX: "hidden",
                         maxHeight: "100%"
                     }}
+                    data-autoscroll
                     renderItem={(msg: IMessage, idx: number) => (
                         <Card
                             size="small"

@@ -32,6 +32,8 @@ const DrawingCanva = ({
     const lineWidthRef = useRef(lineWidth);
     const colorRef = useRef(color);
 
+    const canvasSize = {height: 600, width: 800};
+
     const onDrawReceived = (event: any) => {
         const msg: ISocketMessageResponse = JSON.parse(event.data);
         if (!canvasRef.current || msg.channel !== SocketChannel.DRAW) return;
@@ -75,7 +77,7 @@ const DrawingCanva = ({
     const getCoordinates = (event: PointerEvent): ICoordinate | undefined => {
         if (!canvasRef.current) return;
         const canvas: HTMLCanvasElement = canvasRef.current;
-        return { x: event.pageX - canvas.offsetLeft, y: event.pageY - canvas.offsetTop };
+        return { x: event.offsetX, y: event.offsetY};
     }
 
     let mouse: ICoordinate = {
@@ -226,7 +228,7 @@ const DrawingCanva = ({
             <div>
 
                 <Row>
-                    <Col span={6}>
+                    <Col md={6} xl={4}>
                         <Menu
                             mode="inline"
                             defaultSelectedKeys={[mode]}
@@ -281,8 +283,12 @@ const DrawingCanva = ({
 
                         </Menu>
                     </Col>
-                    <Col span={18}>
-                        <canvas ref={canvasRef} height="600" width="800" />
+                    <Col md={18} xl={20}>
+                        <canvas 
+                            ref={canvasRef} 
+                            height={canvasSize.height} 
+                            width={canvasSize.width}
+                        />
                     </Col>
                 </Row>
 
@@ -290,7 +296,6 @@ const DrawingCanva = ({
 
 
             </div>
-
         </>
     )
 }
