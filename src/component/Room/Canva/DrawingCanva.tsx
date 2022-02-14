@@ -73,13 +73,9 @@ const DrawingCanva = ({
     }
 
     const getCoordinates = (event: PointerEvent): ICoordinate | undefined => {
-
         if (!canvasRef.current) return;
-
         const canvas: HTMLCanvasElement = canvasRef.current;
-        const rect = canvas.getBoundingClientRect();
-
-        return { x: event.pageX - rect.left, y: event.pageY - rect.top };
+        return { x: event.pageX - canvas.offsetLeft, y: event.pageY - canvas.offsetTop };
     }
 
     let mouse: ICoordinate = {
@@ -146,19 +142,19 @@ const DrawingCanva = ({
 
                 if (!data.coordsFrom || !data.coordsTo) return;
 
+                context.beginPath();
                 context.strokeStyle = data.color ?? "";
                 context.lineWidth = data.lineWidth ?? 5;
                 context.lineJoin = "round";
-
-                context.beginPath();
-                context.closePath();
                 context.moveTo(data.coordsFrom.x, data.coordsFrom.y);
 
                 if (clientSide) {
+                    context.closePath();
                     canvas.addEventListener("pointermove", onPaint, false);
                 } else {
                     if (!data.coordsTo) return;
                     context.lineTo(data.coordsTo.x, data.coordsTo.y);
+                    context.closePath();
                     context.stroke();
                 }
             }
@@ -241,7 +237,8 @@ const DrawingCanva = ({
                                 style={{ width: '100%' }}
                                 danger
                                 onClick={() => {
-                                    sendDrawData({ tool: DrawTool.CLEAR })
+                                    sendDrawData({ tool: DrawTool.CLEAR });
+                                    clearCanva();
                                 }}
                             >
                                 Clear all
