@@ -230,7 +230,7 @@ const DrawingCanva = ({
             <div>
 
                 <Layout className="site-layout-background" style={{ padding: '24px 0' }}>
-                    <Sider className="site-layout-background">
+                    <Sider className="site-layout-toolbox">
                         <Menu
                             mode="inline"
                             defaultSelectedKeys={[mode]}

@@ -27,6 +27,13 @@ const GameChat = ({
         setCurrentMessage("");
     }
 
+    const onKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        if (event.key === 'Enter') {
+            sendCurrentMsg()
+        }
+    }
+
+
     return (
         <>
 
@@ -67,6 +74,7 @@ const GameChat = ({
                             <Form.Item>
                                 <TextArea
                                     rows={3}
+                                    onKeyDown={onKeyDown}
                                     onChange={(e: any) => setCurrentMessage(e.target.value)}
                                     value={currentMsg}
                                 />
