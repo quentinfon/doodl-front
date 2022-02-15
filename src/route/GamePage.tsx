@@ -1,30 +1,33 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Row, Col } from 'antd';
-import { IDataChatResponse, ISocketMessageRequest, ISocketMessageResponse, SocketChannel } from "../types/message";
+import { IDataInitResponse, ISocketMessageRequest, ISocketMessageResponse, SocketChannel } from "../types/SocketModel";
 import GameChat from "../component/GameChat";
-import { IPlayer, RoomData } from "../types/game";
+import { IDraw, IMessage, IPlayer, IRoomStatus } from "../types/GameModel";
 import { getRoomData } from "../api/gameService";
 import RoomUnvailable from "../component/Room/RoomUnvailabale";
 import PlayerCreation from "../component/Room/PlayerCreation";
+import DrawingCanva from "../component/Room/Canva/DrawingCanva";
 
 const GamePage = () => {
 
-    const { gameId } = useParams<{gameId: string}>();
+    const { gameId } = useParams<{ gameId: string }>();
 
     const [ws, setWs] = useState<WebSocket>();
+    const [player, setPlayer] = useState<IPlayer>();
+    const [initDraws, setInitDraws] = useState<IDraw[]>([]);
 
-    const [roomData, setRoomData] = useState<RoomData>();
+    const [roomData, setRoomData] = useState<IRoomStatus>();
     const [loadingRoom, setLoadingRoom] = useState<boolean>(false);
     const [loadingConnexion, setLoadingConnexion] = useState<boolean>(false);
 
-    const [messages, setMessages] = useState<IDataChatResponse[]>([]);
+    const [messages, setMessages] = useState<IMessage[]>([]);
 
     const getRoom = () => {
         setLoadingRoom(true);
         getRoomData(gameId ?? "")
             .then(async res => setRoomData(await res.json()))
-            .catch(e => {})
+            .catch(e => { })
             .finally(() => setLoadingRoom(false));
     }
 
@@ -60,13 +63,27 @@ const GamePage = () => {
             setLoadingConnexion(false);
         };
 
-        webSocket.onclose = () => console.log('ws closed');
-    
+        webSocket.onclose = () =>{
+            console.log('ws closed');
+            setWs(undefined);
+        } 
+
         webSocket.onmessage = e => {
-            let msg : ISocketMessageResponse = JSON.parse(e.data);
+            let msg: ISocketMessageResponse = JSON.parse(e.data);
+
+            if (msg.channel === SocketChannel.INIT) {
+                let init: IDataInitResponse = msg.data as IDataInitResponse;
+                setPlayer({
+                    playerId: init.playerId,
+                    imgUrl: player.imgUrl,
+                    name: player.name
+                });
+                setMessages(init.messages);
+                setInitDraws(init.draws);
+            }
 
             if (msg.channel === SocketChannel.CHAT) {
-                messages.push(msg.data as IDataChatResponse)
+                messages.push(msg.data as IMessage)
                 setMessages([...messages])
             }
             const message = JSON.parse(e.data);
@@ -74,24 +91,22 @@ const GamePage = () => {
         };
     }
 
-    useEffect(() => console.log(ws), [ws])
-
     return (
         <>
-            { loadingRoom ?
+            {loadingRoom ?
                 <>
 
                 </>
                 :
                 <>
-                    {!roomData ? 
+                    {!roomData ?
                         <RoomUnvailable />
                         :
                         <>
-                            { ws === undefined ?
+                            {ws === undefined ?
 
                                 <>
-                                    <PlayerCreation 
+                                    <PlayerCreation
                                         createPlayer={createSocket}
                                         loadingConnexion={loadingConnexion}
                                     />
@@ -99,13 +114,16 @@ const GamePage = () => {
 
                                 :
                                 <Row>
-                                    <Col span={18}>
-
-
+                                    <Col xxl={18}>
+                                        <DrawingCanva
+                                            initDraw={initDraws}
+                                            webSocket={ws}
+                                            player={player}
+                                        />
                                     </Col>
 
-                                    <Col span={6}>
-                                        <GameChat 
+                                    <Col xxl={6}>
+                                        <GameChat
                                             messages={messages}
                                             sendMessage={sendMessage}
                                         />
@@ -116,7 +134,7 @@ const GamePage = () => {
                     }
                 </>
             }
-        
+
         </>
     )
 }

@@ -1,11 +1,12 @@
 import { Avatar, List, Card, Comment, Input, Button} from "antd";
 import React, { useState } from "react";
-import { ISocketMessageRequest, IDataChatResponse, SocketChannel } from "../types/message";
+import { IMessage } from "../types/GameModel";
+import { ISocketMessageRequest, SocketChannel } from "../types/SocketModel";
 
 const { TextArea } = Input;
 
 interface GameChatProps {
-    messages: IDataChatResponse[],
+    messages: IMessage[],
     sendMessage: (message: ISocketMessageRequest) => any
 }
 
@@ -27,16 +28,15 @@ const GameChat = ({
     }
 
     const onKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-        // 'keypress' event misbehaves on mobile so we track 'Enter' key via 'keydown' event
         if (event.key === 'Enter') {
             sendCurrentMsg()
         }
     }
 
-    // @ts-ignore
+
     return (
         <>
-        
+
             <div
                 style={{
                     height: "500px"
@@ -49,8 +49,9 @@ const GameChat = ({
                         overflowX: "hidden",
                         maxHeight: "100%"
                     }}
-                    renderItem={(msg: IDataChatResponse, idx: number) => (
-                        <Card 
+                    data-autoscroll
+                    renderItem={(msg: IMessage, idx: number) => (
+                        <Card
                             size="small"
                         >
                             <List.Item key={idx}>
@@ -71,10 +72,10 @@ const GameChat = ({
                     <Comment
                         avatar={<Avatar src="https://joeschmoe.io/api/v1/random" alt="Han Solo" />}
                         content={
-                            <form >
+                            <Form.Item>
                                 <TextArea
-                                    onKeyDown={onKeyDown}
                                     rows={3}
+                                    onKeyDown={onKeyDown}
                                     onChange={(e: any) => setCurrentMessage(e.target.value)}
                                     value={currentMsg}
                                 />
@@ -84,7 +85,7 @@ const GameChat = ({
                     />
                 </Card>
             </div>
-        
+
         </>
     )
 }

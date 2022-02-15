@@ -1,0 +1,34 @@
+canvas {
+    touch-action: none;
+    border: 2px solid;
+}
+
+.site-layout-background {
+    background: #cce1dc;
+}
+
+.canvasItemsIcon {
+    padding-left: 10px;
+    padding-right: 10px;
+    font-size: 120%;
+}
+
+.canvasItem {
+    padding: 5px;
+}
+
+.selectedColor{
+    filter: drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4));
+    transform: scale(1.1);
+}
+
+.selectableColor {
+    transition: all 0.3s;
+    transform-origin: 50% 50%;
+    opacity: 0.5;
+}
+
+.selectableColor:hover {
+    transform: scale(1.1);
+    opacity: 1;
+}
