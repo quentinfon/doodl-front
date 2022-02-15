@@ -1,4 +1,4 @@
-import { Avatar, List, Card, Comment, Input, Button} from "antd";
+import { Avatar, List, Card, Comment, Input, Button, Form } from "antd";
 import React, { useState } from "react";
 import { IMessage } from "../types/GameModel";
 import { ISocketMessageRequest, SocketChannel } from "../types/SocketModel";
@@ -80,7 +80,7 @@ const GameChat = ({
                                     value={currentMsg}
                                 />
                                 <Button onClick={sendCurrentMsg} onKeyDown={onKeyDown}>Send</Button>
-                            </form>
+                            </Form.Item>
                         }
                     />
                 </Card>
