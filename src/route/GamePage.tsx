@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { Row, Col } from 'antd';
-import { IDataInitResponse, ISocketMessageRequest, ISocketMessageResponse, SocketChannel } from "../types/SocketModel";
+import React, {useEffect, useState} from "react";
+import {useParams} from "react-router-dom";
+import {Col, Row} from 'antd';
+import {IDataInitResponse, ISocketMessageRequest, ISocketMessageResponse, SocketChannel} from "../types/SocketModel";
 import GameChat from "../component/GameChat";
-import { IDraw, IMessage, IPlayer, IRoomStatus } from "../types/GameModel";
-import { getRoomData } from "../api/gameService";
+import {IDraw, IMessage, IPlayer, IRoomStatus} from "../types/GameModel";
+import {getRoomData} from "../api/gameService";
 import RoomUnvailable from "../component/Room/RoomUnvailabale";
 import PlayerCreation from "../component/Room/PlayerCreation";
 import DrawingCanva from "../component/Room/Canva/DrawingCanva";
 
 const GamePage = () => {
 
-    const { gameId } = useParams<{ gameId: string }>();
+    const {gameId} = useParams<{ gameId: string }>();
 
     const [ws, setWs] = useState<WebSocket>();
     const [player, setPlayer] = useState<IPlayer>();
@@ -26,8 +26,12 @@ const GamePage = () => {
     const getRoom = () => {
         setLoadingRoom(true);
         getRoomData(gameId ?? "")
-            .then(async res => setRoomData(await res.json()))
-            .catch(e => { })
+            .then(async res => {
+                if (res.ok)
+                    setRoomData(await res.json())
+            })
+            .catch(e => {
+            })
             .finally(() => setLoadingRoom(false));
     }
 
@@ -44,7 +48,6 @@ const GamePage = () => {
     }
 
     const createSocket = (player: IPlayer) => {
-
         let webSocket = new WebSocket(process.env.REACT_APP_WEBSOCKET_ENDPOINT as string);
 
         setLoadingConnexion(true);
@@ -63,10 +66,10 @@ const GamePage = () => {
             setLoadingConnexion(false);
         };
 
-        webSocket.onclose = () =>{
+        webSocket.onclose = () => {
             console.log('ws closed');
             setWs(undefined);
-        } 
+        }
 
         webSocket.onmessage = e => {
             let msg: ISocketMessageResponse = JSON.parse(e.data);
@@ -78,7 +81,7 @@ const GamePage = () => {
                     imgUrl: player.imgUrl,
                     name: player.name
                 });
-                setMessages(init.messages);
+                init.messages.forEach(msg => messages.push(msg));
                 setInitDraws(init.draws);
             }
 
@@ -100,7 +103,7 @@ const GamePage = () => {
                 :
                 <>
                     {!roomData ?
-                        <RoomUnvailable />
+                        <RoomUnvailable/>
                         :
                         <>
                             {ws === undefined ?
@@ -114,7 +117,7 @@ const GamePage = () => {
 
                                 :
                                 <Row>
-                                    <Col xxl={18}>
+                                    <Col span={18}>
                                         <DrawingCanva
                                             initDraw={initDraws}
                                             webSocket={ws}
@@ -122,10 +125,11 @@ const GamePage = () => {
                                         />
                                     </Col>
 
-                                    <Col xxl={6}>
+                                    <Col span={6}>
                                         <GameChat
                                             messages={messages}
                                             sendMessage={sendMessage}
+                                            player={player}
                                         />
                                     </Col>
                                 </Row>

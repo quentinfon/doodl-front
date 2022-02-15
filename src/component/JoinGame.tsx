@@ -10,28 +10,33 @@ const JoinGame = () => {
     const navigate = useNavigate();
 
     const [roomId, setRoomId] = useState<string>("");
-    const [errorJoiningRoom, setErrorJoiningRoom] = useState<string>("");
     const [loadingJoin, setLoadingJoin] = useState<boolean>(false);
 
     const goToRoom = () => {
         setLoadingJoin(true);
         getRoomData(roomId)
-            .then(async res => await res.json()).then(data => navigate(`/play/${data.roomId}`))
-            .catch(e => message.error("This room doesn't exist."))
+            .then(async res => {
+                if (!res.ok) {
+                    throw new Error("This room doesn't exist.");
+                } else {
+                    return await res.json();
+                }
+            }).then(data => navigate(`/play/${data.roomId}`))
+            .catch(e => message.error(e.message))
             .finally(() => setLoadingJoin(false));
     }
 
     return (
         <>
             <Card
-                style={{height: "100%"}}
+                style={{ height: "100%" }}
             >
-                
+
                 <Title level={3}>Join a game with a code</Title>
 
-                <Divider/>
+                <Divider />
 
-                <Row 
+                <Row
                     gutter={20}
                     style={{
                         marginBottom: 20
@@ -63,7 +68,7 @@ const JoinGame = () => {
                     </Col>
 
                 </Row>
-                     
+
             </Card>
         </>
     )
