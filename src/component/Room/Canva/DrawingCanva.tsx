@@ -1,14 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Button, Col, Divider, Layout, Menu, message, Row, Select } from "antd";
-import { DeleteOutlined } from '@ant-design/icons';
+import { Button, Col, Divider, Layout, Menu, message, Row, Select, Grid } from "antd";
 import { ICoordinate, DrawTool, IDraw, IPlayer } from "../../../types/GameModel";
 import ColorPicker from "./ColorPicker";
 import SizePicker from "./SizePicker";
 import ToolPicker from "./ToolPicker";
 import { IDataDrawResponse, ISocketMessageRequest, ISocketMessageResponse, SocketChannel } from "../../../types/SocketModel";
+import DrawingToolTips from "./DrawingToolTips";
 
 const { Content, Sider } = Layout;
 const { Option } = Select;
+const { useBreakpoint } = Grid;
 
 interface DrawingCanvaProps {
     initDraw: IDraw[],
@@ -24,6 +25,9 @@ const DrawingCanva = ({
 
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
+    const screens = useBreakpoint();
+    console.log(screens);
+
     const [mode, setMode] = useState<DrawTool>(DrawTool.BRUSH);
     const [lineWidth, setlineWidth] = useState<number>(10);
     const [color, setColor] = useState<string>("black");
@@ -32,7 +36,7 @@ const DrawingCanva = ({
     const lineWidthRef = useRef(lineWidth);
     const colorRef = useRef(color);
 
-    const canvasSize = {height: 600, width: 800};
+    const canvasSize = { height: 600, width: 800 };
 
     const onDrawReceived = (event: any) => {
         const msg: ISocketMessageResponse = JSON.parse(event.data);
@@ -77,7 +81,7 @@ const DrawingCanva = ({
     const getCoordinates = (event: PointerEvent): ICoordinate | undefined => {
         if (!canvasRef.current) return;
         const canvas: HTMLCanvasElement = canvasRef.current;
-        return { x: event.offsetX, y: event.offsetY};
+        return { x: event.offsetX, y: event.offsetY };
     }
 
     let mouse: ICoordinate = {
@@ -228,65 +232,36 @@ const DrawingCanva = ({
             <div>
 
                 <Row>
-                    <Col md={6} xl={4}>
-                        <Menu
-                            mode="inline"
-                            defaultSelectedKeys={[mode]}
-                            style={{ height: '100%' }}
-                        >
-                            <Button
-                                icon={<DeleteOutlined />}
-                                style={{ width: '100%' }}
-                                danger
-                                onClick={() => {
+                    {!(screens.md && !screens.lg) &&
+                        <Col md={6} xl={4}>
+                            <DrawingToolTips
+                                clearCanvas={() => {
                                     sendDrawData({ tool: DrawTool.CLEAR });
                                     clearCanva();
                                 }}
-                            >
-                                Clear all
-                            </Button>
-                            <Divider orientation="center">
-                                Tool
-                            </Divider>
-
-                            <ToolPicker
-                                currentTool={mode}
+                                tool={mode}
                                 setTool={(t: DrawTool) => {
                                     modeRef.current = t;
                                     setMode(t);
                                 }}
-                            />
-
-                            <Divider orientation="center">
-                                Size
-                            </Divider>
-
-                            <SizePicker
-                                currentSize={lineWidth}
-                                setSize={(s: number) => {
-                                    lineWidthRef.current = s;
-                                    setlineWidth(s);
-                                }}
-                            />
-
-                            <Divider orientation="center">
-                                Color
-                            </Divider>
-
-                            <ColorPicker
-                                currentColor={color}
+                                color={color}
                                 setColor={(c: string) => {
                                     colorRef.current = c;
                                     setColor(c);
                                 }}
+                                lineWidth={lineWidth}
+                                setLineWidth={(s: number) => {
+                                    lineWidthRef.current = s;
+                                    setlineWidth(s);
+                                }}
                             />
+                        </Col>
+                    }
 
-                        </Menu>
-                    </Col>
-                    <Col md={18} xl={20}>
-                        <canvas 
-                            ref={canvasRef} 
-                            height={canvasSize.height} 
+                    <Col md={24} xl={20}>
+                        <canvas
+                            ref={canvasRef}
+                            height={canvasSize.height}
                             width={canvasSize.width}
                         />
                     </Col>
