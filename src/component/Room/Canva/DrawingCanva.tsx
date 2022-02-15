@@ -147,11 +147,9 @@ const DrawingCanva = ({
                 context.stroke();
 
                 if (clientSide) {
+                    sendDrawData(data);
                     mouseFrom.x = data.coordsTo.x;
                     mouseFrom.y = data.coordsTo.y;
-
-                    console.log(data);
-                    sendDrawData(data);
                 }
 
             }
