@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { Row, Col } from 'antd';
-import { IDataInitResponse, ISocketMessageRequest, ISocketMessageResponse, SocketChannel } from "../types/SocketModel";
+import React, {useEffect, useState} from "react";
+import {useParams} from "react-router-dom";
+import {Col, Row} from 'antd';
+import {IDataInitResponse, ISocketMessageRequest, ISocketMessageResponse, SocketChannel} from "../types/SocketModel";
 import GameChat from "../component/GameChat";
-import { IDraw, IMessage, IPlayer, IRoomStatus } from "../types/GameModel";
-import { getRoomData } from "../api/gameService";
+import {IDraw, IMessage, IPlayer, IRoomStatus} from "../types/GameModel";
+import {getRoomData} from "../api/gameService";
 import RoomUnvailable from "../component/Room/RoomUnvailabale";
 import PlayerCreation from "../component/Room/PlayerCreation";
 import DrawingCanva from "../component/Room/Canva/DrawingCanva";
 
 const GamePage = () => {
 
-    const { gameId } = useParams<{ gameId: string }>();
+    const {gameId} = useParams<{ gameId: string }>();
 
     const [ws, setWs] = useState<WebSocket>();
     const [player, setPlayer] = useState<IPlayer>();
@@ -30,7 +30,8 @@ const GamePage = () => {
                 if (res.ok)
                     setRoomData(await res.json())
             })
-            .catch(e => { })
+            .catch(e => {
+            })
             .finally(() => setLoadingRoom(false));
     }
 
@@ -47,7 +48,6 @@ const GamePage = () => {
     }
 
     const createSocket = (player: IPlayer) => {
-
         let webSocket = new WebSocket(process.env.REACT_APP_WEBSOCKET_ENDPOINT as string);
 
         setLoadingConnexion(true);
@@ -81,7 +81,7 @@ const GamePage = () => {
                     imgUrl: player.imgUrl,
                     name: player.name
                 });
-                setMessages(init.messages);
+                init.messages.forEach(msg => messages.push(msg));
                 setInitDraws(init.draws);
             }
 
@@ -103,7 +103,7 @@ const GamePage = () => {
                 :
                 <>
                     {!roomData ?
-                        <RoomUnvailable />
+                        <RoomUnvailable/>
                         :
                         <>
                             {ws === undefined ?
@@ -129,6 +129,7 @@ const GamePage = () => {
                                         <GameChat
                                             messages={messages}
                                             sendMessage={sendMessage}
+                                            player={player}
                                         />
                                     </Col>
                                 </Row>

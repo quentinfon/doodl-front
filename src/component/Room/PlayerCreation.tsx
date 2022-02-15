@@ -16,7 +16,7 @@ const PlayerCreation = ({
     const [player, setPlayer] = useState<IPlayer>({
         playerId: "",
         name: "Bob",
-        imgUrl: "",
+        imgUrl: `https://joeschmoe.io/api/v1/${Math.random() % Math.pow(10, 9)}`,
     })
 
     return (

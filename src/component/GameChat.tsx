@@ -1,29 +1,34 @@
-import {Avatar, Button, Card, Comment, Form, Input, List, ListProps} from "antd";
-import React, {useEffect, useRef, useState} from "react";
-import {IMessage} from "../types/GameModel";
+import {Avatar, Button, Card, Col, Comment, Form, Input, List, Row} from "antd";
+import React, {useEffect, useState} from "react";
+import {IMessage, IPlayer} from "../types/GameModel";
 import {ISocketMessageRequest, SocketChannel} from "../types/SocketModel";
 
 const {TextArea} = Input;
 
 interface GameChatProps {
     messages: IMessage[],
-    sendMessage: (message: ISocketMessageRequest) => any
+    sendMessage: (message: ISocketMessageRequest) => any,
+    player: IPlayer | undefined
 }
 
 const GameChat = ({
                       messages,
-                      sendMessage
+                      sendMessage,
+                      player
                   }: GameChatProps) => {
 
     const [currentMsg, setCurrentMessage] = useState<string>("");
     const LIST_ID = "game-chat-list";
 
-    useEffect(() => {
+    useEffect(autoScrollBottomChat, [messages]);
+    useEffect(autoScrollBottomChat);
+
+    function autoScrollBottomChat() {
         const list = document.getElementById(LIST_ID);
         if (list) {
             list.scrollTop = list.scrollHeight;
         }
-    }, [messages]);
+    }
 
     const sendCurrentMsg = () => {
         if (!currentMsg) return;
@@ -38,7 +43,7 @@ const GameChat = ({
         setCurrentMessage("");
     }
 
-    const onKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Enter') {
             event.preventDefault();
             sendCurrentMsg()
@@ -80,16 +85,22 @@ const GameChat = ({
                     size="small"
                 >
                     <Comment
-                        avatar={<Avatar src="https://joeschmoe.io/api/v1/random" alt="Han Solo"/>}
+                        avatar={<Avatar src={player?.imgUrl}/>}
                         content={
                             <Form.Item>
-                                <TextArea
-                                    rows={3}
-                                    onKeyDown={onKeyDown}
-                                    onChange={(e: any) => setCurrentMessage(e.target.value)}
-                                    value={currentMsg}
-                                />
-                                <Button onClick={sendCurrentMsg} onKeyDown={onKeyDown}>Send</Button>
+                                <Row>
+                                    <Col span={20}>
+                                        <Input
+                                            type={'text'}
+                                            onKeyDown={onKeyDown}
+                                            onChange={(e: any) => setCurrentMessage(e.target.value)}
+                                            value={currentMsg}
+                                        />
+                                    </Col>
+                                    <Col span={4}>
+                                        <Button onClick={sendCurrentMsg} onKeyDown={onKeyDown}>Send</Button>
+                                    </Col>
+                                </Row>
                             </Form.Item>
                         }
                     />
