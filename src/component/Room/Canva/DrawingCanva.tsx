@@ -8,6 +8,7 @@ import {
     SocketChannel
 } from "../../../types/SocketModel";
 import DrawingToolTips from "./DrawingToolTips";
+import FloodFill, {ColorRGBA} from 'q-floodfill'
 
 const {useBreakpoint} = Grid;
 
@@ -94,8 +95,11 @@ const DrawingCanva = ({
                 clearCanva();
             } else if (data.tool === DrawTool.FILL) {
                 if (!data.coordsTo || !data.color) return;
-                context.fillStyle = data.color;
-                (context as any).fillFlood(data.coordsTo.x, data.coordsTo.y);
+
+                const imgData = context.getImageData(0, 0, canvas.width, canvas.height);
+                const floodFill = new FloodFill(imgData);
+                floodFill.fill(data.color, data.coordsTo.x, data.coordsTo.y, 50);
+                context.putImageData(floodFill.imageData, 0, 0);
 
                 if (clientSide) {
                     sendDrawData(data);
