@@ -30,13 +30,16 @@ const DrawingCanva = ({
 
     const [mode, setMode] = useState<DrawTool>(DrawTool.BRUSH);
     const [lineWidth, setlineWidth] = useState<number>(10);
-    const [color, setColor] = useState<string>("black");
+    const [color, setColor] = useState<string>("#000000");
 
     const modeRef = useRef(mode);
     const lineWidthRef = useRef(lineWidth);
     const colorRef = useRef(color);
 
     const canvasSize = { height: 600, width: 800 };
+    let mouse: ICoordinate = { x: 0, y: 0 };
+    let mouseFrom: ICoordinate = { x: 0, y: 0 };
+    let drawing: boolean = false;
 
     const onDrawReceived = (event: any) => {
         const msg: ISocketMessageResponse = JSON.parse(event.data);
@@ -79,22 +82,12 @@ const DrawingCanva = ({
     }
 
     const getCoordinates = (event: PointerEvent): ICoordinate | undefined => {
-        if (!canvasRef.current) return;
-        const canvas: HTMLCanvasElement = canvasRef.current;
         return { x: event.offsetX, y: event.offsetY };
     }
 
-    let mouse: ICoordinate = {
-        x: 0,
-        y: 0
-    }
 
-    let mouseFrom: ICoordinate = {
-        x: 0,
-        y: 0
-    }
-
-    const onPaint = (evt: PointerEvent) => {
+    /*
+    const onMove = (evt: PointerEvent) => {
         if (!canvasRef.current) return;
 
         const canvas: HTMLCanvasElement = canvasRef.current;
@@ -115,11 +108,12 @@ const DrawingCanva = ({
             mouseFrom.x = mouse.x;
             mouseFrom.y = mouse.y;
         }
-    }
+    }*/
 
     const draw = (data: IDraw, clientSide: boolean) => {
-        //console.log(data);
         if (!canvasRef.current) return;
+
+        if (clientSide && !drawing) return;
 
         const canvas: HTMLCanvasElement = canvasRef.current;
         const context = canvas.getContext("2d");
@@ -133,68 +127,71 @@ const DrawingCanva = ({
                 context.fillStyle = data.color;
                 (context as any).fillFlood(data.coordsTo.x, data.coordsTo.y);
                 if (clientSide) {
-                    sendDrawData({
-                        tool: DrawTool.FILL,
-                        color: data.color,
-                        coordsTo: data.coordsTo
-                    })
+                    sendDrawData(data);
                 }
             } else {
-                if (data.tool === DrawTool.BRUSH) {
-                    context.globalCompositeOperation = "source-over";
-                } else if (data.tool === DrawTool.ERASER) {
-                    context.globalCompositeOperation = "destination-out";
-                }
-
                 if (!data.coordsFrom || !data.coordsTo) return;
 
+                if (data.tool === DrawTool.ERASER) {
+                    context.strokeStyle = "white";
+                } else {
+                    context.strokeStyle = data.color ?? "";
+                }
+
                 context.beginPath();
-                context.strokeStyle = data.color ?? "";
                 context.lineWidth = data.lineWidth ?? 5;
                 context.lineJoin = "round";
                 context.moveTo(data.coordsFrom.x, data.coordsFrom.y);
+                context.lineTo(data.coordsTo.x, data.coordsTo.y);
+                context.closePath();
+                context.stroke();
 
                 if (clientSide) {
-                    context.closePath();
-                    canvas.addEventListener("pointermove", onPaint, false);
-                } else {
-                    if (!data.coordsTo) return;
-                    context.lineTo(data.coordsTo.x, data.coordsTo.y);
-                    context.closePath();
-                    context.stroke();
+                    mouseFrom.x = data.coordsTo.x;
+                    mouseFrom.y = data.coordsTo.y;
+
+                    console.log(data);
+                    sendDrawData(data);
                 }
+
             }
         }
     }
 
     const onMove = (evt: PointerEvent) => {
+        mouseFrom.x = mouse.x;
+        mouseFrom.y = mouse.y;
+
         let coor = getCoordinates(evt);
         mouse.x = coor?.x ?? 0;
         mouse.y = coor?.y ?? 0;
-    }
-
-    const onPointerDown = (evt: PointerEvent) => {
-        let coor = getCoordinates(evt);
-        mouse.x = coor?.x ?? 0;
-        mouse.y = coor?.y ?? 0;
-
-        mouseFrom.x = coor?.x ?? 0;
-        mouseFrom.y = coor?.y ?? 0;
 
         draw({
             tool: modeRef.current,
-            coordsFrom: mouse,
+            coordsFrom: mouseFrom,
             coordsTo: mouse,
             color: colorRef.current,
             lineWidth: lineWidthRef.current
         }, true);
     }
 
-    const removeEvent = () => {
-        let canvas = canvasRef.current;
-        if (canvas) {
-            canvas.removeEventListener('pointermove', onPaint, false);
-        }
+    const onPointerDown = (evt: PointerEvent) => {
+        drawing = true;
+        let coor = getCoordinates(evt);
+        mouse.x = coor?.x ?? 0;
+        mouse.y = coor?.y ?? 0;
+
+        draw({
+            tool: modeRef.current,
+            coordsFrom: mouseFrom,
+            coordsTo: mouse,
+            color: colorRef.current,
+            lineWidth: lineWidthRef.current
+        }, true);
+    }
+
+    const stopDrawing = () => {
+        drawing = false;
     }
 
     useEffect(() => {
@@ -204,8 +201,8 @@ const DrawingCanva = ({
         if (canvas) {
             canvas.addEventListener('pointermove', onMove, false);
             canvas.addEventListener('pointerdown', onPointerDown, false);
-            canvas.addEventListener('pointerup', removeEvent, false);
-            canvas.addEventListener('pointerleave', removeEvent, false);
+            canvas.addEventListener('pointerup', stopDrawing, false);
+            canvas.addEventListener('pointerleave', stopDrawing, false);
         }
 
         return () => {
@@ -213,8 +210,8 @@ const DrawingCanva = ({
             if (canvas) {
                 canvas.removeEventListener('pointermove', onMove, false);
                 canvas.removeEventListener('pointerdown', onPointerDown, false);
-                canvas.removeEventListener('pointerup', removeEvent, false);
-                canvas.addEventListener('pointerleave', removeEvent, false);
+                canvas.removeEventListener('pointerup', stopDrawing, false);
+                canvas.addEventListener('pointerleave', stopDrawing, false);
             }
 
         }
