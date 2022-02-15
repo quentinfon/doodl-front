@@ -26,7 +26,10 @@ const GamePage = () => {
     const getRoom = () => {
         setLoadingRoom(true);
         getRoomData(gameId ?? "")
-            .then(async res => setRoomData(await res.json()))
+            .then(async res => {
+                if (res.ok)
+                    setRoomData(await res.json())
+            })
             .catch(e => { })
             .finally(() => setLoadingRoom(false));
     }
@@ -63,10 +66,10 @@ const GamePage = () => {
             setLoadingConnexion(false);
         };
 
-        webSocket.onclose = () =>{
+        webSocket.onclose = () => {
             console.log('ws closed');
             setWs(undefined);
-        } 
+        }
 
         webSocket.onmessage = e => {
             let msg: ISocketMessageResponse = JSON.parse(e.data);
@@ -114,7 +117,7 @@ const GamePage = () => {
 
                                 :
                                 <Row>
-                                    <Col xxl={18}>
+                                    <Col span={18}>
                                         <DrawingCanva
                                             initDraw={initDraws}
                                             webSocket={ws}
@@ -122,7 +125,7 @@ const GamePage = () => {
                                         />
                                     </Col>
 
-                                    <Col xxl={6}>
+                                    <Col span={6}>
                                         <GameChat
                                             messages={messages}
                                             sendMessage={sendMessage}
