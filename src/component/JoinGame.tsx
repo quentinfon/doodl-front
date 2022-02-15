@@ -10,7 +10,6 @@ const JoinGame = () => {
     const navigate = useNavigate();
 
     const [roomId, setRoomId] = useState<string>("");
-    const [errorJoiningRoom, setErrorJoiningRoom] = useState<string>("");
     const [loadingJoin, setLoadingJoin] = useState<boolean>(false);
 
     const goToRoom = () => {
