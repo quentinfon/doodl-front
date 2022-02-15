@@ -67,7 +67,7 @@ const GamePage = () => {
         };
 
         webSocket.onclose = () => {
-            console.log('ws closed');
+            console.debug("Socket closed");
             setWs(undefined);
         }
 
@@ -89,8 +89,8 @@ const GamePage = () => {
                 messages.push(msg.data as IMessage)
                 setMessages([...messages])
             }
-            const message = JSON.parse(e.data);
-            console.log('e', message);
+
+            console.debug('e', JSON.parse(e.data));
         };
     }
 
