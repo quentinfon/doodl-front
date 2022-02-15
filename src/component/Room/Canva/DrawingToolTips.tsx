@@ -1,10 +1,10 @@
 import React from "react";
-import { Button, Divider, Menu } from "antd";
-import { DrawTool } from "../../../types/GameModel";
+import {Button, Divider, Menu} from "antd";
+import {DrawTool} from "../../../types/GameModel";
 import ColorPicker from "./ColorPicker";
 import SizePicker from "./SizePicker";
 import ToolPicker from "./ToolPicker";
-import { DeleteOutlined } from '@ant-design/icons';
+import {DeleteOutlined} from '@ant-design/icons';
 
 interface DrawingToolTipsProps {
     clearCanvas: () => any,
@@ -17,25 +17,25 @@ interface DrawingToolTipsProps {
 }
 
 const DrawingToolTips = ({
-    clearCanvas,
-    tool,
-    setTool,
-    color,
-    setColor,
-    lineWidth,
-    setLineWidth
-}: DrawingToolTipsProps) => {
+                             clearCanvas,
+                             tool,
+                             setTool,
+                             color,
+                             setColor,
+                             lineWidth,
+                             setLineWidth
+                         }: DrawingToolTipsProps) => {
 
     return (
         <>
             <Menu
                 mode="inline"
                 defaultSelectedKeys={[tool]}
-                style={{ height: '100%' }}
+                style={{height: '100%'}}
             >
                 <Button
-                    icon={<DeleteOutlined />}
-                    style={{ width: '100%' }}
+                    icon={<DeleteOutlined/>}
+                    style={{width: '100%'}}
                     danger
                     onClick={clearCanvas}
                 >

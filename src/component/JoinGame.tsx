@@ -1,12 +1,11 @@
-import React, { useState } from "react";
-import { Card, Typography, Row, Col, Input, Button, Divider, message } from "antd";
-import { useNavigate } from "react-router-dom";
-import { getRoomData } from "../api/gameService";
+import React, {useState} from "react";
+import {Button, Card, Col, Divider, Input, message, Row, Typography} from "antd";
+import {useNavigate} from "react-router-dom";
+import {getRoomData} from "../api/gameService";
 
-const { Title, Text } = Typography;
+const {Title, Text} = Typography;
 
 const JoinGame = () => {
-
     const navigate = useNavigate();
 
     const [roomId, setRoomId] = useState<string>("");
@@ -29,12 +28,12 @@ const JoinGame = () => {
     return (
         <>
             <Card
-                style={{ height: "100%" }}
+                style={{height: "100%"}}
             >
 
                 <Title level={3}>Join a game with a code</Title>
 
-                <Divider />
+                <Divider/>
 
                 <Row
                     gutter={20}
@@ -46,7 +45,7 @@ const JoinGame = () => {
                     <Col sm={24} md={12}>
                         <Text>Room id</Text>
                         <Input.Group
-                            style={{ width: "100%" }}
+                            style={{width: "100%"}}
                         >
                             <Input
                                 value={roomId}

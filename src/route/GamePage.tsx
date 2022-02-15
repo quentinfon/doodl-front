@@ -5,7 +5,7 @@ import {IDataInitResponse, ISocketMessageRequest, ISocketMessageResponse, Socket
 import GameChat from "../component/GameChat";
 import {IDraw, IMessage, IPlayer, IRoomStatus} from "../types/GameModel";
 import {getRoomData} from "../api/gameService";
-import RoomUnvailable from "../component/Room/RoomUnvailabale";
+import RoomUnavailable from "../component/Room/RoomUnavailable";
 import PlayerCreation from "../component/Room/PlayerCreation";
 import DrawingCanva from "../component/Room/Canva/DrawingCanva";
 
@@ -103,7 +103,7 @@ const GamePage = () => {
                 :
                 <>
                     {!roomData ?
-                        <RoomUnvailable/>
+                        <RoomUnavailable/>
                         :
                         <>
                             {ws === undefined ?

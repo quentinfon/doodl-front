@@ -1,4 +1,4 @@
-import { fetchURL, HttpMethod } from './request';
+import {fetchURL, HttpMethod} from './request';
 
 const service_endpoint = process.env.REACT_APP_API_ENDPOINT;
 

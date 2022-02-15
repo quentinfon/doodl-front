@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { Button, Card, Row, Col, Typography, Input, InputNumber, Select, Divider } from "antd";
-import { IRoomConfig, GameMode } from "../types/GameModel";
-import { UserOutlined, FieldTimeOutlined } from '@ant-design/icons';
-import { fetchUtil } from "../api/request";
-import { getRoomCreationConfig, createNewRoom } from "../api/gameService";
-import { useNavigate } from 'react-router-dom';
-import { IRoomServerConfig } from "../types/ConfigModel";
+import React, {useEffect, useState} from "react";
+import {Button, Card, Col, Divider, Input, InputNumber, Row, Select, Typography} from "antd";
+import {GameMode, IRoomConfig} from "../types/GameModel";
+import {FieldTimeOutlined, UserOutlined} from '@ant-design/icons';
+import {fetchUtil} from "../api/request";
+import {createNewRoom, getRoomCreationConfig} from "../api/gameService";
+import {useNavigate} from 'react-router-dom';
+import {IRoomServerConfig} from "../types/ConfigModel";
 
-const { Title, Text } = Typography;
-const { Option } = Select;
+const {Title, Text} = Typography;
+const {Option} = Select;
 
 const NewGame = () => {
 
@@ -49,11 +49,11 @@ const NewGame = () => {
     return (
         <>
             <Card
-                style={{ height: "100%" }}
+                style={{height: "100%"}}
             >
                 <Title level={3}>Create a game</Title>
 
-                <Divider />
+                <Divider/>
 
                 <Row
                     gutter={20}
@@ -64,24 +64,24 @@ const NewGame = () => {
                     <Col sm={24} md={12} lg={8}>
                         <Text>Max players</Text>
                         <InputNumber
-                            style={{ width: "100%" }}
-                            prefix={<UserOutlined style={{ paddingRight: "5px" }} />}
+                            style={{width: "100%"}}
+                            prefix={<UserOutlined style={{paddingRight: "5px"}}/>}
                             min={roomConfigParam?.minMaxPlayer}
                             max={roomConfigParam?.maxMaxPlayer}
                             value={newGameConfig.maxPlayer}
-                            onChange={(e) => setNewGameConfig({ ...newGameConfig, maxPlayer: e })}
+                            onChange={(e) => setNewGameConfig({...newGameConfig, maxPlayer: e})}
                         />
                     </Col>
 
                     <Col sm={24} md={12} lg={8}>
                         <Text>Time by turn</Text>
                         <InputNumber
-                            style={{ width: "100%" }}
+                            style={{width: "100%"}}
                             min={roomConfigParam?.minTimeByTurn}
                             max={roomConfigParam?.maxTimeByTurn}
                             value={newGameConfig.timeByTurn}
-                            onChange={(e) => setNewGameConfig({ ...newGameConfig, timeByTurn: e })}
-                            prefix={<FieldTimeOutlined style={{ paddingRight: "5px" }} />}
+                            onChange={(e) => setNewGameConfig({...newGameConfig, timeByTurn: e})}
+                            prefix={<FieldTimeOutlined style={{paddingRight: "5px"}}/>}
                             addonAfter="seconds"
                         />
                     </Col>
@@ -90,13 +90,14 @@ const NewGame = () => {
                         <Text>Game mode</Text>
                         <Input.Group>
                             <Select
-                                style={{ width: "100%" }}
+                                style={{width: "100%"}}
                                 value={newGameConfig.gameMode}
-                                onChange={(e) => setNewGameConfig({ ...newGameConfig, gameMode: e })}
+                                onChange={(e) => setNewGameConfig({...newGameConfig, gameMode: e})}
                             >
                                 {Object.keys(GameMode).map((mode: string, idx: number) => {
                                     return (
-                                        <Option key={idx} value={mode}>{mode.charAt(0).toUpperCase() + mode.slice(1).toLowerCase()}</Option>
+                                        <Option key={idx}
+                                                value={mode}>{mode.charAt(0).toUpperCase() + mode.slice(1).toLowerCase()}</Option>
                                     )
                                 })}
                             </Select>
