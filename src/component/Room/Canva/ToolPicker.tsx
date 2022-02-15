@@ -1,5 +1,5 @@
 import React from "react";
-import { HighlightOutlined, BgColorsOutlined } from '@ant-design/icons';
+import { HighlightOutlined, BgColorsOutlined, ClearOutlined } from '@ant-design/icons';
 import { List, Menu, Typography } from "antd";
 import { DrawTool } from "../../../types/GameModel";
 
@@ -30,6 +30,10 @@ const ToolPicker = ({
         {
             toolName: DrawTool.FILL,
             toolIcon: <BgColorsOutlined className="canvasItemsIcon" />
+        },
+        {
+            toolName: DrawTool.ERASER,
+            toolIcon: <ClearOutlined className="canvasItemsIcon" />
         }
     ]
 
