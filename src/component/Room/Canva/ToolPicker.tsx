@@ -1,11 +1,9 @@
 import React from "react";
-import { HighlightOutlined, BgColorsOutlined, ClearOutlined } from '@ant-design/icons';
-import { List, Menu, Typography } from "antd";
-import { DrawTool } from "../../../types/GameModel";
+import {BgColorsOutlined, ClearOutlined, HighlightOutlined} from '@ant-design/icons';
+import {List, Typography} from "antd";
+import {DrawTool} from "../../../types/GameModel";
 
-const { Title } = Typography;
-
-const { SubMenu } = Menu;
+const {Title} = Typography;
 
 interface ToolPickerProps {
     currentTool: DrawTool,
@@ -13,9 +11,9 @@ interface ToolPickerProps {
 }
 
 const ToolPicker = ({
-    currentTool,
-    setTool
-}: ToolPickerProps) => {
+                        currentTool,
+                        setTool
+                    }: ToolPickerProps) => {
 
     interface ToolsListItem {
         toolName: DrawTool;
@@ -25,15 +23,15 @@ const ToolPicker = ({
     const tools: ToolsListItem[] = [
         {
             toolName: DrawTool.BRUSH,
-            toolIcon: <HighlightOutlined className="canvasItemsIcon" />
+            toolIcon: <HighlightOutlined className="canvasItemsIcon"/>
         },
         {
             toolName: DrawTool.FILL,
-            toolIcon: <BgColorsOutlined className="canvasItemsIcon" />
+            toolIcon: <BgColorsOutlined className="canvasItemsIcon"/>
         },
         {
             toolName: DrawTool.ERASER,
-            toolIcon: <ClearOutlined className="canvasItemsIcon" />
+            toolIcon: <ClearOutlined className="canvasItemsIcon"/>
         }
     ]
 
@@ -52,7 +50,7 @@ const ToolPicker = ({
                             background: currentTool === item.toolName ? '#D1D1D1' : ''
                         }}
                     >
-                        <Title level={5} style={{ margin: '0' }}>
+                        <Title level={5} style={{margin: '0'}}>
                             {item.toolIcon} {item.toolName.charAt(0).toUpperCase() + item.toolName.slice(1).toLowerCase()}
                         </Title>
                     </List.Item>

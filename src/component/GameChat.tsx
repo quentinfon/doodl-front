@@ -3,8 +3,6 @@ import React, {useEffect, useState} from "react";
 import {IMessage, IPlayer} from "../types/GameModel";
 import {ISocketMessageRequest, SocketChannel} from "../types/SocketModel";
 
-const {TextArea} = Input;
-
 interface GameChatProps {
     messages: IMessage[],
     sendMessage: (message: ISocketMessageRequest) => any,

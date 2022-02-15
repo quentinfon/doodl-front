@@ -1,10 +1,6 @@
 import React from "react";
-import { HighlightOutlined, BgColorsOutlined, EditOutlined } from '@ant-design/icons';
-import { Button, List, Menu, Typography } from "antd";
+import {List} from "antd";
 
-const { Title, Text } = Typography;
-
-const { SubMenu } = Menu;
 
 interface SizePickerProps {
     currentSize: number,
@@ -12,22 +8,18 @@ interface SizePickerProps {
 }
 
 const SizePicker = ({
-    currentSize,
-    setSize
-} : SizePickerProps) => {
-
-
-
-    const tools : number[] = [5, 10, 25, 50]
+                        currentSize,
+                        setSize
+                    }: SizePickerProps) => {
+    const tools: number[] = [5, 10, 25, 50]
 
     return (
         <>
-
-            <List 
+            <List
                 grid={{
                     gutter: 16,
                     column: 4,
-                  }}
+                }}
                 dataSource={tools}
                 renderItem={s => (
                     <List.Item
@@ -43,11 +35,10 @@ const SizePicker = ({
                         <svg viewBox="0 0 100 100">
                             <circle cx="50" cy="50" r={s} fill={currentSize === s ? "#000000" : "#D1D1D1"}/>
                         </svg>
-                        
+
                     </List.Item>
                 )}
             />
-           
         </>
     )
 }

@@ -1,9 +1,6 @@
 import React, {useEffect, useRef, useState} from "react";
-import {Button, Col, Divider, Layout, Menu, message, Row, Select, Grid} from "antd";
-import {ICoordinate, DrawTool, IDraw, IPlayer} from "../../../types/GameModel";
-import ColorPicker from "./ColorPicker";
-import SizePicker from "./SizePicker";
-import ToolPicker from "./ToolPicker";
+import {Col, Grid, Row} from "antd";
+import {DrawTool, ICoordinate, IDraw, IPlayer} from "../../../types/GameModel";
 import {
     IDataDrawResponse,
     ISocketMessageRequest,
@@ -12,8 +9,6 @@ import {
 } from "../../../types/SocketModel";
 import DrawingToolTips from "./DrawingToolTips";
 
-const {Content, Sider} = Layout;
-const {Option} = Select;
 const {useBreakpoint} = Grid;
 
 interface DrawingCanvaProps {

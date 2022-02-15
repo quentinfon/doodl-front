@@ -1,10 +1,5 @@
 import React from "react";
-import { HighlightOutlined, BgColorsOutlined, EditOutlined } from '@ant-design/icons';
-import { Button, List, Menu, Typography } from "antd";
-
-const { Title, Text } = Typography;
-
-const { SubMenu } = Menu;
+import {List} from "antd";
 
 interface ColorPickerProps {
     currentColor: string,
@@ -12,11 +7,11 @@ interface ColorPickerProps {
 }
 
 const ColorPicker = ({
-    currentColor,
-    setColor
-} : ColorPickerProps) => {
+                         currentColor,
+                         setColor
+                     }: ColorPickerProps) => {
 
-    const colors : string[] = [
+    const colors: string[] = [
         "#000000",
         "#FF1700",
         "#FF8E00",
@@ -38,11 +33,11 @@ const ColorPicker = ({
     return (
         <>
 
-            <List 
+            <List
                 grid={{
                     gutter: 16,
                     column: 4,
-                  }}
+                }}
                 dataSource={colors}
                 renderItem={color => (
                     <List.Item
@@ -54,16 +49,17 @@ const ColorPicker = ({
                             margin: '0'
                         }}
                     >
-                        <svg viewBox="0 0 100 100" className={currentColor === color ? "selectedColor" : "selectableColor"}>
-                            <rect x="0" y="0" width="100" height="100" rx="15" ry="15" 
-                                fill={color} 
-                                
+                        <svg viewBox="0 0 100 100"
+                             className={currentColor === color ? "selectedColor" : "selectableColor"}>
+                            <rect x="0" y="0" width="100" height="100" rx="15" ry="15"
+                                  fill={color}
+
                             />
                         </svg>
                     </List.Item>
                 )}
             />
-           
+
         </>
     )
 }

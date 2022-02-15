@@ -16,7 +16,7 @@ export function fetchURL(url: string, httpMethod: HttpMethod, headers?: Headers,
         method: httpMethod
     }
 
-    if(headers != null){
+    if (headers != null) {
         params.headers = headers;
     }
 
@@ -28,14 +28,14 @@ export function fetchURL(url: string, httpMethod: HttpMethod, headers?: Headers,
 }
 
 
-export const fetchUtil = (fetch: Promise<Response>, setData: (data:any)=> any, setLoading: (l: boolean)=>any, setError: (e: string)=> any) => {
+export const fetchUtil = (fetch: Promise<Response>, setData: (data: any) => any, setLoading: (l: boolean) => any, setError: (e: string) => any) => {
     setLoading(true);
     fetch.then(async res => {
         setData(await res.json())
     }).catch(e => {
         console.error(e);
         setError(e);
-    }).finally(()=>{
+    }).finally(() => {
         setLoading(false);
     })
 }
