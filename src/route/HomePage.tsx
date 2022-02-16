@@ -1,7 +1,9 @@
 import React from "react";
-import {Col, Row} from "antd";
 import JoinGame from "../component/JoinGame";
 import NewGame from "../component/NewGame";
+
+import { Statistic, Row, Col, Card } from 'antd';
+import {ArrowUpOutlined, ArrowDownOutlined, BgColorsOutlined} from '@ant-design/icons';
 
 const HomePage = () => {
     return (
