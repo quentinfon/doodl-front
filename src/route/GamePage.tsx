@@ -21,6 +21,8 @@ const GamePage = () => {
     const [loadingRoom, setLoadingRoom] = useState<boolean>(false);
     const [loadingConnexion, setLoadingConnexion] = useState<boolean>(false);
 
+    const [pingInterval, setPingInterval] = useState<NodeJS.Timer>();
+
     const [messages, setMessages] = useState<IMessage[]>([]);
 
     const getRoom = () => {
@@ -47,6 +49,7 @@ const GamePage = () => {
         ws?.send(JSON.stringify(message));
     }
 
+
     const createSocket = (player: IPlayer) => {
         let webSocket = new WebSocket(process.env.REACT_APP_WEBSOCKET_ENDPOINT as string);
 
@@ -62,12 +65,20 @@ const GamePage = () => {
                 }
             }));
 
+            setPingInterval(setInterval(() => {
+                webSocket.send(JSON.stringify({channel: SocketChannel.PING}))
+            }, 30 * 1000))
+
             setWs(webSocket);
             setLoadingConnexion(false);
         };
 
         webSocket.onclose = () => {
             console.debug("Socket closed");
+            if (pingInterval) {
+                clearInterval(pingInterval);
+                setPingInterval(undefined);
+            }
             setWs(undefined);
         }
 
@@ -118,7 +129,7 @@ const GamePage = () => {
 
                                 :
                                 <Row>
-                                    <Col span={18}>
+                                    <Col xs={24} md={18}>
                                         <DrawingCanva
                                             initDraw={initDraws}
                                             webSocket={ws}
@@ -126,7 +137,7 @@ const GamePage = () => {
                                         />
                                     </Col>
 
-                                    <Col span={6}>
+                                    <Col xs={24} md={6}>
                                         <GameChat
                                             messages={messages}
                                             sendMessage={sendMessage}

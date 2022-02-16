@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from "react";
-import {Button, Card, Col, Divider, Input, InputNumber, Row, Select, Typography} from "antd";
+import {Button, Card, Divider, Row, Select, Typography} from "antd";
 import {GameMode, IRoomConfig} from "../types/GameModel";
-import {FieldTimeOutlined, UserOutlined} from '@ant-design/icons';
 import {fetchUtil} from "../api/request";
 import {createNewRoom, getRoomCreationConfig} from "../api/gameService";
 import {useNavigate} from 'react-router-dom';
@@ -20,7 +19,14 @@ const NewGame = () => {
         timeByTurn: 60
     })
 
-    const [roomConfigParam, setRoomConfigParam] = useState<IRoomServerConfig>();
+    const [roomConfigParam, setRoomConfigParam] = useState<IRoomServerConfig>({
+        minMaxPlayer: 2,
+        maxMaxPlayer: 32,
+        minTimeByTurn: 15,
+        maxTimeByTurn: 300,
+        maxChatMessageLength: 240
+    });
+
     const [loadingParams, setLoadingParams] = useState<boolean>(false);
     const [error, setError] = useState<string>("");
 
@@ -34,9 +40,15 @@ const NewGame = () => {
     const [loadingNewRoom, setLoadingNewRoom] = useState<boolean>(false);
     const [errorNewRoom, setErrorNewRoom] = useState<string>("");
 
+    const [roomCreatedId, setRoomCreatedId] = useState();
+
+    useEffect(() => {
+        if (roomCreatedId) navigate(`/play/${roomCreatedId}`);
+    }, [roomCreatedId])
+
     const createRoom = () => {
         fetchUtil(createNewRoom(),
-            (data) => navigate(`/play/${data.roomId}`),
+            (data) => setRoomCreatedId(data.roomId),
             setLoadingNewRoom,
             setErrorNewRoom
         )
@@ -55,6 +67,7 @@ const NewGame = () => {
 
                 <Divider/>
 
+                {/*
                 <Row
                     gutter={20}
                     style={{
@@ -66,8 +79,8 @@ const NewGame = () => {
                         <InputNumber
                             style={{width: "100%"}}
                             prefix={<UserOutlined style={{paddingRight: "5px"}}/>}
-                            min={roomConfigParam?.minMaxPlayer}
-                            max={roomConfigParam?.maxMaxPlayer}
+                            min={roomConfigParam.minMaxPlayer}
+                            max={roomConfigParam.maxMaxPlayer}
                             value={newGameConfig.maxPlayer}
                             onChange={(e) => setNewGameConfig({...newGameConfig, maxPlayer: e})}
                         />
@@ -77,8 +90,8 @@ const NewGame = () => {
                         <Text>Time by turn</Text>
                         <InputNumber
                             style={{width: "100%"}}
-                            min={roomConfigParam?.minTimeByTurn}
-                            max={roomConfigParam?.maxTimeByTurn}
+                            min={roomConfigParam.minTimeByTurn}
+                            max={roomConfigParam.maxTimeByTurn}
                             value={newGameConfig.timeByTurn}
                             onChange={(e) => setNewGameConfig({...newGameConfig, timeByTurn: e})}
                             prefix={<FieldTimeOutlined style={{paddingRight: "5px"}}/>}
@@ -105,6 +118,7 @@ const NewGame = () => {
                     </Col>
 
                 </Row>
+                */}
 
 
                 <Row justify="end">
