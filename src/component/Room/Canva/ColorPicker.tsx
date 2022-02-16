@@ -3,12 +3,14 @@ import {List} from "antd";
 
 interface ColorPickerProps {
     currentColor: string,
-    setColor: (color: string) => any
+    setColor: (color: string) => any,
+    vertical?: boolean
 }
 
 const ColorPicker = ({
                          currentColor,
-                         setColor
+                         setColor,
+                         vertical = true
                      }: ColorPickerProps) => {
 
     const colors: string[] = [
@@ -36,7 +38,7 @@ const ColorPicker = ({
             <List
                 grid={{
                     gutter: 16,
-                    column: 4,
+                    column: vertical ? 4 : 8,
                 }}
                 dataSource={colors}
                 renderItem={color => (

@@ -243,7 +243,7 @@ const DrawingCanva = ({
                         </Col>
                     }
 
-                    <Col lg={18}>
+                    <Col xs={24} lg={18}>
                         <canvas
                             ref={canvasRef}
                             height={canvasSize.height}
@@ -252,6 +252,31 @@ const DrawingCanva = ({
                                 width: "100%"
                             }}
                         />
+
+                        {!screens.lg &&
+                            <DrawingToolTips
+                                clearCanvas={() => {
+                                    sendDrawData({tool: DrawTool.CLEAR});
+                                    clearCanva();
+                                }}
+                                tool={mode}
+                                setTool={(t: DrawTool) => {
+                                    modeRef.current = t;
+                                    setMode(t);
+                                }}
+                                color={color}
+                                setColor={(c: string) => {
+                                    colorRef.current = c;
+                                    setColor(c);
+                                }}
+                                lineWidth={lineWidth}
+                                setLineWidth={(s: number) => {
+                                    lineWidthRef.current = s;
+                                    setLineWidth(s);
+                                }}
+                                vertical={false}
+                            />
+                        }
                     </Col>
                 </Row>
             </div>
