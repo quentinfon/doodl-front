@@ -81,6 +81,7 @@ const GamePage = () => {
                     imgUrl: player.imgUrl,
                     name: player.name
                 });
+                messages.length = 0;
                 init.messages.forEach(msg => messages.push(msg));
                 setInitDraws(init.draws);
             }
