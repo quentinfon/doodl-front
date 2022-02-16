@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, Divider, Menu} from "antd";
+import {Button, Divider} from "antd";
 import {DrawTool} from "../../../types/GameModel";
 import ColorPicker from "./ColorPicker";
 import SizePicker from "./SizePicker";
@@ -28,9 +28,7 @@ const DrawingToolTips = ({
 
     return (
         <>
-            <Menu
-                mode="inline"
-                defaultSelectedKeys={[tool]}
+            <div
                 style={{height: '100%'}}
             >
                 <Button
@@ -68,7 +66,7 @@ const DrawingToolTips = ({
                     setColor={setColor}
                 />
 
-            </Menu>
+            </div>
 
         </>
     )

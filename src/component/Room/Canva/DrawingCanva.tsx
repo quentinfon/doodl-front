@@ -104,7 +104,7 @@ const DrawingCanva = ({
 
                 const imgData = context.getImageData(0, 0, canvas.width, canvas.height);
                 const floodFill = new FloodFill(imgData);
-                floodFill.fill(data.color, data.coordsTo.x, data.coordsTo.y, 50);
+                floodFill.fill(data.color, Math.round(data.coordsTo.x), Math.round(data.coordsTo.y), 50);
                 context.putImageData(floodFill.imageData, 0, 0);
 
                 if (clientSide) {
