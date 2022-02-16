@@ -8,7 +8,7 @@ import {
     SocketChannel
 } from "../../../types/SocketModel";
 import DrawingToolTips from "./DrawingToolTips";
-import FloodFill, {ColorRGBA} from 'q-floodfill'
+import FloodFill from 'q-floodfill'
 
 const {useBreakpoint} = Grid;
 
