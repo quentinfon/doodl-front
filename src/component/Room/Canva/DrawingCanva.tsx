@@ -81,8 +81,14 @@ const DrawingCanva = ({
         }
     }
 
-    const getCoordinates = (event: PointerEvent): ICoordinate => {
-        return {x: event.offsetX, y: event.offsetY};
+    const getCoordinates = (event: PointerEvent): ICoordinate | undefined => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+
+        return {
+            x: event.offsetX / (canvas.clientWidth / canvasSize.width),
+            y: event.offsetY / (canvas.clientHeight / canvasSize.height)
+        };
     }
 
     const draw = (data: IDraw, clientSide: boolean) => {
@@ -143,6 +149,8 @@ const DrawingCanva = ({
         pointerFrom.y = pointerTo.y;
 
         const coords = getCoordinates(evt);
+        if (!coords) return;
+
         pointerTo.x = coords.x;
         pointerTo.y = coords.y;
 
@@ -159,6 +167,8 @@ const DrawingCanva = ({
         evt.preventDefault();
 
         const coords = getCoordinates(evt);
+        if (!coords) return;
+
         pointerTo.x = coords.x;
         pointerTo.y = coords.y;
         pointerFrom.x = pointerTo.x;
@@ -200,15 +210,15 @@ const DrawingCanva = ({
     useEffect(() => {
         initDraw.forEach((data: IDraw) => {
             draw(data, false);
-        })
+        });
     }, [initDraw]);
 
     return (
         <>
             <div>
                 <Row>
-                    {!(screens.md && !screens.lg) &&
-                        <Col md={6} xl={4}>
+                    {screens.lg &&
+                        <Col lg={6}>
                             <DrawingToolTips
                                 clearCanvas={() => {
                                     sendDrawData({tool: DrawTool.CLEAR});
@@ -233,11 +243,14 @@ const DrawingCanva = ({
                         </Col>
                     }
 
-                    <Col md={24} xl={20}>
+                    <Col lg={18}>
                         <canvas
                             ref={canvasRef}
                             height={canvasSize.height}
                             width={canvasSize.width}
+                            style={{
+                                width: "100%"
+                            }}
                         />
                     </Col>
                 </Row>
