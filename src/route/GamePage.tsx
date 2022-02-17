@@ -1,17 +1,19 @@
-import React, {useEffect, useState} from "react";
-import {useParams} from "react-router-dom";
-import {Col, Row} from 'antd';
-import {IDataInitResponse, ISocketMessageRequest, ISocketMessageResponse, SocketChannel} from "../types/SocketModel";
+import React, { useEffect, useRef, useState } from "react";
+import { useParams } from "react-router-dom";
+import { Col, Row } from 'antd';
+import { IDataInitResponse, ISocketMessageRequest, ISocketMessageResponse, SocketChannel } from "../types/SocketModel";
 import GameChat from "../component/GameChat";
-import {IDraw, IMessage, IPlayer, IRoomStatus} from "../types/GameModel";
-import {getRoomData} from "../api/gameService";
+import { DrawTool, IDraw, IMessage, IPlayer, IRoomStatus } from "../types/GameModel";
+import { getRoomData } from "../api/gameService";
 import RoomUnavailable from "../component/Room/RoomUnavailable";
 import PlayerCreation from "../component/Room/PlayerCreation";
 import DrawingCanva from "../component/Room/Canva/DrawingCanva";
+import WordDisplayer from "../component/Room/WordDisplayer";
+import DrawingToolTips from "../component/Room/Canva/DrawingToolTips";
 
 const GamePage = () => {
 
-    const {gameId} = useParams<{ gameId: string }>();
+    const { gameId } = useParams<{ gameId: string }>();
 
     const [ws, setWs] = useState<WebSocket>();
     const [player, setPlayer] = useState<IPlayer>();
@@ -20,6 +22,13 @@ const GamePage = () => {
     const [roomData, setRoomData] = useState<IRoomStatus>();
     const [loadingRoom, setLoadingRoom] = useState<boolean>(false);
     const [loadingConnexion, setLoadingConnexion] = useState<boolean>(false);
+
+    const [mode, setMode] = useState<DrawTool>(DrawTool.BRUSH);
+    const [lineWidth, setLineWidth] = useState<number>(10);
+    const [color, setColor] = useState<string>("#000000");
+    const modeRef = useRef(mode);
+    const lineWidthRef = useRef(lineWidth);
+    const colorRef = useRef(color);
 
     const [pingInterval, setPingInterval] = useState<NodeJS.Timer>();
 
@@ -66,7 +75,7 @@ const GamePage = () => {
             }));
 
             setPingInterval(setInterval(() => {
-                webSocket.send(JSON.stringify({channel: SocketChannel.PING}))
+                webSocket.send(JSON.stringify({ channel: SocketChannel.PING }))
             }, 30 * 1000))
 
             setWs(webSocket);
@@ -115,7 +124,7 @@ const GamePage = () => {
                 :
                 <>
                     {!roomData ?
-                        <RoomUnavailable/>
+                        <RoomUnavailable />
                         :
                         <>
                             {ws === undefined ?
@@ -129,7 +138,34 @@ const GamePage = () => {
 
                                 :
                                 <Row>
+                                    <Col lg={6}>
+                                        <DrawingToolTips
+                                            clearCanvas={() => {
+                                                sendDrawData({ tool: DrawTool.CLEAR });
+                                                clearCanva();
+                                            }}
+                                            tool={mode}
+                                            setTool={(t: DrawTool) => {
+                                                modeRef.current = t;
+                                                setMode(t);
+                                            }}
+                                            color={color}
+                                            setColor={(c: string) => {
+                                                colorRef.current = c;
+                                                setColor(c);
+                                            }}
+                                            lineWidth={lineWidth}
+                                            setLineWidth={(s: number) => {
+                                                lineWidthRef.current = s;
+                                                setLineWidth(s);
+                                            }}
+                                        />
+                                    </Col>
+
                                     <Col xs={24} md={18}>
+                                        <WordDisplayer
+                                            wordToDisplay={"Test ____"}
+                                        />
                                         <DrawingCanva
                                             initDraw={initDraws}
                                             webSocket={ws}
