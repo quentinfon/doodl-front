@@ -8,7 +8,7 @@ import {
     SocketChannel
 } from "../../../types/SocketModel";
 import DrawingToolTips from "./DrawingToolTips";
-import FloodFill, {ColorRGBA} from 'q-floodfill'
+import FloodFill from 'q-floodfill'
 
 const {useBreakpoint} = Grid;
 
@@ -81,8 +81,14 @@ const DrawingCanva = ({
         }
     }
 
-    const getCoordinates = (event: PointerEvent): ICoordinate => {
-        return {x: event.offsetX, y: event.offsetY};
+    const getCoordinates = (event: PointerEvent): ICoordinate | undefined => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+
+        return {
+            x: event.offsetX / (canvas.clientWidth / canvasSize.width),
+            y: event.offsetY / (canvas.clientHeight / canvasSize.height)
+        };
     }
 
     const draw = (data: IDraw, clientSide: boolean) => {
@@ -98,7 +104,7 @@ const DrawingCanva = ({
 
                 const imgData = context.getImageData(0, 0, canvas.width, canvas.height);
                 const floodFill = new FloodFill(imgData);
-                floodFill.fill(data.color, data.coordsTo.x, data.coordsTo.y, 50);
+                floodFill.fill(data.color, Math.round(data.coordsTo.x), Math.round(data.coordsTo.y), 50);
                 context.putImageData(floodFill.imageData, 0, 0);
 
                 if (clientSide) {
@@ -143,6 +149,8 @@ const DrawingCanva = ({
         pointerFrom.y = pointerTo.y;
 
         const coords = getCoordinates(evt);
+        if (!coords) return;
+
         pointerTo.x = coords.x;
         pointerTo.y = coords.y;
 
@@ -159,6 +167,8 @@ const DrawingCanva = ({
         evt.preventDefault();
 
         const coords = getCoordinates(evt);
+        if (!coords) return;
+
         pointerTo.x = coords.x;
         pointerTo.y = coords.y;
         pointerFrom.x = pointerTo.x;
@@ -200,15 +210,15 @@ const DrawingCanva = ({
     useEffect(() => {
         initDraw.forEach((data: IDraw) => {
             draw(data, false);
-        })
+        });
     }, [initDraw]);
 
     return (
         <>
             <div>
                 <Row>
-                    {!(screens.md && !screens.lg) &&
-                        <Col md={6} xl={4}>
+                    {screens.lg &&
+                        <Col lg={6}>
                             <DrawingToolTips
                                 clearCanvas={() => {
                                     sendDrawData({tool: DrawTool.CLEAR});
@@ -233,12 +243,40 @@ const DrawingCanva = ({
                         </Col>
                     }
 
-                    <Col md={24} xl={20}>
+                    <Col xs={24} lg={18}>
                         <canvas
                             ref={canvasRef}
                             height={canvasSize.height}
                             width={canvasSize.width}
+                            style={{
+                                width: "100%"
+                            }}
                         />
+
+                        {!screens.lg &&
+                            <DrawingToolTips
+                                clearCanvas={() => {
+                                    sendDrawData({tool: DrawTool.CLEAR});
+                                    clearCanva();
+                                }}
+                                tool={mode}
+                                setTool={(t: DrawTool) => {
+                                    modeRef.current = t;
+                                    setMode(t);
+                                }}
+                                color={color}
+                                setColor={(c: string) => {
+                                    colorRef.current = c;
+                                    setColor(c);
+                                }}
+                                lineWidth={lineWidth}
+                                setLineWidth={(s: number) => {
+                                    lineWidthRef.current = s;
+                                    setLineWidth(s);
+                                }}
+                                vertical={false}
+                            />
+                        }
                     </Col>
                 </Row>
             </div>

@@ -4,12 +4,14 @@ import {List} from "antd";
 
 interface SizePickerProps {
     currentSize: number,
-    setSize: (size: number) => any
+    setSize: (size: number) => any,
+    vertical?: boolean
 }
 
 const SizePicker = ({
                         currentSize,
-                        setSize
+                        setSize,
+                        vertical = true
                     }: SizePickerProps) => {
     const tools: number[] = [5, 10, 25, 50]
 
@@ -18,7 +20,7 @@ const SizePicker = ({
             <List
                 grid={{
                     gutter: 16,
-                    column: 4,
+                    column: vertical ? 4 : 2,
                 }}
                 dataSource={tools}
                 renderItem={s => (
