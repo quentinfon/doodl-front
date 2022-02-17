@@ -123,6 +123,10 @@ const GamePage = () => {
                 setInitDraws(init.draws);
             }
 
+            if(msg.channel === SocketChannel.INFO){
+                console.log(msg);
+            }
+
             if (msg.channel === SocketChannel.CHAT) {
                 messages.push(msg.data as IMessage)
                 setMessages([...messages])
