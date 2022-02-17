@@ -16,7 +16,7 @@ export interface ISocketMessageRequest extends ISocketMessage {
 }
 
 export interface ISocketMessageResponse extends ISocketMessage {
-    data: IDataInitResponse | IMessage | IDataDrawResponse | IDataInfoResponse | IRoomConfig;
+    data: IDataInitResponse | IMessage | IDataDrawResponse | IDataInfoResponse | IRoomConfig | IDataInitAdminResponse;
 }
 
 export interface IDataInitRequest {
@@ -29,6 +29,12 @@ export interface IDataInitResponse {
     playerId: string;
     messages: IMessage[];
     draws: IDraw[];
+}
+
+export interface IDataInitAdminResponse {
+    roomCount: number;
+    wsCount: number;
+    roomList: any[];
 }
 
 export interface IDataChatRequest {
