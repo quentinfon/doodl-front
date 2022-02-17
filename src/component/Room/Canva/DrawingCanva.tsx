@@ -18,7 +18,8 @@ interface DrawingCanvaProps {
     player: IPlayer | undefined,
     modeRef: MutableRefObject<any>,
     lineWidthRef: MutableRefObject<any>,
-    colorRef: MutableRefObject<any>
+    colorRef: MutableRefObject<any>,
+    canDraw: boolean
 }
 
 const DrawingCanva = forwardRef(({
@@ -27,7 +28,8 @@ const DrawingCanva = forwardRef(({
                                      player,
                                      modeRef,
                                      lineWidthRef,
-                                     colorRef
+                                     colorRef,
+                                     canDraw
                                  }: DrawingCanvaProps
     , ref: ForwardedRef<canvasFunctions>) => {
 
@@ -35,7 +37,8 @@ const DrawingCanva = forwardRef(({
 
     useImperativeHandle(ref, () => ({
         clear() {
-            clearCanva();
+            if (canDraw)
+                clearCanva();
         }
     }));
 
@@ -95,7 +98,7 @@ const DrawingCanva = forwardRef(({
     }
 
     const draw = (data: IDraw, clientSide: boolean) => {
-        if (!canvasRef.current || (clientSide && !drawing)) return;
+        if (!canvasRef.current || (clientSide && !drawing) || (clientSide && !canDraw)) return;
 
         const canvas: HTMLCanvasElement = canvasRef.current;
         const context = canvas.getContext("2d");
@@ -198,14 +201,14 @@ const DrawingCanva = forwardRef(({
         if (canvas) {
             canvas.addEventListener('pointerdown', onPointerDown, false);
             canvas.addEventListener('pointermove', onMove, false);
-            canvas.addEventListener('pointerup', stopDrawing, false);
+            window.addEventListener('pointerup', stopDrawing, false);
         }
 
         return () => {
             if (canvas) {
                 canvas.removeEventListener('pointerdown', onPointerDown, false);
                 canvas.removeEventListener('pointermove', onMove, false);
-                canvas.removeEventListener('pointerup', stopDrawing, false);
+                window.removeEventListener('pointerup', stopDrawing, false);
             }
         }
     }, [canvasRef])

@@ -40,6 +40,8 @@ const GamePage = () => {
 
     const [messages, setMessages] = useState<IMessage[]>([]);
 
+    const [playerIsAllowedToDraw, setPlayerIsAllowedToDraw] = useState<boolean>(true);
+
     const getRoom = () => {
         setLoadingRoom(true);
         getRoomData(gameId ?? "")
@@ -153,31 +155,33 @@ const GamePage = () => {
 
                                 :
                                 <Row>
-                                    <Col lg={6}>
-                                        <DrawingToolTips
-                                            clearCanvas={() => {
-                                                sendDrawData({tool: DrawTool.CLEAR});
-                                                canvasRef?.current?.clear();
-                                            }}
-                                            tool={mode}
-                                            setTool={(t: DrawTool) => {
-                                                modeRef.current = t;
-                                                setMode(t);
-                                            }}
-                                            color={color}
-                                            setColor={(c: string) => {
-                                                colorRef.current = c;
-                                                setColor(c);
-                                            }}
-                                            lineWidth={lineWidth}
-                                            setLineWidth={(s: number) => {
-                                                lineWidthRef.current = s;
-                                                setLineWidth(s);
-                                            }}
-                                        />
-                                    </Col>
+                                    {playerIsAllowedToDraw &&
+                                        <Col xs={24} md={6} xl={4}>
+                                            <DrawingToolTips
+                                                clearCanvas={() => {
+                                                    sendDrawData({tool: DrawTool.CLEAR});
+                                                    canvasRef?.current?.clear();
+                                                }}
+                                                tool={mode}
+                                                setTool={(t: DrawTool) => {
+                                                    modeRef.current = t;
+                                                    setMode(t);
+                                                }}
+                                                color={color}
+                                                setColor={(c: string) => {
+                                                    colorRef.current = c;
+                                                    setColor(c);
+                                                }}
+                                                lineWidth={lineWidth}
+                                                setLineWidth={(s: number) => {
+                                                    lineWidthRef.current = s;
+                                                    setLineWidth(s);
+                                                }}
+                                            />
+                                        </Col>
+                                    }
 
-                                    <Col xs={24} md={18}>
+                                    <Col xs={24} md={12} xl={14}>
                                         <WordDisplayer
                                             wordToDisplay={"Test ____"}
                                         />
@@ -189,6 +193,7 @@ const GamePage = () => {
                                             modeRef={modeRef}
                                             lineWidthRef={lineWidthRef}
                                             colorRef={colorRef}
+                                            canDraw={playerIsAllowedToDraw}
                                         />
                                     </Col>
 
