@@ -18,6 +18,13 @@ const GameChat = ({
     const [currentMsg, setCurrentMessage] = useState<string>("");
     const LIST_ID = "game-chat-list";
 
+
+    const [chatHeight, setChatHeight] = useState<number>(window.innerHeight - 200);
+
+    useEffect(() => {
+        setChatHeight(window.innerHeight - 200);
+    }, [window.innerHeight])
+
     useEffect(autoScrollBottomChat, [messages]);
     useEffect(autoScrollBottomChat);
 
@@ -52,7 +59,7 @@ const GameChat = ({
         <>
             <div
                 style={{
-                    height: "500px"
+                    height: chatHeight + 'px'
                 }}
             >
                 <List
