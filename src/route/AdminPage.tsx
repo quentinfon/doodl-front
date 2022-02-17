@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import { Statistic, Row, Col, Card, Input, Button} from 'antd';
+import { Statistic, Row, Col, Card, Input, Button, Popconfirm, message, List} from 'antd';
 import { Collapse } from 'antd';
 import {
     IDataInitAdminResponse,
@@ -61,12 +61,22 @@ const AdminPage = () => {
     const explicite = (roomInfo : IRoomInfo) => {
         console.log(roomInfo)
         let items = []
-        items.push(<p>{"RoomID : " + roomInfo.roomId}</p>)
-        items.push(<p>Joueurs : </p>)
+        items.push(<List.Item><p>{"RoomID : " + roomInfo.roomId}</p></List.Item>)
+        //items.push(<List.Item><p>Joueurs : </p></List.Item>)
         for(let i=0; i<roomInfo.playerList.length; i++){
-            items.push(<p>{roomInfo.playerList[i].name}</p>)
+            items.push(<List.Item><p>{roomInfo.playerList[i].name + " "}{<Popconfirm  title={"DO YOU REALLY WANT TO KICK THIS PLAYER ?"} onConfirm={() => playerSuppression(roomInfo.playerList[i].playerId)} okText="Yes" cancelText="No">
+                <Button danger type="primary" shape="circle" size="small">
+                    X
+                </Button>
+            </Popconfirm>}</p></List.Item>)
         }
-        return items
+        return (
+            <>
+            <List bordered>
+                {items}
+            </List>
+            </>
+        )
     }
 
      const callback = (key:String) => {
@@ -79,8 +89,12 @@ const AdminPage = () => {
          });*/
     }
 
-    const pannelClick = () => {
-        alert("clicked")
+    const playerSuppression = (playerId:String) => {
+        message.success('Player Supprimé :)');
+    }
+
+    const roomSuppression = (roomId : string) => {
+        message.success('Chambre supprimé :)');
     }
 
     function card(i: number) {
@@ -89,9 +103,11 @@ const AdminPage = () => {
                 <Collapse >
                     <Panel header={"Room " + i.toString()} key={i} extra={
                         <div onClick={e => e.stopPropagation()}>
-                            <Button danger type="primary" shape="circle" size="small" onClick={pannelClick}>
-                                X
-                            </Button>
+                            <Popconfirm  title={"DO YOU REALLY WANT TO SUPPRESS THIS ROOM ?"} onConfirm={() => roomSuppression(rooms[i].roomId)} okText="Yes" cancelText="No">
+                                <Button danger type="primary" shape="circle" size="small">
+                                    X
+                                </Button>
+                            </Popconfirm>
                         </div>
                     }>
                         <p>{explicite(rooms[i])}</p>
