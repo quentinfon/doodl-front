@@ -83,6 +83,24 @@ const AdminPage = () => {
         alert("clicked")
     }
 
+    function card(i: number) {
+        return (
+            <Col span={6}>
+                <Collapse >
+                    <Panel header={"Room " + i.toString()} key={i} extra={
+                        <div onClick={e => e.stopPropagation()}>
+                            <Button danger type="primary" shape="circle" size="small" onClick={pannelClick}>
+                                X
+                            </Button>
+                        </div>
+                    }>
+                        <p>{explicite(rooms[i])}</p>
+                    </Panel>
+                </Collapse>
+            </Col>
+        )
+    }
+
     const render = () => {
 
         const items = []
@@ -90,64 +108,16 @@ const AdminPage = () => {
         for(let i=0;i<roomNumber;i+=4){
             items.push(<Row>
                 {i<roomNumber &&
-                <Col span={6}>
-                    <Collapse >
-                        <Panel header={"Room " + i.toString()} key={i} extra={
-                            <div onClick={e => e.stopPropagation()}>
-                                <Button danger type="primary" shape="circle" size="small" onClick={pannelClick}>
-                                    X
-                                </Button>
-                            </div>
-                        }>
-                            <p>{explicite(rooms[i])}</p>
-                        </Panel>
-                    </Collapse>
-                </Col>
+                    card(i)
                 }
                 {i + 1 < roomNumber &&
-                    <Col span={6}>
-                        <Collapse>
-                            <Panel header={"Room " + (i+1).toString()} key={i+1} extra={
-                                <div onClick={e => e.stopPropagation()}>
-                                    <Button danger type="primary" shape="circle" size="small" onClick={pannelClick}>
-                                        X
-                                    </Button>
-                                </div>
-                            }>
-                                <p>{explicite(rooms[i+1])}</p>
-                            </Panel>
-                        </Collapse>
-                    </Col>
+                    card(i+1)
                 }
                 {i + 2 < roomNumber &&
-                <Col span={6}>
-                    <Collapse>
-                        <Panel header={"Room " + (i+2).toString()} key={i+2} extra={
-                            <div onClick={e => e.stopPropagation()}>
-                                <Button danger type="primary" shape="circle" size="small" onClick={pannelClick}>
-                                    X
-                                </Button>
-                            </div>
-                        }>
-                            <p>{explicite(rooms[i+2])}</p>
-                        </Panel>
-                    </Collapse>
-                </Col>
+                    card(i+2)
                 }
                 {i + 3 < roomNumber &&
-                    <Col span={6}>
-                        <Collapse>
-                            <Panel header={"Room " + (i+3).toString()} key={i+3} extra={
-                                <div onClick={e => e.stopPropagation()}>
-                                    <Button danger type="primary" shape="circle" size="small" onClick={pannelClick}>
-                                        X
-                                    </Button>
-                                </div>
-                            }>
-                                <p>{explicite(rooms[i+3])}</p>
-                            </Panel>
-                        </Collapse>
-                    </Col>
+                    card(i+3)
                 }
             </Row>)
         }
