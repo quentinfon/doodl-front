@@ -43,7 +43,7 @@ const GamePage = () => {
         return () => {
             ws?.close();
         }
-    }, [])
+    }, [ws])
 
     const sendMessage = (message: ISocketMessageRequest) => {
         ws?.send(JSON.stringify(message));
@@ -79,6 +79,7 @@ const GamePage = () => {
                 clearInterval(pingInterval);
                 setPingInterval(undefined);
             }
+            console.log("success close")
             setWs(undefined);
         }
 
