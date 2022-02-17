@@ -1,19 +1,25 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
-import { Col, Row } from 'antd';
-import { IDataInitResponse, ISocketMessageRequest, ISocketMessageResponse, SocketChannel } from "../types/SocketModel";
+import React, {useEffect, useRef, useState} from "react";
+import {useParams} from "react-router-dom";
+import {Col, Grid, Row} from 'antd';
+import {IDataInitResponse, ISocketMessageRequest, ISocketMessageResponse, SocketChannel} from "../types/SocketModel";
 import GameChat from "../component/GameChat";
-import { DrawTool, IDraw, IMessage, IPlayer, IRoomStatus } from "../types/GameModel";
-import { getRoomData } from "../api/gameService";
+import {DrawTool, IDraw, IMessage, IPlayer, IRoomStatus} from "../types/GameModel";
+import {getRoomData} from "../api/gameService";
 import RoomUnavailable from "../component/Room/RoomUnavailable";
 import PlayerCreation from "../component/Room/PlayerCreation";
-import DrawingCanva from "../component/Room/Canva/DrawingCanva";
+import DrawingCanva, {canvasFunctions} from "../component/Room/Canva/DrawingCanva";
 import WordDisplayer from "../component/Room/WordDisplayer";
 import DrawingToolTips from "../component/Room/Canva/DrawingToolTips";
 
+const {useBreakpoint} = Grid;
+
 const GamePage = () => {
 
-    const { gameId } = useParams<{ gameId: string }>();
+    const {gameId} = useParams<{ gameId: string }>();
+
+    const canvasRef = useRef<canvasFunctions>(null);
+
+    const screens = useBreakpoint();
 
     const [ws, setWs] = useState<WebSocket>();
     const [player, setPlayer] = useState<IPlayer>();
@@ -58,6 +64,14 @@ const GamePage = () => {
         ws?.send(JSON.stringify(message));
     }
 
+    const sendDrawData = (drawData: IDraw) => {
+        const message: ISocketMessageRequest = {
+            channel: SocketChannel.DRAW,
+            data: drawData
+        }
+
+        ws?.send(JSON.stringify(message));
+    }
 
     const createSocket = (player: IPlayer) => {
         let webSocket = new WebSocket(process.env.REACT_APP_WEBSOCKET_ENDPOINT as string);
@@ -75,7 +89,7 @@ const GamePage = () => {
             }));
 
             setPingInterval(setInterval(() => {
-                webSocket.send(JSON.stringify({ channel: SocketChannel.PING }))
+                webSocket.send(JSON.stringify({channel: SocketChannel.PING}))
             }, 30 * 1000))
 
             setWs(webSocket);
@@ -125,7 +139,7 @@ const GamePage = () => {
                 :
                 <>
                     {!roomData ?
-                        <RoomUnavailable />
+                        <RoomUnavailable/>
                         :
                         <>
                             {ws === undefined ?
@@ -142,8 +156,8 @@ const GamePage = () => {
                                     <Col lg={6}>
                                         <DrawingToolTips
                                             clearCanvas={() => {
-                                                sendDrawData({ tool: DrawTool.CLEAR });
-                                                clearCanva();
+                                                sendDrawData({tool: DrawTool.CLEAR});
+                                                canvasRef?.current?.clear();
                                             }}
                                             tool={mode}
                                             setTool={(t: DrawTool) => {
@@ -168,9 +182,13 @@ const GamePage = () => {
                                             wordToDisplay={"Test ____"}
                                         />
                                         <DrawingCanva
+                                            ref={canvasRef}
                                             initDraw={initDraws}
                                             webSocket={ws}
                                             player={player}
+                                            modeRef={modeRef}
+                                            lineWidthRef={lineWidthRef}
+                                            colorRef={colorRef}
                                         />
                                     </Col>
 
