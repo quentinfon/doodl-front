@@ -1,4 +1,4 @@
-import {IDraw, IMessage, IPlayer, IRoomConfig, RoomState} from './GameModel';
+import {IDraw, IRoomInfo, IMessage, IPlayer, IRoomConfig, RoomState} from './GameModel';
 
 export interface SocketUser {
     socket: WebSocket;
@@ -31,10 +31,11 @@ export interface IDataInitResponse {
     draws: IDraw[];
 }
 
+
 export interface IDataInitAdminResponse {
     roomCount: number;
     wsCount: number;
-    roomList: any[];
+    roomList: IRoomInfo[];
 }
 
 export interface IDataChatRequest {
