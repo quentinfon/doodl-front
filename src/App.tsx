@@ -6,7 +6,7 @@ import AdminPage from "./route/AdminPage";
 import {Layout} from 'antd';
 import AppHeader from "./component/Layout/AppHeader";
 
-const {Content} = Layout;
+const {Content, Footer} = Layout;
 
 const App = () => {
 
@@ -15,7 +15,11 @@ const App = () => {
             <AppHeader/>
 
             <Layout>
-                <Content>
+                <Content
+                    style={{
+                        height: "100%"
+                    }}
+                >
                     <Routes>
                         <Route path="/play/:gameId" element={<GamePage/>}/>
                         <Route path="/" element={<HomePage/>}/>
@@ -26,6 +30,9 @@ const App = () => {
                         />
                     </Routes>
                 </Content>
+                <Footer>
+
+                </Footer>
             </Layout>
         </Router>
     );
