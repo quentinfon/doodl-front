@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, Col, Divider, Row} from "antd";
+import {Button, Card, Col, Divider, Row} from "antd";
 import {DrawTool} from "../../../types/GameModel";
 import ColorPicker from "./ColorPicker";
 import SizePicker from "./SizePicker";
@@ -29,7 +29,7 @@ const DrawingToolTips = ({
                          }: DrawingToolTipsProps) => {
 
     return (
-        <>
+        <Card>
             {vertical ?
                 <div
                     style={{height: '100%'}}
@@ -119,7 +119,7 @@ const DrawingToolTips = ({
                 </Row>
             }
 
-        </>
+        </Card>
     )
 }
 
