@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import { createAvatar } from "@dicebear/avatars";
-import * as style from '@dicebear/adventurer-neutral';
 import { Accessoires, Eyebrows, Eyes, Mouth } from "@dicebear/adventurer-neutral/dist/options";
 import { useEffect } from "react";
 

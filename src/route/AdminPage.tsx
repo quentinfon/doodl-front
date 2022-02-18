@@ -8,7 +8,6 @@ import {
     ISocketMessageResponse,
     SocketChannel
 } from "../types/SocketModel";
-import parse from "html-react-parser";
 import {IRoomInfo} from "../types/GameModel";
 const { Panel } = Collapse;
 const { Search } = Input;
@@ -19,6 +18,7 @@ const AdminPage = () => {
     const [roomNumber, setRoomNumber] = useState<number>(0);
     const [drawNumber, setDrawNumber] = useState<number>(0);
     const [rooms, setRooms] = useState<IRoomInfo[]>([]);
+    const [pingInterval, setPingInterval] = useState<NodeJS.Timer>();
 
     const [adminWs, setAdminWs] = useState<WebSocket>();
     const [loadingConnexion, setLoadingConnexion] = useState<boolean>(false);
@@ -41,11 +41,20 @@ const AdminPage = () => {
         webSocket.onopen = () => {
             setAdminWs(webSocket);
             setLoadingConnexion(false);
+
+            setPingInterval(setInterval(() => {
+                webSocket.send(JSON.stringify({channel: SocketChannel.GLOBAL_DATA}))
+            }, 5 * 1000))
+
         };
 
         webSocket.onclose = () => {
             console.debug("Socket closed");
             setAdminWs(undefined);
+            if (pingInterval) {
+                clearInterval(pingInterval);
+                setPingInterval(undefined);
+            }
         }
 
         webSocket.onmessage = e => {
@@ -57,8 +66,6 @@ const AdminPage = () => {
             updateStats(init.roomCount,init.wsCount, init.drawCount);
         };
     }
-
-    const detailPartie = "detail partie"
 
     const explicite = (roomInfo : IRoomInfo) => {
         console.log(roomInfo)
