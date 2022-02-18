@@ -35,6 +35,23 @@ export interface IDraw {
     lineWidth?: number;
 }
 
+export interface IRoomInfo {
+    roomId: string;
+    playerList: IPlayer[];
+}
+
+export interface IPlayer {
+    name: string;
+    imgUrl: string;
+    playerId: string;
+}
+
+export interface Player {
+    playerId : string
+    name : string
+    imgUrl : string
+}
+
 export enum RoomState {
     LOBBY = "LOBBY",
     INGAME = "INGAME"

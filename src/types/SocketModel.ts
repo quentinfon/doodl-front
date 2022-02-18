@@ -1,4 +1,4 @@
-import {IDraw, IMessage, IPlayer, IRoomConfig, RoomState} from './GameModel';
+import {IDraw, IRoomInfo, IMessage, IPlayer, IRoomConfig, RoomState} from './GameModel';
 
 export interface SocketUser {
     socket: WebSocket;
@@ -16,7 +16,7 @@ export interface ISocketMessageRequest extends ISocketMessage {
 }
 
 export interface ISocketMessageResponse extends ISocketMessage {
-    data: IDataInitResponse | IMessage | IDataDrawResponse | IDataInfoResponse | IRoomConfig;
+    data: IDataInitResponse | IMessage | IDataDrawResponse | IDataInfoResponse | IRoomConfig | IDataInitAdminResponse;
 }
 
 export interface IDataInitRequest {
@@ -29,6 +29,13 @@ export interface IDataInitResponse {
     playerId: string;
     messages: IMessage[];
     draws: IDraw[];
+}
+
+export interface IDataInitAdminResponse {
+    roomCount: number;
+    wsCount: number;
+    drawCount: number;
+    roomList: IRoomInfo[];
 }
 
 export interface IDataChatRequest {
