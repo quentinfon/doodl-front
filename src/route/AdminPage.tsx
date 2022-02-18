@@ -17,6 +17,7 @@ const AdminPage = () => {
 
     const [userNumber, setUserNumber] = useState<number>(0);
     const [roomNumber, setRoomNumber] = useState<number>(0);
+    const [drawNumber, setDrawNumber] = useState<number>(0);
     const [rooms, setRooms] = useState<IRoomInfo[]>([]);
 
     const [adminWs, setAdminWs] = useState<WebSocket>();
@@ -26,9 +27,10 @@ const AdminPage = () => {
         adminWs?.send(JSON.stringify(message));
     }
 
-    function updateStats(roomCount: number, wsCount: number) {
+    function updateStats(roomCount: number, wsCount: number, drawCount: number) {
         setUserNumber(wsCount);
         setRoomNumber(roomCount);
+        setDrawNumber(drawCount);
     }
 
     const createSocket = (value : String) => {
@@ -39,7 +41,6 @@ const AdminPage = () => {
         webSocket.onopen = () => {
             setAdminWs(webSocket);
             setLoadingConnexion(false);
-            console.log("CONNECTED")
         };
 
         webSocket.onclose = () => {
@@ -51,8 +52,9 @@ const AdminPage = () => {
             console.log('e', JSON.parse(e.data));
             let msg: ISocketMessageResponse = JSON.parse(e.data);
             let init: IDataInitAdminResponse = msg.data as IDataInitAdminResponse;
+            console.log(init.roomCount)
             setRooms(init.roomList);
-            updateStats(init.roomCount,init.wsCount);
+            updateStats(init.roomCount,init.wsCount, init.drawCount);
         };
     }
 
@@ -148,6 +150,27 @@ const AdminPage = () => {
         createSocket(value);
     }
 
+    const userName = () => {
+        if(userNumber>1){
+            return "users";
+        }else{
+            return "user"
+        }
+    }
+    const roomName = () => {
+        if(roomNumber>1){
+            return "rooms";
+        }else{
+            return "room"
+        }
+    }
+    const drawName = () => {
+        if(drawNumber>1){
+            return "draws";
+        }else{
+            return "draw"
+        }
+    }
     return (
         <>
             <br></br>
@@ -176,7 +199,7 @@ const AdminPage = () => {
                                 value={userNumber}
                                 precision={0}
                                 valueStyle={{ color: '#3f8600' }}
-                                suffix="users"
+                                suffix={userName()}
                             />
                         </Card>
                     </Col>
@@ -187,18 +210,18 @@ const AdminPage = () => {
                                 value={roomNumber}
                                 precision={0}
                                 valueStyle={{ color: '#3f8600' }}
-                                suffix="rooms"
+                                suffix={roomName()}
                             />
                         </Card>
                     </Col>
                     <Col span={4}>
                         <Card>
                             <Statistic
-                                title="Delay"
-                                value={0}
-                                precision={2}
+                                title="Draw Count"
+                                value={drawNumber}
+                                precision={0}
                                 valueStyle={{ color: '#3f8600' }}
-                                suffix="ms"
+                                suffix={drawName()}
                             />
                         </Card>
                     </Col>

@@ -31,10 +31,10 @@ export interface IDataInitResponse {
     draws: IDraw[];
 }
 
-
 export interface IDataInitAdminResponse {
     roomCount: number;
     wsCount: number;
+    drawCount: number;
     roomList: IRoomInfo[];
 }
 
