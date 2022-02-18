@@ -22,7 +22,7 @@ interface GameViewProps {
     modeRef: MutableRefObject<any>,
     lineWidthRef: MutableRefObject<any>,
     colorRef: MutableRefObject<any>,
-    player: IPlayer,
+    player: IPlayer | undefined,
     initDraws: IDraw[],
     messages: IMessage[]
 }
