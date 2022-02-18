@@ -1,5 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
-import {Col, Grid, Row} from "antd";
+import React, {ForwardedRef, forwardRef, MutableRefObject, useEffect, useImperativeHandle, useRef} from "react";
 import {DrawTool, ICoordinate, IDraw, IPlayer} from "../../../types/GameModel";
 import {
     IDataDrawResponse,
@@ -7,34 +6,41 @@ import {
     ISocketMessageResponse,
     SocketChannel
 } from "../../../types/SocketModel";
-import DrawingToolTips from "./DrawingToolTips";
-import FloodFill, {ColorRGBA} from 'q-floodfill'
+import FloodFill from 'q-floodfill'
 
-const {useBreakpoint} = Grid;
+export interface canvasFunctions {
+    clear: () => any
+}
 
 interface DrawingCanvaProps {
     initDraw: IDraw[],
     webSocket: WebSocket,
-    player: IPlayer | undefined
+    player: IPlayer | undefined,
+    modeRef: MutableRefObject<any>,
+    lineWidthRef: MutableRefObject<any>,
+    colorRef: MutableRefObject<any>,
+    canDraw: boolean
 }
 
-const DrawingCanva = ({
-                          initDraw,
-                          webSocket,
-                          player
-                      }: DrawingCanvaProps) => {
+const DrawingCanva = forwardRef(({
+                                     initDraw,
+                                     webSocket,
+                                     player,
+                                     modeRef,
+                                     lineWidthRef,
+                                     colorRef,
+                                     canDraw
+                                 }: DrawingCanvaProps
+    , ref: ForwardedRef<canvasFunctions>) => {
 
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
-    const screens = useBreakpoint();
-
-    const [mode, setMode] = useState<DrawTool>(DrawTool.BRUSH);
-    const [lineWidth, setLineWidth] = useState<number>(10);
-    const [color, setColor] = useState<string>("#000000");
-
-    const modeRef = useRef(mode);
-    const lineWidthRef = useRef(lineWidth);
-    const colorRef = useRef(color);
+    useImperativeHandle(ref, () => ({
+        clear() {
+            if (canDraw)
+                clearCanva();
+        }
+    }));
 
     const canvasSize = {height: 600, width: 800};
     const pointerTo: ICoordinate = {x: 0, y: 0};
@@ -81,12 +87,18 @@ const DrawingCanva = ({
         }
     }
 
-    const getCoordinates = (event: PointerEvent): ICoordinate => {
-        return {x: event.offsetX, y: event.offsetY};
+    const getCoordinates = (event: PointerEvent): ICoordinate | undefined => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+
+        return {
+            x: event.offsetX / (canvas.clientWidth / canvasSize.width),
+            y: event.offsetY / (canvas.clientHeight / canvasSize.height)
+        };
     }
 
     const draw = (data: IDraw, clientSide: boolean) => {
-        if (!canvasRef.current || (clientSide && !drawing)) return;
+        if (!canvasRef.current || (clientSide && !drawing) || (clientSide && !canDraw)) return;
 
         const canvas: HTMLCanvasElement = canvasRef.current;
         const context = canvas.getContext("2d");
@@ -98,7 +110,7 @@ const DrawingCanva = ({
 
                 const imgData = context.getImageData(0, 0, canvas.width, canvas.height);
                 const floodFill = new FloodFill(imgData);
-                floodFill.fill(data.color, data.coordsTo.x, data.coordsTo.y, 50);
+                floodFill.fill(data.color, Math.round(data.coordsTo.x), Math.round(data.coordsTo.y), 50);
                 context.putImageData(floodFill.imageData, 0, 0);
 
                 if (clientSide) {
@@ -143,6 +155,8 @@ const DrawingCanva = ({
         pointerFrom.y = pointerTo.y;
 
         const coords = getCoordinates(evt);
+        if (!coords) return;
+
         pointerTo.x = coords.x;
         pointerTo.y = coords.y;
 
@@ -159,6 +173,8 @@ const DrawingCanva = ({
         evt.preventDefault();
 
         const coords = getCoordinates(evt);
+        if (!coords) return;
+
         pointerTo.x = coords.x;
         pointerTo.y = coords.y;
         pointerFrom.x = pointerTo.x;
@@ -185,14 +201,14 @@ const DrawingCanva = ({
         if (canvas) {
             canvas.addEventListener('pointerdown', onPointerDown, false);
             canvas.addEventListener('pointermove', onMove, false);
-            canvas.addEventListener('pointerup', stopDrawing, false);
+            window.addEventListener('pointerup', stopDrawing, false);
         }
 
         return () => {
             if (canvas) {
                 canvas.removeEventListener('pointerdown', onPointerDown, false);
                 canvas.removeEventListener('pointermove', onMove, false);
-                canvas.removeEventListener('pointerup', stopDrawing, false);
+                window.removeEventListener('pointerup', stopDrawing, false);
             }
         }
     }, [canvasRef])
@@ -200,50 +216,22 @@ const DrawingCanva = ({
     useEffect(() => {
         initDraw.forEach((data: IDraw) => {
             draw(data, false);
-        })
+        });
     }, [initDraw]);
 
     return (
         <>
-            <div>
-                <Row>
-                    {!(screens.md && !screens.lg) &&
-                        <Col md={6} xl={4}>
-                            <DrawingToolTips
-                                clearCanvas={() => {
-                                    sendDrawData({tool: DrawTool.CLEAR});
-                                    clearCanva();
-                                }}
-                                tool={mode}
-                                setTool={(t: DrawTool) => {
-                                    modeRef.current = t;
-                                    setMode(t);
-                                }}
-                                color={color}
-                                setColor={(c: string) => {
-                                    colorRef.current = c;
-                                    setColor(c);
-                                }}
-                                lineWidth={lineWidth}
-                                setLineWidth={(s: number) => {
-                                    lineWidthRef.current = s;
-                                    setLineWidth(s);
-                                }}
-                            />
-                        </Col>
-                    }
 
-                    <Col md={24} xl={20}>
-                        <canvas
-                            ref={canvasRef}
-                            height={canvasSize.height}
-                            width={canvasSize.width}
-                        />
-                    </Col>
-                </Row>
-            </div>
+            <canvas
+                ref={canvasRef}
+                height={canvasSize.height}
+                width={canvasSize.width}
+                style={{
+                    width: "100%"
+                }}/>
+
         </>
     )
-}
+})
 
 export default DrawingCanva;

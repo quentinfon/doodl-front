@@ -64,5 +64,7 @@ export enum SocketChannel {
     CHAT = "CHAT",
     DRAW = "DRAW",
     INFO = "INFO",
-    START = "START"
+    START = "START",
+    PING = "PING",
+    PONG = "PONG"
 }
