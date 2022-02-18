@@ -1,4 +1,4 @@
-import {IDraw, IRoomInfo, IMessage, IPlayer, IRoomConfig, RoomState} from './GameModel';
+import {IDraw, IMessage, IPlayer, IRoomConfig, IRoomInfo, RoomState} from './GameModel';
 
 export interface SocketUser {
     socket: WebSocket;
@@ -77,4 +77,8 @@ export enum GameSocketChannel {
     INFO = "INFO",
     START = "START",
     GUESS = "GUESS"
+}
+
+export enum AdminSocketChannel {
+    GLOBAL_DATA = "GLOBAL_DATA"
 }

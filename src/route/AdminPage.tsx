@@ -1,16 +1,15 @@
-import React, {useEffect, useState} from "react";
-import { Statistic, Row, Col, Card, Input, Button, Popconfirm, message, List} from 'antd';
-import { Collapse } from 'antd';
+import React, {useState} from "react";
+import {Button, Card, Col, Collapse, Input, List, message, Popconfirm, Row, Statistic} from 'antd';
 import {
+    AdminSocketChannel,
     IDataInitAdminResponse,
-    IDataInitResponse,
     ISocketMessageRequest,
-    ISocketMessageResponse,
-    SocketChannel
+    ISocketMessageResponse
 } from "../types/SocketModel";
 import {IRoomInfo} from "../types/GameModel";
-const { Panel } = Collapse;
-const { Search } = Input;
+
+const {Panel} = Collapse;
+const {Search} = Input;
 
 const AdminPage = () => {
 
@@ -33,7 +32,7 @@ const AdminPage = () => {
         setDrawNumber(drawCount);
     }
 
-    const createSocket = (value : String) => {
+    const createSocket = (value: String) => {
         let webSocket = new WebSocket(`${process.env.REACT_APP_WEBSOCKET_ENDPOINT_ADMIN}?token=${value}` as string);
 
         setLoadingConnexion(true);
@@ -43,7 +42,7 @@ const AdminPage = () => {
             setLoadingConnexion(false);
 
             setPingInterval(setInterval(() => {
-                webSocket.send(JSON.stringify({channel: SocketChannel.GLOBAL_DATA}))
+                webSocket.send(JSON.stringify({channel: AdminSocketChannel.GLOBAL_DATA}))
             }, 5 * 1000))
 
         };
@@ -63,17 +62,19 @@ const AdminPage = () => {
             let init: IDataInitAdminResponse = msg.data as IDataInitAdminResponse;
             console.log(init.roomCount)
             setRooms(init.roomList);
-            updateStats(init.roomCount,init.wsCount, init.drawCount);
+            updateStats(init.roomCount, init.wsCount, init.drawCount);
         };
     }
 
-    const explicite = (roomInfo : IRoomInfo) => {
+    const explicite = (roomInfo: IRoomInfo) => {
         console.log(roomInfo)
         let items = []
         items.push(<List.Item><p>{"RoomID : " + roomInfo.roomId}</p></List.Item>)
         //items.push(<List.Item><p>Joueurs : </p></List.Item>)
-        for(let i=0; i<roomInfo.playerList.length; i++){
-            items.push(<List.Item><p>{roomInfo.playerList[i].name + " "}{<Popconfirm  title={"DO YOU REALLY WANT TO KICK THIS PLAYER ?"} onConfirm={() => playerSuppression(roomInfo.playerList[i].playerId)} okText="Yes" cancelText="No">
+        for (let i = 0; i < roomInfo.playerList.length; i++) {
+            items.push(<List.Item><p>{roomInfo.playerList[i].name + " "}{<Popconfirm
+                title={"DO YOU REALLY WANT TO KICK THIS PLAYER ?"}
+                onConfirm={() => playerSuppression(roomInfo.playerList[i].playerId)} okText="Yes" cancelText="No">
                 <Button danger type="primary" shape="circle" size="small">
                     X
                 </Button>
@@ -81,38 +82,39 @@ const AdminPage = () => {
         }
         return (
             <>
-            <List bordered>
-                {items}
-            </List>
+                <List bordered>
+                    {items}
+                </List>
             </>
         )
     }
 
-     const callback = (key:String) => {
+    const callback = (key: String) => {
         console.log(key);
-         /*sendMessage({
-             channel: SocketChannel.CHAT,
-             data: {
-                 message: currentMsg
-             }
-         });*/
+        /*sendMessage({
+            channel: SocketChannel.CHAT,
+            data: {
+                message: currentMsg
+            }
+        });*/
     }
 
-    const playerSuppression = (playerId:String) => {
+    const playerSuppression = (playerId: String) => {
         message.success('Player Supprimé :)');
     }
 
-    const roomSuppression = (roomId : string) => {
+    const roomSuppression = (roomId: string) => {
         message.success('Chambre supprimé :)');
     }
 
     function card(i: number) {
         return (
             <Col span={6}>
-                <Collapse >
+                <Collapse>
                     <Panel header={"Room " + i.toString()} key={i} extra={
                         <div onClick={e => e.stopPropagation()}>
-                            <Popconfirm  title={"DO YOU REALLY WANT TO SUPPRESS THIS ROOM ?"} onConfirm={() => roomSuppression(rooms[i].roomId)} okText="Yes" cancelText="No">
+                            <Popconfirm title={"DO YOU REALLY WANT TO SUPPRESS THIS ROOM ?"}
+                                        onConfirm={() => roomSuppression(rooms[i].roomId)} okText="Yes" cancelText="No">
                                 <Button danger type="primary" shape="circle" size="small">
                                     X
                                 </Button>
@@ -130,19 +132,19 @@ const AdminPage = () => {
 
         const items = []
         console.log(rooms[0])
-        for(let i=0;i<roomNumber;i+=4){
+        for (let i = 0; i < roomNumber; i += 4) {
             items.push(<Row>
-                {i<roomNumber &&
+                {i < roomNumber &&
                     card(i)
                 }
                 {i + 1 < roomNumber &&
-                    card(i+1)
+                    card(i + 1)
                 }
                 {i + 2 < roomNumber &&
-                    card(i+2)
+                    card(i + 2)
                 }
                 {i + 3 < roomNumber &&
-                    card(i+3)
+                    card(i + 3)
                 }
             </Row>)
         }
@@ -158,23 +160,23 @@ const AdminPage = () => {
     }
 
     const userName = () => {
-        if(userNumber>1){
+        if (userNumber > 1) {
             return "users";
-        }else{
+        } else {
             return "user"
         }
     }
     const roomName = () => {
-        if(roomNumber>1){
+        if (roomNumber > 1) {
             return "rooms";
-        }else{
+        } else {
             return "room"
         }
     }
     const drawName = () => {
-        if(drawNumber>1){
+        if (drawNumber > 1) {
             return "draws";
-        }else{
+        } else {
             return "draw"
         }
     }
@@ -205,7 +207,7 @@ const AdminPage = () => {
                                 title="Active users"
                                 value={userNumber}
                                 precision={0}
-                                valueStyle={{ color: '#3f8600' }}
+                                valueStyle={{color: '#3f8600'}}
                                 suffix={userName()}
                             />
                         </Card>
@@ -216,7 +218,7 @@ const AdminPage = () => {
                                 title="Active rooms"
                                 value={roomNumber}
                                 precision={0}
-                                valueStyle={{ color: '#3f8600' }}
+                                valueStyle={{color: '#3f8600'}}
                                 suffix={roomName()}
                             />
                         </Card>
@@ -227,13 +229,14 @@ const AdminPage = () => {
                                 title="Draw Count"
                                 value={drawNumber}
                                 precision={0}
-                                valueStyle={{ color: '#3f8600' }}
+                                valueStyle={{color: '#3f8600'}}
                                 suffix={drawName()}
                             />
                         </Card>
                     </Col>
                 </Row>
-            </div>,
+            </div>
+            ,
             {render()}
         </>
     )
