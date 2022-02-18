@@ -1,7 +1,7 @@
 import {Avatar, Button, Card, Col, Comment, Form, Input, List, Row} from "antd";
 import React, {useEffect, useState} from "react";
 import {IMessage, IPlayer} from "../types/GameModel";
-import {ISocketMessageRequest, SocketChannel} from "../types/SocketModel";
+import {GameSocketChannel, ISocketMessageRequest} from "../types/SocketModel";
 
 interface GameChatProps {
     messages: IMessage[],
@@ -39,7 +39,7 @@ const GameChat = ({
         if (!currentMsg) return;
 
         sendMessage({
-            channel: SocketChannel.CHAT,
+            channel: GameSocketChannel.CHAT,
             data: {
                 message: currentMsg
             }

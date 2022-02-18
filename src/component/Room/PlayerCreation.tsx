@@ -1,9 +1,9 @@
-import React, { useState } from "react";
-import { Button, Card, Col, Input, Row, Typography } from "antd";
-import { IPlayer } from "../../types/GameModel";
+import React, {useState} from "react";
+import {Button, Card, Col, Input, Row, Typography} from "antd";
+import {IPlayer} from "../../types/GameModel";
 import AvatarPicker from "./AvatarPicker";
 
-const { Title, Text } = Typography;
+const {Title, Text} = Typography;
 
 interface PlayerCreationProps {
     createPlayer: (player: IPlayer) => any,
@@ -11,14 +11,15 @@ interface PlayerCreationProps {
 }
 
 const PlayerCreation = ({
-    createPlayer,
-    loadingConnexion
-}: PlayerCreationProps) => {
+                            createPlayer,
+                            loadingConnexion
+                        }: PlayerCreationProps) => {
 
     const [player, setPlayer] = useState<IPlayer>({
         playerId: "",
         name: `Player${Math.random().toString().substring(2, 6)}`,
-        imgUrl: `https://joeschmoe.io/api/v1/${Math.random().toString().substring(2, 10)}`,
+        imgUrl: "",
+        point: 0
     })
 
     return (
@@ -26,7 +27,7 @@ const PlayerCreation = ({
 
             <Row
                 justify="center"
-                style={{ marginTop: "5%" }}
+                style={{marginTop: "5%"}}
             >
                 <Col lg={22}>
 
@@ -41,14 +42,14 @@ const PlayerCreation = ({
                                 <Input.Group>
                                     <Input
                                         value={player.name}
-                                        onChange={(e) => setPlayer({ ...player, name: e.target.value })}
+                                        onChange={(e) => setPlayer({...player, name: e.target.value})}
                                     />
                                 </Input.Group>
                             </Col>
 
                             <Col sm={24} md={12} lg={6}>
                                 <AvatarPicker
-                                    setPlayerImg={(img: string) => setPlayer({ ...player, imgUrl: img })}
+                                    setPlayerImg={(img: string) => setPlayer({...player, imgUrl: img})}
                                 />
                             </Col>
 

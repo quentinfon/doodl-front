@@ -8,7 +8,7 @@ export interface SocketUser {
 }
 
 export interface ISocketMessage {
-    channel: SocketChannel;
+    channel: GameSocketChannel;
 }
 
 export interface ISocketMessageRequest extends ISocketMessage {
@@ -46,18 +46,27 @@ export interface IDataDrawResponse extends IDraw {
 export interface IDataInfoResponse {
     roomState: RoomState;
     playerList: IPlayer[];
+    playerTurn: IPlayer[];
     roomConfig: IRoomConfig;
 }
 
 // IDataStartRequest = IRoomConfig
-// IDataStartResponse = Not stated (IRoomConfig tmp) // TODO
+// IDataStartResponse = IRoomConfig on success
 
-export enum SocketChannel {
+// IDataGuessRequest doesn't exist
+export interface IDataGuestResponse {
+    guessGainPoint: number;
+    drawGainPoint: number;
+    guesser: IPlayer;
+}
+
+export enum GameSocketChannel {
+    PING = "PING",
+    PONG = "PONG",
     INIT = "INIT",
     CHAT = "CHAT",
     DRAW = "DRAW",
     INFO = "INFO",
     START = "START",
-    PING = "PING",
-    PONG = "PONG"
+    GUESS = "GUESS"
 }
