@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from "react";
 import {useParams} from "react-router-dom";
-import {Col, Grid, Row} from 'antd';
+import {Grid} from 'antd';
 import {
     GameSocketChannel,
     IDataInfoResponse,
@@ -8,14 +8,13 @@ import {
     ISocketMessageRequest,
     ISocketMessageResponse
 } from "../types/SocketModel";
-import GameChat from "../component/GameChat";
-import {DrawTool, IDraw, IMessage, IPlayer, IRoomStatus} from "../types/GameModel";
+import {DrawTool, IDraw, IMessage, IPlayer, IRoomStatus, RoomState} from "../types/GameModel";
 import {getRoomData} from "../api/gameService";
 import RoomUnavailable from "../component/Room/RoomUnavailable";
 import PlayerCreation from "../component/Room/PlayerCreation";
-import DrawingCanva, {canvasFunctions} from "../component/Room/Canva/DrawingCanva";
-import WordDisplayer from "../component/Room/WordDisplayer";
-import DrawingToolTips from "../component/Room/Canva/DrawingToolTips";
+import {canvasFunctions} from "../component/Room/Canva/DrawingCanva";
+import GameView from "../component/Room/Game/GameView";
+import RoomLobby from "../component/Room/Lobby/RoomLobby";
 
 const {useBreakpoint} = Grid;
 
@@ -167,57 +166,60 @@ const GamePage = () => {
                                 </>
 
                                 :
-                                <Row>
-                                    {playerIsAllowedToDraw &&
-                                        <Col xs={24} md={6} xl={4}>
-                                            <DrawingToolTips
-                                                clearCanvas={() => {
-                                                    sendDrawData({tool: DrawTool.CLEAR});
-                                                    canvasRef?.current?.clear();
-                                                }}
-                                                tool={mode}
-                                                setTool={(t: DrawTool) => {
-                                                    modeRef.current = t;
-                                                    setMode(t);
-                                                }}
-                                                color={color}
-                                                setColor={(c: string) => {
-                                                    colorRef.current = c;
-                                                    setColor(c);
-                                                }}
-                                                lineWidth={lineWidth}
-                                                setLineWidth={(s: number) => {
-                                                    lineWidthRef.current = s;
-                                                    setLineWidth(s);
-                                                }}
-                                            />
-                                        </Col>
+
+                                <>
+                                    {gameData !== undefined ?
+                                        <>
+                                            {gameData.roomState === RoomState.INGAME &&
+                                                <GameView
+                                                    playerIsAllowedToDraw={playerIsAllowedToDraw}
+                                                    canvasRef={canvasRef}
+                                                    sendDrawData={sendDrawData}
+                                                    mode={mode}
+                                                    setMode={(tool: DrawTool) => {
+                                                        setMode(tool);
+                                                        modeRef.current = tool;
+                                                    }}
+                                                    color={color}
+                                                    setColor={(color: string) => {
+                                                        setColor(color);
+                                                        colorRef.current = color;
+                                                    }}
+                                                    lineWidth={lineWidth}
+                                                    setLineWidth={(width: number) => {
+                                                        setLineWidth(width);
+                                                        lineWidthRef.current = width;
+                                                    }}
+                                                    socket={ws}
+                                                    modeRef={modeRef}
+                                                    lineWidthRef={lineWidthRef}
+                                                    colorRef={colorRef}
+                                                    player={player}
+                                                    initDraws={initDraws}
+                                                    messages={messages}
+                                                />
+                                            }
+
+                                            {gameData.roomState === RoomState.LOBBY &&
+                                                <RoomLobby
+                                                    gameData={gameData}
+                                                    webSocket={ws}
+                                                    setConfig={(config) => setGameData({
+                                                        ...gameData,
+                                                        roomConfig: config
+                                                    })}
+                                                />
+                                            }
+
+                                        </>
+
+                                        :
+                                        <>
+
+                                        </>
                                     }
+                                </>
 
-                                    <Col xs={24} md={12} xl={14}>
-                                        <WordDisplayer
-                                            wordToDisplay={"Test ____"}
-                                        />
-                                        <DrawingCanva
-                                            ref={canvasRef}
-                                            initDraw={initDraws}
-                                            webSocket={ws}
-                                            player={player}
-                                            modeRef={modeRef}
-                                            lineWidthRef={lineWidthRef}
-                                            colorRef={colorRef}
-                                            canDraw={playerIsAllowedToDraw}
-                                        />
-                                    </Col>
-
-                                    <Col xs={24} md={6}>
-                                        <GameChat
-                                            messages={messages}
-                                            sendMessage={sendMessage}
-                                            player={player}
-                                        />
-                                    </Col>
-                                </Row>
                             }
                         </>
                     }

@@ -1,13 +1,11 @@
 import React, {useEffect, useState} from "react";
-import {Button, Card, Divider, Row, Select, Typography} from "antd";
+import {Button, Card, Divider, Row, Typography} from "antd";
 import {GameMode, IRoomConfig} from "../types/GameModel";
 import {fetchUtil} from "../api/request";
-import {createNewRoom, getRoomCreationConfig} from "../api/gameService";
+import {createNewRoom} from "../api/gameService";
 import {useNavigate} from 'react-router-dom';
-import {IRoomServerConfig} from "../types/ConfigModel";
 
-const {Title, Text} = Typography;
-const {Option} = Select;
+const {Title} = Typography;
 
 const NewGame = () => {
 
@@ -19,23 +17,6 @@ const NewGame = () => {
         cycleRoundByGame: 3
     })
 
-    const [roomConfigParam, setRoomConfigParam] = useState<IRoomServerConfig>({
-        minMaxPlayer: 2,
-        maxMaxPlayer: 32,
-        minTimeByTurn: 15,
-        maxTimeByTurn: 300,
-        maxChatMessageLength: 240
-    });
-
-    const [loadingParams, setLoadingParams] = useState<boolean>(false);
-    const [error, setError] = useState<string>("");
-
-    const getRoomConfigParam = () => {
-        fetchUtil(getRoomCreationConfig(),
-            setRoomConfigParam,
-            setLoadingParams,
-            setError);
-    }
 
     const [loadingNewRoom, setLoadingNewRoom] = useState<boolean>(false);
     const [errorNewRoom, setErrorNewRoom] = useState<string>("");
@@ -54,9 +35,6 @@ const NewGame = () => {
         )
     }
 
-    useEffect(() => {
-        getRoomConfigParam();
-    }, []);
 
     return (
         <>

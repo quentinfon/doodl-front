@@ -26,7 +26,7 @@ const LobbyPlayerList = ({
                             />
                         </List.Item>
                     )}
-                />,
+                />
             </Card>
 
         </>
