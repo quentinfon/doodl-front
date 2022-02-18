@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Button, Card, Col, Divider, Input, InputNumber, Row, Select, Typography} from "antd";
+import {Button, Card, Col, Divider, Input, InputNumber, Row, Select, Tooltip, Typography} from "antd";
 import {GameMode, IRoomConfig} from "../../../types/GameModel";
 import {IRoomServerConfig} from "../../../types/ConfigModel";
 import {IDataInfoResponse} from "../../../types/SocketModel";
@@ -85,6 +85,7 @@ const LobbyConfig = ({
                             max={roomConfigParam.maxCycleRoundByGame}
                             value={gameConfig.cycleRoundByGame}
                             onChange={(e) => setConfig({...gameConfig, cycleRoundByGame: e})}
+                            disabled={readOnly}
                         />
                     </Col>
 
@@ -98,6 +99,7 @@ const LobbyConfig = ({
                             onChange={(e) => setConfig({...gameConfig, timeByTurn: e})}
                             prefix={<FieldTimeOutlined style={{paddingRight: "5px"}}/>}
                             addonAfter="seconds"
+                            disabled={readOnly}
                         />
                     </Col>
 
@@ -108,6 +110,7 @@ const LobbyConfig = ({
                                 style={{width: "100%"}}
                                 value={gameConfig.gameMode}
                                 onChange={(e) => setConfig({...gameConfig, gameMode: e})}
+                                disabled={readOnly}
                             >
                                 {Object.keys(GameMode).map((mode: string, idx: number) => {
                                     return (
@@ -123,13 +126,15 @@ const LobbyConfig = ({
 
                 {!readOnly &&
                     <Row justify="end">
-                        <Button
-                            onClick={startGame}
-                            type="primary"
-                            disabled={!canLaunchGame}
-                        >
-                            Start
-                        </Button>
+                        <Tooltip title={!canLaunchGame ? "You need to at least be 2 to start a game." : ""}>
+                            <Button
+                                onClick={startGame}
+                                type="primary"
+                                disabled={!canLaunchGame}
+                            >
+                                Start
+                            </Button>
+                        </Tooltip>
                     </Row>
                 }
 

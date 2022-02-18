@@ -1,18 +1,44 @@
 import React from "react";
 import {IPlayer} from "../../../types/GameModel";
-import {Avatar, Card, Divider, List, Typography} from "antd";
+import {Avatar, Badge, Card, Divider, List, Typography} from "antd";
+import {UserOutlined} from '@ant-design/icons';
 
 const {Title} = Typography;
 
 interface LobbyPlayerListProps {
     adminPlayerId: string,
-    players: IPlayer[]
+    players: IPlayer[],
+    currentPlayerId: string
 }
 
 const LobbyPlayerList = ({
                              adminPlayerId,
-                             players
+                             players,
+                             currentPlayerId
                          }: LobbyPlayerListProps) => {
+
+    const PlayerDisplay = ({
+                               player
+                           }: { player: IPlayer }) => {
+        return (
+            <>
+                <Title
+                    level={5}
+                    style={{color: player.playerId === currentPlayerId ? "#1890ff" : ""}}
+                >
+                    {player.name}
+                    {player.playerId === adminPlayerId &&
+                        <UserOutlined
+                            style={{
+                                paddingLeft: "10px",
+                                color: '#ff4d4f'
+                            }}
+                        />
+                    }
+                </Title>
+            </>
+        )
+    }
 
     return (
         <>
@@ -28,13 +54,26 @@ const LobbyPlayerList = ({
                 <List
                     itemLayout="horizontal"
                     dataSource={players}
-                    renderItem={player => (
-                        <List.Item>
-                            <List.Item.Meta
-                                avatar={<Avatar src={player.imgUrl}/>}
-                                title={player.name}
-                            />
-                        </List.Item>
+                    renderItem={(player: IPlayer) => (
+                        <>
+                            {player.playerId === currentPlayerId ?
+                                <Badge.Ribbon text="You" color="primary">
+                                    <List.Item>
+                                        <List.Item.Meta
+                                            avatar={<Avatar src={player.imgUrl}/>}
+                                            title={<PlayerDisplay player={player}/>}
+                                        />
+                                    </List.Item>
+                                </Badge.Ribbon>
+                                :
+                                <List.Item>
+                                    <List.Item.Meta
+                                        avatar={<Avatar src={player.imgUrl}/>}
+                                        title={<PlayerDisplay player={player}/>}
+                                    />
+                                </List.Item>
+                            }
+                        </>
                     )}
                 />
             </Card>

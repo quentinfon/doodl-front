@@ -7,16 +7,18 @@ import {
     ISocketMessageResponse
 } from "../../../types/SocketModel";
 import LobbyPlayerList from "./LobbyPlayerList";
-import {IRoomConfig} from "../../../types/GameModel";
+import {IPlayer, IRoomConfig} from "../../../types/GameModel";
 import LobbyConfig from "./LobbyConfig";
 
 interface RoomLobbyProps {
+    player: IPlayer | undefined,
     gameData: IDataInfoResponse,
     webSocket: WebSocket,
     setConfig: (config: IRoomConfig) => any
 }
 
 const RoomLobby = ({
+                       player,
                        gameData,
                        webSocket,
                        setConfig
@@ -33,6 +35,13 @@ const RoomLobby = ({
         setConfig(data);
     }
 
+    const sendConfig = (config: IRoomConfig) => {
+        webSocket?.send(JSON.stringify({
+            channel: GameSocketChannel.CONFIG,
+            data: config
+        } as ISocketMessageRequest))
+    }
+
 
     useEffect(() => {
         webSocket.addEventListener("message", onConfigChange);
@@ -43,7 +52,7 @@ const RoomLobby = ({
     }, [webSocket])
 
     const startGame = () => {
-        webSocket.send(JSON.stringify({
+        webSocket?.send(JSON.stringify({
             channel: GameSocketChannel.START
         } as ISocketMessageRequest))
     }
@@ -61,8 +70,11 @@ const RoomLobby = ({
                 >
                     <LobbyConfig
                         gameData={gameData}
-                        readOnly={false}
-                        setConfig={setConfig}
+                        readOnly={player?.playerId !== gameData.playerAdminId}
+                        setConfig={(config: IRoomConfig) => {
+                            setConfig(config);
+                            sendConfig(config);
+                        }}
                         startGame={startGame}
                         canLaunchGame={gameData.playerList.length >= 2}
                     />
@@ -76,8 +88,9 @@ const RoomLobby = ({
                     }}
                 >
                     <LobbyPlayerList
-                        adminPlayerId={""}
+                        adminPlayerId={gameData.playerAdminId ?? ""}
                         players={gameData.playerList}
+                        currentPlayerId={player?.playerId ?? ""}
                     />
                 </Col>
             </Row>

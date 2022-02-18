@@ -202,12 +202,17 @@ const GamePage = () => {
 
                                             {gameData.roomState === RoomState.LOBBY &&
                                                 <RoomLobby
+                                                    player={player}
                                                     gameData={gameData}
                                                     webSocket={ws}
-                                                    setConfig={(config) => setGameData({
-                                                        ...gameData,
-                                                        roomConfig: config
-                                                    })}
+                                                    setConfig={(config) => {
+                                                        setGameData({
+                                                            ...gameData,
+                                                            playerList: [...gameData?.playerList],
+                                                            playerTurn: [...gameData?.playerTurn],
+                                                            roomConfig: config
+                                                        });
+                                                    }}
                                                 />
                                             }
 
