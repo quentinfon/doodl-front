@@ -53,7 +53,7 @@ const RoomLobby = ({
         <>
             <Row>
                 <Col
-                    sm={24}
+                    xs={24}
                     lg={12}
                     style={{
                         padding: "5%"
@@ -69,7 +69,7 @@ const RoomLobby = ({
                 </Col>
 
                 <Col
-                    sm={24}
+                    xs={24}
                     lg={12}
                     style={{
                         padding: "5%"

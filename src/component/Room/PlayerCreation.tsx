@@ -29,24 +29,24 @@ const PlayerCreation = ({
                 justify="center"
                 style={{marginTop: "5%"}}
             >
-                <Col lg={22}>
+                <Col xs={24} lg={22}>
 
                     <Card>
 
                         <Title level={3}>Joining game</Title>
 
                         <Row
-                            gutter={50}
+                            gutter={[50, 25]}
                         >
 
-                            <Col sm={24} md={12}>
+                            <Col xs={24} md={12}>
                                 <AvatarPicker
                                     setPlayerImg={(img: string) => setPlayer({...player, imgUrl: img})}
                                 />
                             </Col>
 
-                            <Col sm={24} md={12}>
-                                <Text>Nickname</Text>
+                            <Col xs={24} md={12}>
+                                <Title level={4}>Nickname</Title>
                                 <Input.Group>
                                     <Input
                                         value={player.name}
@@ -60,7 +60,7 @@ const PlayerCreation = ({
                         <Row
                             justify="end"
                             style={{
-                                marginTop: "15px"
+                                marginTop: "25px"
                             }}
                         >
                             <Button

@@ -113,14 +113,15 @@ const AvatarPicker = ({
             <Row
                 justify="center"
                 align="middle"
+                gutter={[20, 25]}
             >
-                <Col lg={24} xl={12}>
+                <Col xs={22} sm={18} xl={12}>
 
                     <img src={currentAvatarUrl}/>
 
                 </Col>
 
-                <Col lg={24} xl={12}>
+                <Col xs={24} xl={12}>
                     <Row justify={"center"}>
                         <Button
                             shape="circle"
