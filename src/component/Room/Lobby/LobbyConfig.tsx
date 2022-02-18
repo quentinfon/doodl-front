@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Button, Card, Col, Input, InputNumber, Row, Select, Typography} from "antd";
+import {Button, Card, Col, Divider, Input, InputNumber, Row, Select, Typography} from "antd";
 import {GameMode, IRoomConfig} from "../../../types/GameModel";
 import {IRoomServerConfig} from "../../../types/ConfigModel";
 import {IDataInfoResponse} from "../../../types/SocketModel";
@@ -8,7 +8,7 @@ import {getRoomCreationConfig} from "../../../api/gameService";
 import {FieldTimeOutlined, RedoOutlined} from '@ant-design/icons';
 
 
-const {Text} = Typography;
+const {Text, Title} = Typography;
 const {Option} = Select;
 
 
@@ -16,14 +16,16 @@ interface LobbyConfigProps {
     gameData: IDataInfoResponse,
     readOnly: boolean,
     setConfig: (config: IRoomConfig) => any,
-    startGame: () => any
+    startGame: () => any,
+    canLaunchGame: boolean
 }
 
 const LobbyConfig = ({
                          gameData,
                          readOnly,
                          setConfig,
-                         startGame
+                         startGame,
+                         canLaunchGame
                      }: LobbyConfigProps) => {
 
     const [gameConfig, setGameConfig] = useState<IRoomConfig>(gameData.roomConfig);
@@ -61,14 +63,20 @@ const LobbyConfig = ({
     return (
         <>
             <Card>
+                <Title level={3}>
+                    Game Settings
+                </Title>
+
+                <Divider/>
+
                 <Row
-                    gutter={20}
+                    gutter={[20, 20]}
                     style={{
                         marginBottom: 20
                     }}
                 >
 
-                    <Col sm={24} md={12} lg={8}>
+                    <Col sm={24} lg={12}>
                         <Text>Number of rounds</Text>
                         <InputNumber
                             style={{width: "100%"}}
@@ -80,7 +88,7 @@ const LobbyConfig = ({
                         />
                     </Col>
 
-                    <Col sm={24} md={12} lg={8}>
+                    <Col sm={24} lg={12}>
                         <Text>Time by turn</Text>
                         <InputNumber
                             style={{width: "100%"}}
@@ -93,7 +101,7 @@ const LobbyConfig = ({
                         />
                     </Col>
 
-                    <Col sm={24} md={12} lg={8}>
+                    <Col sm={24} lg={12}>
                         <Text>Game mode</Text>
                         <Input.Group>
                             <Select
@@ -113,11 +121,17 @@ const LobbyConfig = ({
 
                 </Row>
 
-                <Button
-                    onClick={startGame}
-                >
-                    Start
-                </Button>
+                {!readOnly &&
+                    <Row justify="end">
+                        <Button
+                            onClick={startGame}
+                            type="primary"
+                            disabled={!canLaunchGame}
+                        >
+                            Start
+                        </Button>
+                    </Row>
+                }
 
             </Card>
         </>

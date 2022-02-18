@@ -1,6 +1,8 @@
 import React from "react";
 import {IPlayer} from "../../../types/GameModel";
-import {Avatar, Card, List} from "antd";
+import {Avatar, Card, Divider, List, Typography} from "antd";
+
+const {Title} = Typography;
 
 interface LobbyPlayerListProps {
     adminPlayerId: string,
@@ -15,6 +17,14 @@ const LobbyPlayerList = ({
     return (
         <>
             <Card>
+                <Title
+                    level={3}
+                >
+                    Players
+                </Title>
+
+                <Divider/>
+
                 <List
                     itemLayout="horizontal"
                     dataSource={players}

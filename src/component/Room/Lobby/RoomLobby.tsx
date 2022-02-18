@@ -52,16 +52,29 @@ const RoomLobby = ({
     return (
         <>
             <Row>
-                <Col sm={24} lg={12}>
+                <Col
+                    sm={24}
+                    lg={12}
+                    style={{
+                        padding: "5%"
+                    }}
+                >
                     <LobbyConfig
                         gameData={gameData}
                         readOnly={false}
                         setConfig={setConfig}
                         startGame={startGame}
+                        canLaunchGame={gameData.playerList.length >= 2}
                     />
                 </Col>
 
-                <Col sm={24} lg={12}>
+                <Col
+                    sm={24}
+                    lg={12}
+                    style={{
+                        padding: "5%"
+                    }}
+                >
                     <LobbyPlayerList
                         adminPlayerId={""}
                         players={gameData.playerList}

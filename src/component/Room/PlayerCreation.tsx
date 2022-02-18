@@ -35,9 +35,17 @@ const PlayerCreation = ({
 
                         <Title level={3}>Joining game</Title>
 
-                        <Row>
+                        <Row
+                            gutter={50}
+                        >
 
-                            <Col sm={24} md={12} lg={6}>
+                            <Col sm={24} md={12}>
+                                <AvatarPicker
+                                    setPlayerImg={(img: string) => setPlayer({...player, imgUrl: img})}
+                                />
+                            </Col>
+
+                            <Col sm={24} md={12}>
                                 <Text>Nickname</Text>
                                 <Input.Group>
                                     <Input
@@ -47,15 +55,10 @@ const PlayerCreation = ({
                                 </Input.Group>
                             </Col>
 
-                            <Col sm={24} md={12} lg={6}>
-                                <AvatarPicker
-                                    setPlayerImg={(img: string) => setPlayer({...player, imgUrl: img})}
-                                />
-                            </Col>
-
                         </Row>
 
                         <Row
+                            justify="end"
                             style={{
                                 marginTop: "15px"
                             }}
@@ -64,6 +67,7 @@ const PlayerCreation = ({
                                 onClick={() => createPlayer(player)}
                                 disabled={loadingConnexion}
                                 loading={loadingConnexion}
+                                type="primary"
                             >
                                 Join
                             </Button>
