@@ -15,8 +15,8 @@ const NewGame = () => {
 
     const [newGameConfig, setNewGameConfig] = useState<IRoomConfig>({
         gameMode: GameMode.CLASSIC,
-        maxPlayer: 8,
-        timeByTurn: 60
+        timeByTurn: 60,
+        cycleRoundByGame: 3
     })
 
     const [roomConfigParam, setRoomConfigParam] = useState<IRoomServerConfig>({

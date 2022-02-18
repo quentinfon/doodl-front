@@ -1,7 +1,13 @@
 import React, {useEffect, useRef, useState} from "react";
 import {useParams} from "react-router-dom";
 import {Col, Grid, Row} from 'antd';
-import {IDataInitResponse, ISocketMessageRequest, ISocketMessageResponse, SocketChannel} from "../types/SocketModel";
+import {
+    GameSocketChannel,
+    IDataInfoResponse,
+    IDataInitResponse,
+    ISocketMessageRequest,
+    ISocketMessageResponse
+} from "../types/SocketModel";
 import GameChat from "../component/GameChat";
 import {DrawTool, IDraw, IMessage, IPlayer, IRoomStatus} from "../types/GameModel";
 import {getRoomData} from "../api/gameService";
@@ -22,6 +28,8 @@ const GamePage = () => {
     const screens = useBreakpoint();
 
     const [ws, setWs] = useState<WebSocket>();
+    const [gameData, setGameData] = useState<IDataInfoResponse>();
+
     const [player, setPlayer] = useState<IPlayer>();
     const [initDraws, setInitDraws] = useState<IDraw[]>([]);
 
@@ -68,7 +76,7 @@ const GamePage = () => {
 
     const sendDrawData = (drawData: IDraw) => {
         const message: ISocketMessageRequest = {
-            channel: SocketChannel.DRAW,
+            channel: GameSocketChannel.DRAW,
             data: drawData
         }
 
@@ -82,7 +90,7 @@ const GamePage = () => {
 
         webSocket.onopen = () => {
             webSocket?.send(JSON.stringify({
-                channel: SocketChannel.INIT,
+                channel: GameSocketChannel.INIT,
                 data: {
                     roomId: gameId,
                     name: player.name,
@@ -91,7 +99,7 @@ const GamePage = () => {
             }));
 
             setPingInterval(setInterval(() => {
-                webSocket.send(JSON.stringify({channel: SocketChannel.PING}))
+                webSocket.send(JSON.stringify({channel: GameSocketChannel.PING}))
             }, 30 * 1000))
 
             setWs(webSocket);
@@ -111,23 +119,24 @@ const GamePage = () => {
         webSocket.onmessage = e => {
             let msg: ISocketMessageResponse = JSON.parse(e.data);
 
-            if (msg.channel === SocketChannel.INIT) {
+            if (msg.channel === GameSocketChannel.INIT) {
                 let init: IDataInitResponse = msg.data as IDataInitResponse;
                 setPlayer({
                     playerId: init.playerId,
                     imgUrl: player.imgUrl,
-                    name: player.name
+                    name: player.name,
+                    point: 0
                 });
                 messages.length = 0;
                 init.messages.forEach(msg => messages.push(msg));
                 setInitDraws(init.draws);
             }
 
-            if(msg.channel === SocketChannel.INFO){
-                console.log(msg);
+            if (msg.channel === GameSocketChannel.INFO) {
+                setGameData(msg.data as IDataInfoResponse);
             }
 
-            if (msg.channel === SocketChannel.CHAT) {
+            if (msg.channel === GameSocketChannel.CHAT) {
                 messages.push(msg.data as IMessage)
                 setMessages([...messages])
             }
