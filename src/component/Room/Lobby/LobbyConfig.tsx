@@ -2,7 +2,12 @@ import React, {useEffect, useState} from "react";
 import {Button, Card, Col, Divider, Input, InputNumber, Row, Select, Tooltip, Typography} from "antd";
 import {GameMode, IRoomConfig} from "../../../types/GameModel";
 import {IRoomServerConfig} from "../../../types/ConfigModel";
-import {IDataInfoResponse} from "../../../types/SocketModel";
+import {
+    GameSocketChannel,
+    IDataInfoResponse,
+    ISocketMessageRequest,
+    ISocketMessageResponse
+} from "../../../types/SocketModel";
 import {fetchUtil} from "../../../api/request";
 import {getRoomCreationConfig} from "../../../api/gameService";
 import {FieldTimeOutlined, RedoOutlined} from '@ant-design/icons';
@@ -15,16 +20,14 @@ const {Option} = Select;
 interface LobbyConfigProps {
     gameData: IDataInfoResponse,
     readOnly: boolean,
-    setConfig: (config: IRoomConfig) => any,
-    startGame: () => any,
+    webSocket: WebSocket,
     canLaunchGame: boolean
 }
 
 const LobbyConfig = ({
                          gameData,
                          readOnly,
-                         setConfig,
-                         startGame,
+                         webSocket,
                          canLaunchGame
                      }: LobbyConfigProps) => {
 
@@ -38,6 +41,43 @@ const LobbyConfig = ({
             setRoomConfigParam,
             setLoadingParams,
             setError);
+    }
+
+    const onConfigChange = (event: any) => {
+        const msg: ISocketMessageResponse = JSON.parse(event.data);
+        if (msg.channel !== GameSocketChannel.CONFIG) return;
+
+        const data: IRoomConfig = msg.data as IRoomConfig;
+        if (!data) return;
+
+        setGameConfig(data);
+    }
+
+    const sendConfig = (config: IRoomConfig) => {
+        webSocket?.send(JSON.stringify({
+            channel: GameSocketChannel.CONFIG,
+            data: config
+        } as ISocketMessageRequest))
+    }
+
+
+    useEffect(() => {
+        webSocket.addEventListener("message", onConfigChange);
+
+        return (() => {
+            webSocket.removeEventListener("message", onConfigChange);
+        })
+    }, [webSocket])
+
+    const startGame = () => {
+        webSocket?.send(JSON.stringify({
+            channel: GameSocketChannel.START
+        } as ISocketMessageRequest))
+    }
+
+    const setNewConfig = (config: IRoomConfig) => {
+        setGameConfig(config);
+        sendConfig(config);
     }
 
     useEffect(() => {
@@ -84,7 +124,7 @@ const LobbyConfig = ({
                             min={roomConfigParam.minCycleRoundByGame}
                             max={roomConfigParam.maxCycleRoundByGame}
                             value={gameConfig.cycleRoundByGame}
-                            onChange={(e) => setConfig({...gameConfig, cycleRoundByGame: e})}
+                            onChange={(e) => setNewConfig({...gameConfig, cycleRoundByGame: e})}
                             disabled={readOnly}
                         />
                     </Col>
@@ -96,7 +136,7 @@ const LobbyConfig = ({
                             min={roomConfigParam.minTimeByTurn}
                             max={roomConfigParam.maxTimeByTurn}
                             value={gameConfig.timeByTurn}
-                            onChange={(e) => setConfig({...gameConfig, timeByTurn: e})}
+                            onChange={(e) => setNewConfig({...gameConfig, timeByTurn: e})}
                             prefix={<FieldTimeOutlined style={{paddingRight: "5px"}}/>}
                             addonAfter="seconds"
                             disabled={readOnly}
@@ -109,7 +149,7 @@ const LobbyConfig = ({
                             <Select
                                 style={{width: "100%"}}
                                 value={gameConfig.gameMode}
-                                onChange={(e) => setConfig({...gameConfig, gameMode: e})}
+                                onChange={(e) => setNewConfig({...gameConfig, gameMode: e})}
                                 disabled={readOnly}
                             >
                                 {Object.keys(GameMode).map((mode: string, idx: number) => {

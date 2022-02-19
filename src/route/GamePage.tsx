@@ -224,8 +224,8 @@ const GamePage = () => {
                                                             setConfig={(config) => {
                                                                 setGameData({
                                                                     ...gameData,
-                                                                    playerList: gameData?.playerList,
-                                                                    playerTurn: gameData?.playerTurn,
+                                                                    playerList: [...gameData?.playerList],
+                                                                    playerTurn: [...gameData?.playerTurn],
                                                                     roomConfig: config
                                                                 });
                                                             }}
