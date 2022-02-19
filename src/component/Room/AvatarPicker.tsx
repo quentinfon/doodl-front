@@ -122,77 +122,97 @@ const AvatarPicker = ({
                 </Col>
 
                 <Col xs={24} xl={12}>
-                    <Row justify={"center"}>
-                        <Button
-                            shape="circle"
-                            icon={<LeftOutlined/>}
-                            onClick={() => setEye(getPrev<Eyes>(eye, eyeList))}
-                        />
-                        <Title
-                            level={3}
-                            style={{marginLeft: "15px", marginRight: "15px"}}
-                        >
-                            Eyes
-                        </Title>
-                        <Button
-                            shape="circle"
-                            icon={<RightOutlined/>}
-                            onClick={() => setEye(getPrev<Eyes>(eye, eyeList))}
-                        />
+                    <Row justify={"space-around"}>
+                        <Col span={2}>
+                            <Button
+                                shape="circle"
+                                icon={<LeftOutlined/>}
+                                onClick={() => setEye(getPrev<Eyes>(eye, eyeList))}
+                            />
+                        </Col>
+                        <Col span={20} style={{display: "flex", justifyContent: "center"}}>
+                            <Title
+                                level={3}
+                            >
+                                Eyes
+                            </Title>
+                        </Col>
+                        <Col span={2}>
+                            <Button
+                                shape="circle"
+                                icon={<RightOutlined/>}
+                                onClick={() => setEye(getPrev<Eyes>(eye, eyeList))}
+                            />
+                        </Col>
                     </Row>
-                    <Row justify={"center"}>
-                        <Button
-                            shape="circle"
-                            icon={<LeftOutlined/>}
-                            onClick={() => setEyeBrows(getPrev<Eyebrows>(eyeBrows, eyeBrowsList))}
-                        />
-                        <Title
-                            style={{marginLeft: "15px", marginRight: "15px"}}
-                            level={3}
-                        >
-                            Eye Brows
-                        </Title>
-                        <Button
-                            shape="circle"
-                            icon={<RightOutlined/>}
-                            onClick={() => setEyeBrows(getNext<Eyebrows>(eyeBrows, eyeBrowsList))}
-                        />
+                    <Row justify={"space-around"}>
+                        <Col span={2}>
+                            <Button
+                                shape="circle"
+                                icon={<LeftOutlined/>}
+                                onClick={() => setEyeBrows(getPrev<Eyebrows>(eyeBrows, eyeBrowsList))}
+                            />
+                        </Col>
+                        <Col span={20} style={{display: "flex", justifyContent: "center"}}>
+                            <Title
+                                level={3}
+                            >
+                                Eye Brows
+                            </Title>
+                        </Col>
+                        <Col span={2}>
+                            <Button
+                                shape="circle"
+                                icon={<RightOutlined/>}
+                                onClick={() => setEyeBrows(getNext<Eyebrows>(eyeBrows, eyeBrowsList))}
+                            />
+                        </Col>
                     </Row>
-                    <Row justify={"center"}>
-                        <Button
-                            shape="circle"
-                            icon={<LeftOutlined/>}
-                            onClick={() => setMouth(getPrev<Mouth>(mouth, mouthList))}
-                        />
-                        <Title
-                            style={{marginLeft: "15px", marginRight: "15px"}}
-                            level={3}
-                        >
-                            Mouth
-                        </Title>
-                        <Button
-                            shape="circle"
-                            icon={<RightOutlined/>}
-                            onClick={() => setMouth(getNext<Mouth>(mouth, mouthList))}
-                        />
+                    <Row justify={"space-around"}>
+                        <Col span={2}>
+                            <Button
+                                shape="circle"
+                                icon={<LeftOutlined/>}
+                                onClick={() => setMouth(getPrev<Mouth>(mouth, mouthList))}
+                            />
+                        </Col>
+                        <Col span={20} style={{display: "flex", justifyContent: "center"}}>
+                            <Title
+                                level={3}
+                            >
+                                Mouth
+                            </Title>
+                        </Col>
+                        <Col span={2}>
+                            <Button
+                                shape="circle"
+                                icon={<RightOutlined/>}
+                                onClick={() => setMouth(getNext<Mouth>(mouth, mouthList))}
+                            />
+                        </Col>
                     </Row>
-                    <Row justify={"center"}>
-                        <Button
-                            shape="circle"
-                            icon={<LeftOutlined/>}
-                            onClick={() => setAccessoires(getPrev<Accessoires>(accessoires, accessoiresList))}
-                        />
-                        <Title
-                            level={3}
-                            style={{marginLeft: "15px", marginRight: "15px"}}
-                        >
-                            Accessoires
-                        </Title>
-                        <Button
-                            shape="circle"
-                            icon={<RightOutlined/>}
-                            onClick={() => setAccessoires(getNext<Accessoires>(accessoires, accessoiresList))}
-                        />
+                    <Row justify={"space-around"}>
+                        <Col span={2}>
+                            <Button
+                                shape="circle"
+                                icon={<LeftOutlined/>}
+                                onClick={() => setAccessoires(getPrev<Accessoires>(accessoires, accessoiresList))}
+                            />
+                        </Col>
+                        <Col span={20} style={{display: "flex", justifyContent: "center"}}>
+                            <Title
+                                level={3}
+                            >
+                                Accessoires
+                            </Title>
+                        </Col>
+                        <Col span={2}>
+                            <Button
+                                shape="circle"
+                                icon={<RightOutlined/>}
+                                onClick={() => setAccessoires(getNext<Accessoires>(accessoires, accessoiresList))}
+                            />
+                        </Col>
                     </Row>
                     <Row justify={"center"}>
                         <Button
