@@ -27,6 +27,7 @@ export interface IAdminRoomInfo {
 
 export interface IAdminSocketDeletePlayerRequest {
     playerId: string;
+    roomId: string;
 }
 
 export enum AdminSocketChannel {

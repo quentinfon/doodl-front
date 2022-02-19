@@ -1,13 +1,12 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import React, {useEffect, useState} from "react";
-import { Statistic, Row, Col, Card, Input, Button, Popconfirm, message, List} from 'antd';
-import { Collapse } from 'antd';
-import {ISocketMessageRequest} from "../types/SocketModel";
+import React, {useState} from "react";
+import {Button, Card, Col, Collapse, Input, List, message, Popconfirm, Row, Statistic} from 'antd';
 import {
     AdminSocketChannel,
     IAdminRoomInfo,
-    IAdminSocketConnectResponse
+    IAdminSocketConnectResponse,
+    IAdminSocketMessageRequest
 } from "../types/AdminSocketModel";
+
 const { Panel } = Collapse;
 const { Search } = Input;
 
@@ -22,10 +21,9 @@ const AdminPage = () => {
     const [connected, setConnected] = useState<boolean>(false);
     const [rooms, setRooms] = useState<IAdminRoomInfo[]>([]);
     const [pingInterval, setPingInterval] = useState<NodeJS.Timer>();
-
     const [adminWs, setAdminWs] = useState<WebSocket>();
 
-    const sendMessage = (message: ISocketMessageRequest) => {
+    const sendAdminMessage = (message: IAdminSocketMessageRequest) => {
         adminWs?.send(JSON.stringify(message));
     }
 
@@ -46,7 +44,7 @@ const AdminPage = () => {
             setPingInterval(setInterval(() => {
                 webSocket.send(JSON.stringify({channel: AdminSocketChannel.GLOBAL_DATA}))
             }, 5 * 1000))
-
+            
         };
 
         webSocket.onclose = () => {
@@ -60,11 +58,11 @@ const AdminPage = () => {
 
         webSocket.onmessage = e => {
             console.log('e', JSON.parse(e.data));
-            let msg: ISocketMessageResponse = JSON.parse(e.data);
-            let init: IDataInitAdminResponse = msg.data as IDataInitAdminResponse;
-            console.log(init.roomCount)
-            setRooms(init.roomList);
-            updateStats(init.roomCount, init.wsCount, init.drawCount);
+            let init: IAdminSocketConnectResponse = JSON.parse(e.data);
+            if(init.channel == AdminSocketChannel.GLOBAL_DATA){
+                setRooms(init.data.roomList);
+                updateStats(init.data.roomCount,init.data.wsCount, init.data.drawCount);
+            }
         };
     }
 
@@ -73,7 +71,7 @@ const AdminPage = () => {
         let items = []
         items.push(<List.Item><p>{"RoomID : " + roomInfo.roomId}</p></List.Item>)
         for(let i=0; i<roomInfo.playerList.length; i++){
-            items.push(<List.Item><p>{roomInfo.playerList[i].name + " "}{<Popconfirm  title={"DO YOU REALLY WANT TO KICK THIS PLAYER ?"} onConfirm={() => playerSuppression(roomInfo.playerList[i].playerId)} okText="Yes" cancelText="No">
+            items.push(<List.Item><p>{roomInfo.playerList[i].name + " "}{<Popconfirm  title={"DO YOU REALLY WANT TO KICK THIS PLAYER ?"} onConfirm={() => playerSuppression(roomInfo.playerList[i].playerId,roomInfo.roomId)} okText="Yes" cancelText="No">
                 <Button danger type="primary" shape="circle" size="small">
                     X
                 </Button>
@@ -88,7 +86,15 @@ const AdminPage = () => {
         )
     }
 
-    const playerSuppression = (playerId:String) => {
+    const playerSuppression = (playerId:string, roomId: string) => {
+        sendAdminMessage({
+            channel: AdminSocketChannel.KICK_PLAYER,
+            data: {
+                playerId : playerId,
+                roomId: roomId
+            }
+        });
+        adminWs?.send(JSON.stringify({channel: AdminSocketChannel.GLOBAL_DATA}))
         message.success('Player Deleted :)');
     }
 
@@ -99,20 +105,19 @@ const AdminPage = () => {
     function card(i: number) {
         return (
             <Col span={6}>
-                <Collapse>
-                    <Panel header={"Room " + i.toString()} key={i} extra={
-                        <div onClick={e => e.stopPropagation()}>
-                            <Popconfirm title={"DO YOU REALLY WANT TO SUPPRESS THIS ROOM ?"}
-                                        onConfirm={() => roomSuppression(rooms[i].roomId)} okText="Yes" cancelText="No">
-                                <Button danger type="primary" shape="circle" size="small">
-                                    X
-                                </Button>
-                            </Popconfirm>
-                        </div>
-                    }>
-                        <p>{explicit(rooms[i])}</p>
-                    </Panel>
-                </Collapse>
+                    <Collapse >
+                        <Panel header={"Room " + i.toString()} key={i} extra={
+                            <div onClick={e => e.stopPropagation()}>
+                                <Popconfirm  title={"DO YOU REALLY WANT TO SUPPRESS THIS ROOM ?"} onConfirm={() => roomSuppression(rooms[i].roomId)} okText="Yes" cancelText="No">
+                                    <Button danger type="primary" shape="circle" size="small">
+                                        X
+                                    </Button>
+                                </Popconfirm>
+                            </div>
+                        }>
+                            <p>{explicit(rooms[i])}</p>
+                        </Panel>
+                    </Collapse>
             </Col>
         )
     }
