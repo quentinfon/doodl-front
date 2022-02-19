@@ -19,6 +19,7 @@ const App = () => {
                     <Routes>
                         <Route path="/play/:gameId" element={<GamePage/>}/>
                         <Route path="/" element={<HomePage/>}/>
+                        <Route path="/admin" element={<AdminPage/>}/>
                         <Route
                             path="*"
                             element={<Navigate to="/"/>}
