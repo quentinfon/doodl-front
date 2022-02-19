@@ -16,6 +16,7 @@ const AdminPage = () => {
     const [userNumber, setUserNumber] = useState<number>(0);
     const [roomNumber, setRoomNumber] = useState<number>(0);
     const [drawNumber, setDrawNumber] = useState<number>(0);
+    const [connected, setConnected] = useState<boolean>(false);
     const [rooms, setRooms] = useState<IAdminRoomInfo[]>([]);
     const [pingInterval, setPingInterval] = useState<NodeJS.Timer>();
 
@@ -39,6 +40,7 @@ const AdminPage = () => {
 
         webSocket.onopen = () => {
             setAdminWs(webSocket);
+            setConnected(true);
             setLoadingConnexion(false);
 
             setPingInterval(setInterval(() => {
@@ -173,16 +175,9 @@ const AdminPage = () => {
             return "room"
         }
     }
-    const drawName = () => {
-        if (drawNumber > 1) {
-            return "draws";
-        } else {
-            return "draw"
-        }
-    }
-    return (
-        <>
-            <br></br>
+
+    function connectionInput() {
+        return(
             <div>
                 <Row gutter={14}>
                     <Col span={9}></Col>
@@ -197,8 +192,21 @@ const AdminPage = () => {
                         />
                     </Col>
                 </Row>
+                <br></br>
             </div>
+        );
+    }
+    const drawName = () => {
+        if(drawNumber>1){
+            return "draws";
+        }else{
+            return "draw"
+        }
+    }
+    return (
+        <>
             <br></br>
+            {!connected && connectionInput()}
             <div className="site-statistic-demo-card">
                 <Row gutter={16}>
                     <Col span={6}></Col>
