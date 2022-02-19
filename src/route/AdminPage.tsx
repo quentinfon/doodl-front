@@ -155,7 +155,7 @@ const AdminPage = () => {
     }
 
 
-    const onSearch = (value: string) => {
+    const tryGetAdminRights = (value: string) => {
         createSocket(value);
     }
 
@@ -188,11 +188,12 @@ const AdminPage = () => {
                     <Col span={9}></Col>
                     <Col span={6}>
                         <Search
-                            placeholder="input search text"
+                            type={"password"}
+                            placeholder="password"
                             allowClear
-                            enterButton="Search"
+                            enterButton="Connect"
                             size="large"
-                            onSearch={onSearch}
+                            onSearch={tryGetAdminRights}
                         />
                     </Col>
                 </Row>
