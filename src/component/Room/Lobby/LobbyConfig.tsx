@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {Button, Card, Col, Divider, Input, InputNumber, Row, Select, Tooltip, Typography} from "antd";
-import {GameMode, IRoomConfig} from "../../../types/GameModel";
-import {IRoomServerConfig} from "../../../types/ConfigModel";
+import {IRoomConfig} from "../../../types/GameModel";
 import {
     GameSocketChannel,
     IDataInfoResponse,
@@ -11,6 +10,7 @@ import {
 import {fetchUtil} from "../../../api/request";
 import {getRoomCreationConfig} from "../../../api/gameService";
 import {FieldTimeOutlined, RedoOutlined} from '@ant-design/icons';
+import {IConfigResponse} from "../../../types/ConfigModel";
 
 
 const {Text, Title} = Typography;
@@ -88,16 +88,19 @@ const LobbyConfig = ({
         setGameConfig(gameData.roomConfig);
     }, [gameData.roomConfig])
 
-    const [roomConfigParam, setRoomConfigParam] = useState<IRoomServerConfig>({
-        minPlayerPerRoom: 2,
-        maxPlayerPerRoom: 32,
-        minTimeByTurn: 15,
-        maxTimeByTurn: 300,
-        minCycleRoundByGame: 2,
-        maxCycleRoundByGame: 20,
-        maxChatMessageLength: 240,
-        minPointGuess: 0,
-        maxPointGuess: 2000
+    const [roomConfigParam, setRoomConfigParam] = useState<IConfigResponse>({
+        gameMode: [],
+        roomServerConfig: {
+            minPlayerPerRoom: 2,
+            maxPlayerPerRoom: 32,
+            minTimeByTurn: 15,
+            maxTimeByTurn: 300,
+            minCycleRoundByGame: 2,
+            maxCycleRoundByGame: 20,
+            maxChatMessageLength: 240,
+            minPointGuess: 0,
+            maxPointGuess: 2000
+        }
     });
 
     return (
@@ -121,8 +124,8 @@ const LobbyConfig = ({
                         <InputNumber
                             style={{width: "100%"}}
                             prefix={<RedoOutlined style={{paddingRight: "5px"}}/>}
-                            min={roomConfigParam.minCycleRoundByGame}
-                            max={roomConfigParam.maxCycleRoundByGame}
+                            min={roomConfigParam.roomServerConfig.minCycleRoundByGame}
+                            max={roomConfigParam.roomServerConfig.maxCycleRoundByGame}
                             value={gameConfig.cycleRoundByGame}
                             onChange={(e) => setNewConfig({...gameConfig, cycleRoundByGame: e})}
                             disabled={readOnly}
@@ -133,8 +136,8 @@ const LobbyConfig = ({
                         <Text>Time by turn</Text>
                         <InputNumber
                             style={{width: "100%"}}
-                            min={roomConfigParam.minTimeByTurn}
-                            max={roomConfigParam.maxTimeByTurn}
+                            min={roomConfigParam.roomServerConfig.minTimeByTurn}
+                            max={roomConfigParam.roomServerConfig.maxTimeByTurn}
                             value={gameConfig.timeByTurn}
                             onChange={(e) => setNewConfig({...gameConfig, timeByTurn: e})}
                             prefix={<FieldTimeOutlined style={{paddingRight: "5px"}}/>}
@@ -152,7 +155,7 @@ const LobbyConfig = ({
                                 onChange={(e) => setNewConfig({...gameConfig, gameMode: e})}
                                 disabled={readOnly}
                             >
-                                {Object.keys(GameMode).map((mode: string, idx: number) => {
+                                {roomConfigParam.gameMode.map((mode: string, idx: number) => {
                                     return (
                                         <Option key={idx}
                                                 value={mode}>{mode.charAt(0).toUpperCase() + mode.slice(1).toLowerCase()}</Option>

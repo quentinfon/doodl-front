@@ -133,7 +133,8 @@ const GamePage = () => {
 
             if (msg.error) {
                 console.debug(msg);
-                setErrorSocket(msg.error);
+                if (msg.channel === GameSocketChannel.INIT)
+                    setErrorSocket(msg.error);
             }
 
             if (msg.channel === GameSocketChannel.INIT) {

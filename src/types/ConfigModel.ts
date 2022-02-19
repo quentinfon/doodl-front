@@ -1,3 +1,10 @@
+import {GameMode} from "./GameModel";
+
+export interface IConfigResponse {
+    gameMode: GameMode[],
+    roomServerConfig: IRoomServerConfig
+}
+
 export interface IRoomServerConfig {
     minPlayerPerRoom: number;
     maxPlayerPerRoom: number;
