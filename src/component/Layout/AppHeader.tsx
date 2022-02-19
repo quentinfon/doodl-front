@@ -38,12 +38,11 @@ export default function AppHeader() {
                             <span className="nav-text">Home</span>
                         </Link>
                 </Menu.Item>
-
-                <Menu.Item key="share">
+                <Space direction="vertical">
                     <Button type="primary" onClick={copyPageLink} >
-                        Copier le lien
+                        Share the link
                     </Button>
-                </Menu.Item>
+                </Space>
             </Menu>
         </Header>
     )
