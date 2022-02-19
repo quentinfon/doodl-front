@@ -8,6 +8,7 @@ import {Link} from "react-router-dom";
 
 const copyPageLink = async () => {
     navigator.clipboard.writeText(window.location.href)
+    // eslint-disable-next-line eqeqeq
     if (await navigator.clipboard.readText() == window.location.href) {
         copied()
     }else{
