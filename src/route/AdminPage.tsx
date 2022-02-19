@@ -16,7 +16,7 @@ const AdminPage = () => {
     const [userNumber, setUserNumber] = useState<number>(0);
     const [roomNumber, setRoomNumber] = useState<number>(0);
     const [drawNumber, setDrawNumber] = useState<number>(0);
-    const [rooms, setRooms] = useState<IRoomInfo[]>([]);
+    const [rooms, setRooms] = useState<IAdminRoomInfo[]>([]);
     const [pingInterval, setPingInterval] = useState<NodeJS.Timer>();
 
     const [adminWs, setAdminWs] = useState<WebSocket>();
