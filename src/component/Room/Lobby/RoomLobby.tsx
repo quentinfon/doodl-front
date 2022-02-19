@@ -72,8 +72,9 @@ const RoomLobby = ({
                         gameData={gameData}
                         readOnly={player?.playerId !== gameData.playerAdminId}
                         setConfig={(config: IRoomConfig) => {
-                            setConfig(config);
+                            //setConfig(config);
                             sendConfig(config);
+                            console.log(gameData);
                         }}
                         startGame={startGame}
                         canLaunchGame={gameData.playerList.length >= 2}

@@ -17,6 +17,7 @@ export interface ISocketMessageRequest extends ISocketMessage {
 
 export interface ISocketMessageResponse extends ISocketMessage {
     data: IDataInitResponse | IMessage | IDataDrawResponse | IDataInfoResponse | IRoomConfig | IDataInitAdminResponse;
+    error?: any;
 }
 
 export interface IDataInitRequest {
