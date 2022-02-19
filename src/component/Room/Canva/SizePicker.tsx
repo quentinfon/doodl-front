@@ -1,5 +1,5 @@
 import React from "react";
-import {List} from "antd";
+import {Col, List, Row} from "antd";
 
 
 interface SizePickerProps {
@@ -34,13 +34,29 @@ const SizePicker = ({
                         }}
                     >
 
-                        <svg viewBox="0 0 100 100">
-                            <circle cx="50" cy="50" r={s} fill={currentSize === s ? "#000000" : "#D1D1D1"}/>
-                        </svg>
 
                     </List.Item>
                 )}
             />
+            <Row
+                justify="center"
+                align="middle"
+            >
+                {tools.map(size => (
+                    <Col xs={6} lg={12}
+                         style={{alignItems: "center"}}
+                    >
+                        <svg viewBox="0 0 100 100"
+                             onClick={() => setSize(size)}
+                             width={50}
+                             height={50}
+                        >
+                            <circle cx="50" cy="50" r={size} fill={currentSize === size ? "#000000" : "#D1D1D1"}/>
+                        </svg>
+                    </Col>
+                ))}
+
+            </Row>
         </>
     )
 }

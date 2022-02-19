@@ -55,27 +55,7 @@ const GameView = ({
             <Row>
                 {playerIsAllowedToDraw &&
                     <Col xs={24} md={6} xl={4}>
-                        <DrawingToolTips
-                            clearCanvas={() => {
-                                sendDrawData({tool: DrawTool.CLEAR});
-                                canvasRef?.current?.clear();
-                            }}
-                            tool={mode}
-                            setTool={(t: DrawTool) => {
-                                modeRef.current = t;
-                                setMode(t);
-                            }}
-                            color={color}
-                            setColor={(c: string) => {
-                                colorRef.current = c;
-                                setColor(c);
-                            }}
-                            lineWidth={lineWidth}
-                            setLineWidth={(s: number) => {
-                                lineWidthRef.current = s;
-                                setLineWidth(s);
-                            }}
-                        />
+
                     </Col>
                 }
 
@@ -92,6 +72,27 @@ const GameView = ({
                         lineWidthRef={lineWidthRef}
                         colorRef={colorRef}
                         canDraw={playerIsAllowedToDraw}
+                    />
+                    <DrawingToolTips
+                        clearCanvas={() => {
+                            sendDrawData({tool: DrawTool.CLEAR});
+                            canvasRef?.current?.clear();
+                        }}
+                        tool={mode}
+                        setTool={(t: DrawTool) => {
+                            modeRef.current = t;
+                            setMode(t);
+                        }}
+                        color={color}
+                        setColor={(c: string) => {
+                            colorRef.current = c;
+                            setColor(c);
+                        }}
+                        lineWidth={lineWidth}
+                        setLineWidth={(s: number) => {
+                            lineWidthRef.current = s;
+                            setLineWidth(s);
+                        }}
                     />
                 </Col>
 

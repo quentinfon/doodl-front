@@ -38,7 +38,7 @@ const ColorPicker = ({
             <List
                 grid={{
                     gutter: 16,
-                    column: vertical ? 4 : 8,
+                    column: 6,
                 }}
                 dataSource={colors}
                 renderItem={color => (

@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, Card, Col, Divider, Row} from "antd";
+import {Button, Card, Col, Row} from "antd";
 import {DrawTool} from "../../../types/GameModel";
 import ColorPicker from "./ColorPicker";
 import SizePicker from "./SizePicker";
@@ -13,8 +13,7 @@ interface DrawingToolTipsProps {
     color: string,
     setColor: (color: string) => any,
     lineWidth: number,
-    setLineWidth: (width: number) => any,
-    vertical?: boolean
+    setLineWidth: (width: number) => any
 }
 
 const DrawingToolTips = ({
@@ -24,16 +23,13 @@ const DrawingToolTips = ({
                              color,
                              setColor,
                              lineWidth,
-                             setLineWidth,
-                             vertical = true
+                             setLineWidth
                          }: DrawingToolTipsProps) => {
 
     return (
         <Card>
-            {vertical ?
-                <div
-                    style={{height: '100%'}}
-                >
+            <Row>
+                <Col xs={24} md={12} lg={6}>
                     <Button
                         icon={<DeleteOutlined/>}
                         style={{width: '100%'}}
@@ -42,83 +38,30 @@ const DrawingToolTips = ({
                     >
                         Clear all
                     </Button>
-                    <Divider orientation="center">
-                        Tool
-                    </Divider>
 
                     <ToolPicker
                         currentTool={tool}
                         setTool={setTool}
                     />
+                </Col>
 
-                    <Divider orientation="center">
-                        Size
-                    </Divider>
-
+                <Col xs={24} md={12} lg={6}>
                     <SizePicker
                         currentSize={lineWidth}
                         setSize={setLineWidth}
+                        vertical={false}
                     />
+                </Col>
 
-                    <Divider orientation="center">
-                        Color
-                    </Divider>
-
+                <Col xs={24} lg={12}>
                     <ColorPicker
                         currentColor={color}
                         setColor={setColor}
+                        vertical={false}
                     />
+                </Col>
 
-                </div>
-                :
-                <Row>
-                    <Col>
-                        <Divider orientation="center">
-                            Tool
-                        </Divider>
-
-                        <Button
-                            icon={<DeleteOutlined/>}
-                            style={{width: '100%'}}
-                            danger
-                            onClick={clearCanvas}
-                        >
-                            Clear all
-                        </Button>
-
-                        <ToolPicker
-                            currentTool={tool}
-                            setTool={setTool}
-                        />
-                    </Col>
-
-                    <Col>
-                        <Divider orientation="center">
-                            Size
-                        </Divider>
-
-                        <SizePicker
-                            currentSize={lineWidth}
-                            setSize={setLineWidth}
-                            vertical={false}
-                        />
-                    </Col>
-
-                    <Col>
-                        <Divider orientation="center">
-                            Color
-                        </Divider>
-
-                        <ColorPicker
-                            currentColor={color}
-                            setColor={setColor}
-                            vertical={false}
-                        />
-                    </Col>
-
-                </Row>
-            }
-
+            </Row>
         </Card>
     )
 }
