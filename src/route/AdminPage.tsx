@@ -128,24 +128,6 @@ const AdminPage = () => {
         )
     }
 
-    function card(i: number) {
-        return (
-            <Col span={6}>
-                <Collapse >
-                    <Panel header={"Room " + i.toString()} key={i} extra={
-                        <div onClick={e => e.stopPropagation()}>
-                            <Button danger type="primary" shape="circle" size="small" onClick={pannelClick}>
-                                X
-                            </Button>
-                        </div>
-                    }>
-                        <p>{explicite(rooms[i])}</p>
-                    </Panel>
-                </Collapse>
-            </Col>
-        )
-    }
-
     const render = () => {
 
         const items = []
