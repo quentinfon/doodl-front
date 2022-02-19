@@ -1,12 +1,15 @@
-import React, {useState} from "react";
-import {Button, Card, Col, Collapse, Input, List, message, Popconfirm, Row, Statistic} from 'antd';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import React, {useEffect, useState} from "react";
+import { Statistic, Row, Col, Card, Input, Button, Popconfirm, message, List} from 'antd';
+import { Collapse } from 'antd';
+import {ISocketMessageRequest} from "../types/SocketModel";
 import {
     AdminSocketChannel,
-    IDataInitAdminResponse,
-    ISocketMessageRequest,
-    ISocketMessageResponse
-} from "../types/SocketModel";
-import {IRoomInfo} from "../types/GameModel";
+    IAdminRoomInfo,
+    IAdminSocketConnectResponse
+} from "../types/AdminSocketModel";
+const { Panel } = Collapse;
+const { Search } = Input;
 
 const {Panel} = Collapse;
 const {Search} = Input;
@@ -21,7 +24,6 @@ const AdminPage = () => {
     const [pingInterval, setPingInterval] = useState<NodeJS.Timer>();
 
     const [adminWs, setAdminWs] = useState<WebSocket>();
-    const [loadingConnexion, setLoadingConnexion] = useState<boolean>(false);
 
     const sendMessage = (message: ISocketMessageRequest) => {
         adminWs?.send(JSON.stringify(message));
@@ -36,12 +38,10 @@ const AdminPage = () => {
     const createSocket = (value: String) => {
         let webSocket = new WebSocket(`${import.meta.env.VITE_WEBSOCKET_ENDPOINT_ADMIN}?token=${value}` as string);
 
-        setLoadingConnexion(true);
 
         webSocket.onopen = () => {
             setAdminWs(webSocket);
             setConnected(true);
-            setLoadingConnexion(false);
 
             setPingInterval(setInterval(() => {
                 webSocket.send(JSON.stringify({channel: AdminSocketChannel.GLOBAL_DATA}))
@@ -68,15 +68,12 @@ const AdminPage = () => {
         };
     }
 
-    const explicite = (roomInfo: IRoomInfo) => {
+    const explicit = (roomInfo : IAdminRoomInfo) => {
         console.log(roomInfo)
         let items = []
         items.push(<List.Item><p>{"RoomID : " + roomInfo.roomId}</p></List.Item>)
-        //items.push(<List.Item><p>Joueurs : </p></List.Item>)
-        for (let i = 0; i < roomInfo.playerList.length; i++) {
-            items.push(<List.Item><p>{roomInfo.playerList[i].name + " "}{<Popconfirm
-                title={"DO YOU REALLY WANT TO KICK THIS PLAYER ?"}
-                onConfirm={() => playerSuppression(roomInfo.playerList[i].playerId)} okText="Yes" cancelText="No">
+        for(let i=0; i<roomInfo.playerList.length; i++){
+            items.push(<List.Item><p>{roomInfo.playerList[i].name + " "}{<Popconfirm  title={"DO YOU REALLY WANT TO KICK THIS PLAYER ?"} onConfirm={() => playerSuppression(roomInfo.playerList[i].playerId)} okText="Yes" cancelText="No">
                 <Button danger type="primary" shape="circle" size="small">
                     X
                 </Button>
@@ -91,22 +88,12 @@ const AdminPage = () => {
         )
     }
 
-    const callback = (key: String) => {
-        console.log(key);
-        /*sendMessage({
-            channel: SocketChannel.CHAT,
-            data: {
-                message: currentMsg
-            }
-        });*/
+    const playerSuppression = (playerId:String) => {
+        message.success('Player Deleted :)');
     }
 
-    const playerSuppression = (playerId: String) => {
-        message.success('Player Supprimé :)');
-    }
-
-    const roomSuppression = (roomId: string) => {
-        message.success('Chambre supprimé :)');
+    const roomSuppression = (roomId : string) => {
+        message.success('Room deleted :)');
     }
 
     function card(i: number) {
@@ -123,7 +110,7 @@ const AdminPage = () => {
                             </Popconfirm>
                         </div>
                     }>
-                        <p>{explicite(rooms[i])}</p>
+                        <p>{explicit(rooms[i])}</p>
                     </Panel>
                 </Collapse>
             </Col>
@@ -180,7 +167,7 @@ const AdminPage = () => {
         return(
             <div>
                 <Row gutter={14}>
-                    <Col span={9}></Col>
+                    <Col span={9}/>
                     <Col span={6}>
                         <Search
                             type={"password"}
@@ -192,7 +179,7 @@ const AdminPage = () => {
                         />
                     </Col>
                 </Row>
-                <br></br>
+                <br/>
             </div>
         );
     }
@@ -205,11 +192,11 @@ const AdminPage = () => {
     }
     return (
         <>
-            <br></br>
+            <br/>
             {!connected && connectionInput()}
             <div className="site-statistic-demo-card">
                 <Row gutter={16}>
-                    <Col span={6}></Col>
+                    <Col span={6}/>
                     <Col span={4}>
                         <Card>
                             <Statistic
