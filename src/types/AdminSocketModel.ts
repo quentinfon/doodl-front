@@ -35,5 +35,5 @@ export interface IAdminSocketDeleteRoomRequest {
 export enum AdminSocketChannel {
     GLOBAL_DATA = "GLOBAL_DATA",
     KICK_PLAYER = "KICK_PLAYER",
-    SUPPRESS_ROOM = "SUPPRESS_ROOM"
+    DELETE_ROOM = "DELETE_ROOM"
 }

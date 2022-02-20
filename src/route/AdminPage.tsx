@@ -103,7 +103,7 @@ const AdminPage = () => {
     const roomSuppression = (roomId : string) => {
         console.log(roomId)
         sendAdminMessage({
-            channel: AdminSocketChannel.SUPPRESS_ROOM,
+            channel: AdminSocketChannel.DELETE_ROOM,
             data: {
                 roomId: roomId as string
             }
