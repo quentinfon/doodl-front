@@ -127,29 +127,6 @@ const AvatarPicker = ({
                             <Button
                                 shape="circle"
                                 icon={<LeftOutlined/>}
-                                onClick={() => setEye(getPrev<Eyes>(eye, eyeList))}
-                            />
-                        </Col>
-                        <Col span={20} style={{display: "flex", justifyContent: "center"}}>
-                            <Title
-                                level={3}
-                            >
-                                Eyes
-                            </Title>
-                        </Col>
-                        <Col span={2}>
-                            <Button
-                                shape="circle"
-                                icon={<RightOutlined/>}
-                                onClick={() => setEye(getPrev<Eyes>(eye, eyeList))}
-                            />
-                        </Col>
-                    </Row>
-                    <Row justify={"space-around"}>
-                        <Col span={2}>
-                            <Button
-                                shape="circle"
-                                icon={<LeftOutlined/>}
                                 onClick={() => setEyeBrows(getPrev<Eyebrows>(eyeBrows, eyeBrowsList))}
                             />
                         </Col>
@@ -165,6 +142,29 @@ const AvatarPicker = ({
                                 shape="circle"
                                 icon={<RightOutlined/>}
                                 onClick={() => setEyeBrows(getNext<Eyebrows>(eyeBrows, eyeBrowsList))}
+                            />
+                        </Col>
+                    </Row>
+                    <Row justify={"space-around"}>
+                        <Col span={2}>
+                            <Button
+                                shape="circle"
+                                icon={<LeftOutlined/>}
+                                onClick={() => setEye(getPrev<Eyes>(eye, eyeList))}
+                            />
+                        </Col>
+                        <Col span={20} style={{display: "flex", justifyContent: "center"}}>
+                            <Title
+                                level={3}
+                            >
+                                Eyes
+                            </Title>
+                        </Col>
+                        <Col span={2}>
+                            <Button
+                                shape="circle"
+                                icon={<RightOutlined/>}
+                                onClick={() => setEye(getPrev<Eyes>(eye, eyeList))}
                             />
                         </Col>
                     </Row>
