@@ -99,6 +99,13 @@ const AdminPage = () => {
     }
 
     const roomSuppression = (roomId : string) => {
+        sendAdminMessage({
+            channel: AdminSocketChannel.SUPPRESS_ROOM,
+            data: {
+                roomId: roomId
+            }
+        });
+        adminWs?.send(JSON.stringify({channel: AdminSocketChannel.GLOBAL_DATA}))
         message.success('Room deleted :)');
     }
 
@@ -244,7 +251,7 @@ const AdminPage = () => {
             <br/>
             {!connected && connectionInput()}
             {connected && stats()},
-            {connected && render()}
+            {connected && rooms.length>0 && render()}
         </>
     )
 }
