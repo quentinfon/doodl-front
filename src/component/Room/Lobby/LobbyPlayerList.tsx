@@ -4,6 +4,7 @@ import {Avatar, Badge, Card, Divider, List, Typography} from "antd";
 import {UserOutlined} from '@ant-design/icons';
 
 const {Title} = Typography;
+const {Text} = Typography;
 
 interface LobbyPlayerListProps {
     adminPlayerId: string,
@@ -22,8 +23,7 @@ const LobbyPlayerList = ({
                            }: { player: IPlayer }) => {
         return (
             <>
-                <Title
-                    level={5}
+                <Text
                     style={{color: player.playerId === currentPlayerId ? "#1890ff" : ""}}
                 >
                     {player.name}
@@ -35,7 +35,7 @@ const LobbyPlayerList = ({
                             }}
                         />
                     }
-                </Title>
+                </Text>
             </>
         )
     }
