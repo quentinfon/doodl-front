@@ -24,6 +24,7 @@ const AdminPage = () => {
     const [adminWs, setAdminWs] = useState<WebSocket>();
 
     const sendAdminMessage = (message: IAdminSocketMessageRequest) => {
+        console.log(JSON.stringify(message))
         adminWs?.send(JSON.stringify(message));
     }
 
@@ -40,10 +41,11 @@ const AdminPage = () => {
         webSocket.onopen = () => {
             setAdminWs(webSocket);
             setConnected(true);
-
+            /*
             setPingInterval(setInterval(() => {
                 webSocket.send(JSON.stringify({channel: AdminSocketChannel.GLOBAL_DATA}))
             }, 5 * 1000))
+             */
             
         };
 
@@ -99,10 +101,11 @@ const AdminPage = () => {
     }
 
     const roomSuppression = (roomId : string) => {
+        console.log(roomId)
         sendAdminMessage({
             channel: AdminSocketChannel.SUPPRESS_ROOM,
             data: {
-                roomId: roomId
+                roomId: roomId as string
             }
         });
         adminWs?.send(JSON.stringify({channel: AdminSocketChannel.GLOBAL_DATA}))

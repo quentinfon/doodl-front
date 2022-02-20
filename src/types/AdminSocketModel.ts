@@ -1,5 +1,4 @@
-import {IMessage, IPlayer, IRoomConfig} from "./GameModel";
-import {IDataDrawResponse, IDataInfoResponse, IDataInitResponse, ISocketMessage} from "./SocketModel";
+import {IPlayer} from "./GameModel";
 
 export interface IAdminSocketMessage {
     channel: AdminSocketChannel;
