@@ -195,50 +195,56 @@ const AdminPage = () => {
             return "draw"
         }
     }
+
+    function stats() {
+        return (
+        <div className="site-statistic-demo-card">
+            <Row gutter={16}>
+                <Col span={6}/>
+                <Col span={4}>
+                    <Card>
+                        <Statistic
+                            title="Active users"
+                            value={userNumber}
+                            precision={0}
+                            valueStyle={{ color: '#3f8600' }}
+                            suffix={userName()}
+                        />
+                    </Card>
+                </Col>
+                <Col span={4}>
+                    <Card>
+                        <Statistic
+                            title="Active rooms"
+                            value={roomNumber}
+                            precision={0}
+                            valueStyle={{ color: '#3f8600' }}
+                            suffix={roomName()}
+                        />
+                    </Card>
+                </Col>
+                <Col span={4}>
+                    <Card>
+                        <Statistic
+                            title="Draw Count"
+                            value={drawNumber}
+                            precision={0}
+                            valueStyle={{ color: '#3f8600' }}
+                            suffix={drawName()}
+                        />
+                    </Card>
+                </Col>
+            </Row>
+        </div>
+        )
+    }
+
     return (
         <>
             <br/>
             {!connected && connectionInput()}
-            <div className="site-statistic-demo-card">
-                <Row gutter={16}>
-                    <Col span={6}/>
-                    <Col span={4}>
-                        <Card>
-                            <Statistic
-                                title="Active users"
-                                value={userNumber}
-                                precision={0}
-                                valueStyle={{color: '#3f8600'}}
-                                suffix={userName()}
-                            />
-                        </Card>
-                    </Col>
-                    <Col span={4}>
-                        <Card>
-                            <Statistic
-                                title="Active rooms"
-                                value={roomNumber}
-                                precision={0}
-                                valueStyle={{color: '#3f8600'}}
-                                suffix={roomName()}
-                            />
-                        </Card>
-                    </Col>
-                    <Col span={4}>
-                        <Card>
-                            <Statistic
-                                title="Draw Count"
-                                value={drawNumber}
-                                precision={0}
-                                valueStyle={{color: '#3f8600'}}
-                                suffix={drawName()}
-                            />
-                        </Card>
-                    </Col>
-                </Row>
-            </div>
-            ,
-            {render()}
+            {connected && stats()},
+            {connected && render()}
         </>
     )
 }
