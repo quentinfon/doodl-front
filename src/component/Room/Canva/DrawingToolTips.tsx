@@ -28,30 +28,36 @@ const DrawingToolTips = ({
 
     return (
         <Card>
-            <Row>
-                <Col xs={24} md={12} lg={6}>
-                    <Button
-                        icon={<DeleteOutlined/>}
-                        style={{width: '100%'}}
-                        danger
-                        onClick={clearCanvas}
+            <Row
+                gutter={[20, 20]}
+            >
+
+                <Col xs={24} lg={12}>
+
+                    <Row
+                        gutter={[10,20]}
                     >
-                        Clear all
-                    </Button>
+                        <Col xs={24} xxl={12}>
 
-                    <ToolPicker
-                        currentTool={tool}
-                        setTool={setTool}
-                    />
+                            <ToolPicker
+                                currentTool={tool}
+                                setTool={setTool}
+                                clearCanvas={clearCanvas}
+                            />
+                        </Col>
+
+                        <Col xs={24} xxl={12}>
+                            <SizePicker
+                                currentSize={lineWidth}
+                                setSize={setLineWidth}
+                                vertical={false}
+                            />
+                        </Col>
+                    </Row>
+
                 </Col>
 
-                <Col xs={24} md={12} lg={6}>
-                    <SizePicker
-                        currentSize={lineWidth}
-                        setSize={setLineWidth}
-                        vertical={false}
-                    />
-                </Col>
+
 
                 <Col xs={24} lg={12}>
                     <ColorPicker
