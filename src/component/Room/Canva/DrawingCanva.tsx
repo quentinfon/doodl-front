@@ -1,10 +1,10 @@
 import React, {ForwardedRef, forwardRef, MutableRefObject, useEffect, useImperativeHandle, useRef} from "react";
 import {DrawTool, ICoordinate, IDraw, IPlayer} from "../../../types/GameModel";
 import {
+    GameSocketChannel,
     IDataDrawResponse,
     ISocketMessageRequest,
-    ISocketMessageResponse,
-    SocketChannel
+    ISocketMessageResponse
 } from "../../../types/SocketModel";
 import FloodFill from 'q-floodfill'
 
@@ -49,7 +49,7 @@ const DrawingCanva = forwardRef(({
 
     const onDrawReceived = (event: any) => {
         const msg: ISocketMessageResponse = JSON.parse(event.data);
-        if (!canvasRef.current || msg.channel !== SocketChannel.DRAW) return;
+        if (!canvasRef.current || msg.channel !== GameSocketChannel.DRAW) return;
 
         const data: IDataDrawResponse = msg.data as IDataDrawResponse;
         if (!data) return;
@@ -69,7 +69,7 @@ const DrawingCanva = forwardRef(({
 
     const sendDrawData = (drawData: IDraw) => {
         const message: ISocketMessageRequest = {
-            channel: SocketChannel.DRAW,
+            channel: GameSocketChannel.DRAW,
             data: drawData
         }
 

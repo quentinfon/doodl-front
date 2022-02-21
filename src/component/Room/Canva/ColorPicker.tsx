@@ -1,5 +1,5 @@
 import React from "react";
-import {List} from "antd";
+import {Col, List, Row} from "antd";
 
 interface ColorPickerProps {
     currentColor: string,
@@ -35,32 +35,25 @@ const ColorPicker = ({
     return (
         <>
 
-            <List
-                grid={{
-                    gutter: 16,
-                    column: vertical ? 4 : 8,
-                }}
-                dataSource={colors}
-                renderItem={color => (
-                    <List.Item
-                        className="canvasItem"
-                        onClick={() => setColor(color)}
-                        style={{
-                            cursor: 'pointer',
-                            padding: '5px',
-                            margin: '0'
-                        }}
-                    >
-                        <svg viewBox="0 0 100 100"
-                             className={currentColor === color ? "selectedColor" : "selectableColor"}>
-                            <rect x="0" y="0" width="100" height="100" rx="15" ry="15"
-                                  fill={color}
+            <Row
+                gutter={[15,15]}
+            >
+                {colors.map((color: string) => {
 
-                            />
-                        </svg>
-                    </List.Item>
-                )}
-            />
+                    return (
+                        <Col xs={4} sm={3} lg={4} xl={3}
+                             onClick={() => setColor(color)}
+                        >
+                            <svg viewBox="0 0 100 100"
+                                 className={currentColor === color ? "selectedColor" : "selectableColor"}>
+                                <rect x="0" y="0" width="100" height="100" rx="15" ry="15"
+                                      fill={color}
+                                />
+                            </svg>
+                        </Col>
+                    )
+                })}
+            </Row>
 
         </>
     )
