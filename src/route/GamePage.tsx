@@ -1,15 +1,22 @@
 import React, {useEffect, useRef, useState} from "react";
 import {useParams} from "react-router-dom";
-import {Col, Grid, Row} from 'antd';
-import {IDataInitResponse, ISocketMessageRequest, ISocketMessageResponse, SocketChannel} from "../types/SocketModel";
-import GameChat from "../component/GameChat";
-import {DrawTool, IDraw, IMessage, IPlayer, IRoomStatus} from "../types/GameModel";
+import {Grid} from 'antd';
+import {
+    GameSocketChannel,
+    IDataInfoResponse,
+    IDataInitResponse,
+    ISocketMessageRequest,
+    ISocketMessageResponse
+} from "../types/SocketModel";
+import {DrawTool, IDraw, IMessage, IPlayer, IRoomStatus, RoomState} from "../types/GameModel";
 import {getRoomData} from "../api/gameService";
 import RoomUnavailable from "../component/Room/RoomUnavailable";
 import PlayerCreation from "../component/Room/PlayerCreation";
-import DrawingCanva, {canvasFunctions} from "../component/Room/Canva/DrawingCanva";
-import WordDisplayer from "../component/Room/WordDisplayer";
-import DrawingToolTips from "../component/Room/Canva/DrawingToolTips";
+import {canvasFunctions} from "../component/Room/Canva/DrawingCanva";
+import GameView from "../component/Room/Game/GameView";
+import RoomLobby from "../component/Room/Lobby/RoomLobby";
+import ErrorPage from "../component/Global/ErrorPage";
+import errorPage from "../component/Global/ErrorPage";
 
 const {useBreakpoint} = Grid;
 
@@ -22,6 +29,10 @@ const GamePage = () => {
     const screens = useBreakpoint();
 
     const [ws, setWs] = useState<WebSocket>();
+    const socketRef = useRef<WebSocket>();
+
+    const [gameData, setGameData] = useState<IDataInfoResponse>();
+
     const [player, setPlayer] = useState<IPlayer>();
     const [initDraws, setInitDraws] = useState<IDraw[]>([]);
 
@@ -41,6 +52,8 @@ const GamePage = () => {
     const [messages, setMessages] = useState<IMessage[]>([]);
 
     const [playerIsAllowedToDraw, setPlayerIsAllowedToDraw] = useState<boolean>(true);
+
+    const [errorSocket, setErrorSocket] = useState<any>();
 
     const getRoom = () => {
         setLoadingRoom(true);
@@ -68,7 +81,7 @@ const GamePage = () => {
 
     const sendDrawData = (drawData: IDraw) => {
         const message: ISocketMessageRequest = {
-            channel: SocketChannel.DRAW,
+            channel: GameSocketChannel.DRAW,
             data: drawData
         }
 
@@ -81,8 +94,10 @@ const GamePage = () => {
         setLoadingConnexion(true);
 
         webSocket.onopen = () => {
+            socketRef.current = webSocket;
+
             webSocket?.send(JSON.stringify({
-                channel: SocketChannel.INIT,
+                channel: GameSocketChannel.INIT,
                 data: {
                     roomId: gameId,
                     name: player.name,
@@ -91,7 +106,7 @@ const GamePage = () => {
             }));
 
             setPingInterval(setInterval(() => {
-                webSocket.send(JSON.stringify({channel: SocketChannel.PING}))
+                socketRef?.current?.send(JSON.stringify({channel: GameSocketChannel.PING}))
             }, 30 * 1000))
 
             setWs(webSocket);
@@ -104,113 +119,136 @@ const GamePage = () => {
                 clearInterval(pingInterval);
                 setPingInterval(undefined);
             }
-            console.log("success close")
             setWs(undefined);
+            socketRef.current = undefined;
+            console.log("success close");
+        }
+
+        webSocket.onerror = e => {
+            console.error(e);
         }
 
         webSocket.onmessage = e => {
             let msg: ISocketMessageResponse = JSON.parse(e.data);
 
-            if (msg.channel === SocketChannel.INIT) {
+            if (msg.error) {
+                console.debug(msg);
+                if (msg.channel === GameSocketChannel.INIT)
+                    setErrorSocket(msg.error);
+            }
+
+            if (msg.channel === GameSocketChannel.INIT) {
                 let init: IDataInitResponse = msg.data as IDataInitResponse;
                 setPlayer({
                     playerId: init.playerId,
                     imgUrl: player.imgUrl,
-                    name: player.name
+                    name: player.name,
+                    point: 0
                 });
                 messages.length = 0;
                 init.messages.forEach(msg => messages.push(msg));
                 setInitDraws(init.draws);
             }
 
-            if (msg.channel === SocketChannel.CHAT) {
+            if (msg.channel === GameSocketChannel.INFO) {
+                setGameData(msg.data as IDataInfoResponse);
+            }
+
+            if (msg.channel === GameSocketChannel.CHAT) {
                 messages.push(msg.data as IMessage)
                 setMessages([...messages])
             }
-
-            console.debug('e', JSON.parse(e.data));
         };
     }
 
     return (
         <>
-            {loadingRoom ?
-                <>
-
-                </>
+            {errorSocket ? <ErrorPage errorMsg={errorPage}/>
                 :
                 <>
-                    {!roomData ?
-                        <RoomUnavailable/>
+                    {loadingRoom ? <></>
                         :
                         <>
-                            {ws === undefined ?
-
-                                <>
-                                    <PlayerCreation
-                                        createPlayer={createSocket}
-                                        loadingConnexion={loadingConnexion}
-                                    />
-                                </>
-
+                            {!roomData ?
+                                <RoomUnavailable/>
                                 :
-                                <Row>
-                                    {playerIsAllowedToDraw &&
-                                        <Col xs={24} md={6} xl={4}>
-                                            <DrawingToolTips
-                                                clearCanvas={() => {
-                                                    sendDrawData({tool: DrawTool.CLEAR});
-                                                    canvasRef?.current?.clear();
-                                                }}
-                                                tool={mode}
-                                                setTool={(t: DrawTool) => {
-                                                    modeRef.current = t;
-                                                    setMode(t);
-                                                }}
-                                                color={color}
-                                                setColor={(c: string) => {
-                                                    colorRef.current = c;
-                                                    setColor(c);
-                                                }}
-                                                lineWidth={lineWidth}
-                                                setLineWidth={(s: number) => {
-                                                    lineWidthRef.current = s;
-                                                    setLineWidth(s);
-                                                }}
+                                <>
+                                    {ws === undefined ?
+
+                                        <>
+                                            <PlayerCreation
+                                                createPlayer={createSocket}
+                                                loadingConnexion={loadingConnexion}
                                             />
-                                        </Col>
+                                        </>
+
+                                        :
+
+                                        <>
+                                            {gameData !== undefined ?
+                                                <>
+                                                    {gameData.roomState === RoomState.INGAME &&
+                                                        <GameView
+                                                            playerIsAllowedToDraw={playerIsAllowedToDraw}
+                                                            canvasRef={canvasRef}
+                                                            sendDrawData={sendDrawData}
+                                                            mode={mode}
+                                                            setMode={(tool: DrawTool) => {
+                                                                setMode(tool);
+                                                                modeRef.current = tool;
+                                                            }}
+                                                            color={color}
+                                                            setColor={(color: string) => {
+                                                                setColor(color);
+                                                                colorRef.current = color;
+                                                            }}
+                                                            lineWidth={lineWidth}
+                                                            setLineWidth={(width: number) => {
+                                                                setLineWidth(width);
+                                                                lineWidthRef.current = width;
+                                                            }}
+                                                            socket={ws}
+                                                            modeRef={modeRef}
+                                                            lineWidthRef={lineWidthRef}
+                                                            colorRef={colorRef}
+                                                            player={player}
+                                                            initDraws={initDraws}
+                                                            messages={messages}
+                                                        />
+                                                    }
+
+                                                    {gameData.roomState === RoomState.LOBBY &&
+                                                        <RoomLobby
+                                                            player={player}
+                                                            gameData={gameData}
+                                                            webSocket={ws}
+                                                            setConfig={(config) => {
+                                                                setGameData({
+                                                                    ...gameData,
+                                                                    playerList: [...gameData?.playerList],
+                                                                    playerTurn: [...gameData?.playerTurn],
+                                                                    roomConfig: config
+                                                                });
+                                                            }}
+                                                        />
+                                                    }
+
+                                                </>
+
+                                                :
+                                                <>
+
+                                                </>
+                                            }
+                                        </>
+
                                     }
-
-                                    <Col xs={24} md={12} xl={14}>
-                                        <WordDisplayer
-                                            wordToDisplay={"Test ____"}
-                                        />
-                                        <DrawingCanva
-                                            ref={canvasRef}
-                                            initDraw={initDraws}
-                                            webSocket={ws}
-                                            player={player}
-                                            modeRef={modeRef}
-                                            lineWidthRef={lineWidthRef}
-                                            colorRef={colorRef}
-                                            canDraw={playerIsAllowedToDraw}
-                                        />
-                                    </Col>
-
-                                    <Col xs={24} md={6}>
-                                        <GameChat
-                                            messages={messages}
-                                            sendMessage={sendMessage}
-                                            player={player}
-                                        />
-                                    </Col>
-                                </Row>
+                                </>
                             }
                         </>
                     }
                 </>
             }
-
         </>
     )
 }

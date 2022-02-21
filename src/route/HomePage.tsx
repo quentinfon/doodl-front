@@ -2,8 +2,7 @@ import React from "react";
 import JoinGame from "../component/JoinGame";
 import NewGame from "../component/NewGame";
 
-import { Statistic, Row, Col, Card } from 'antd';
-import {ArrowUpOutlined, ArrowDownOutlined, BgColorsOutlined} from '@ant-design/icons';
+import {Col, Row} from 'antd';
 
 const HomePage = () => {
     return (
@@ -13,12 +12,13 @@ const HomePage = () => {
                     marginTop: "5%"
                 }}
                 justify="center"
+                gutter={[50, 50]}
             >
-                <Col lg={10} md={20} sm={24}>
+                <Col xs={24} md={20} lg={10}>
                     <JoinGame/>
                 </Col>
 
-                <Col lg={10} md={20} sm={24}>
+                <Col xs={24} md={20} lg={10}>
                     <NewGame/>
                 </Col>
             </Row>

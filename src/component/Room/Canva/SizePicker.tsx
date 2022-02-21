@@ -1,5 +1,5 @@
 import React from "react";
-import {List} from "antd";
+import {Col, List, Row} from "antd";
 
 
 interface SizePickerProps {
@@ -17,30 +17,26 @@ const SizePicker = ({
 
     return (
         <>
-            <List
-                grid={{
-                    gutter: 16,
-                    column: vertical ? 4 : 2,
-                }}
-                dataSource={tools}
-                renderItem={s => (
-                    <List.Item
-                        className="canvasItem"
-                        onClick={() => setSize(s)}
-                        style={{
-                            cursor: 'pointer',
-                            padding: '5px',
-                            margin: '0'
-                        }}
+            <Row
+                justify="center"
+                align="middle"
+                gutter={[10, 10]}
+            >
+                {tools.map(size => (
+                    <Col xs={6}
+                         style={{textAlign: "center"}}
                     >
-
-                        <svg viewBox="0 0 100 100">
-                            <circle cx="50" cy="50" r={s} fill={currentSize === s ? "#000000" : "#D1D1D1"}/>
+                        <svg viewBox="0 0 100 100"
+                             onClick={() => setSize(size)}
+                             width={50}
+                             height={50}
+                        >
+                            <circle cx="50" cy="50" r={size} fill={currentSize === size ? "#000000" : "#D1D1D1"}/>
                         </svg>
+                    </Col>
+                ))}
 
-                    </List.Item>
-                )}
-            />
+            </Row>
         </>
     )
 }

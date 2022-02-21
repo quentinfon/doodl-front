@@ -1,18 +1,20 @@
 import React from "react";
-import {BgColorsOutlined, ClearOutlined, HighlightOutlined} from '@ant-design/icons';
-import {List, Typography} from "antd";
+import {BgColorsOutlined, ClearOutlined, DeleteOutlined, HighlightOutlined, QuestionCircleOutlined } from '@ant-design/icons';
+import {Button, Col, List, Popconfirm, Row, Typography} from "antd";
 import {DrawTool} from "../../../types/GameModel";
 
 const {Title} = Typography;
 
 interface ToolPickerProps {
     currentTool: DrawTool,
-    setTool: (tool: DrawTool) => any
+    setTool: (tool: DrawTool) => any,
+    clearCanvas: () => any
 }
 
 const ToolPicker = ({
                         currentTool,
-                        setTool
+                        setTool,
+                        clearCanvas
                     }: ToolPickerProps) => {
 
     interface ToolsListItem {
@@ -38,24 +40,43 @@ const ToolPicker = ({
     return (
         <>
 
-            <List
-                itemLayout="horizontal"
-                dataSource={tools}
-                renderItem={item => (
-                    <List.Item
-                        className="canvasItem"
-                        onClick={() => setTool(item.toolName)}
-                        style={{
-                            cursor: 'pointer',
-                            background: currentTool === item.toolName ? '#D1D1D1' : ''
-                        }}
+            <Row
+                gutter={[15, 15]}
+                justify={"center"}
+            >
+                <Col xs={6}
+                     style={{textAlign: "center"}}
+                >
+                    <Popconfirm title="Are you sure？" icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+                        onConfirm={clearCanvas}
                     >
-                        <Title level={5} style={{margin: '0'}}>
-                            {item.toolIcon} {item.toolName.charAt(0).toUpperCase() + item.toolName.slice(1).toLowerCase()}
-                        </Title>
-                    </List.Item>
-                )}
-            />
+                        <Button
+                            icon={<DeleteOutlined/>}
+                            type="primary"
+                            shape="circle"
+                            size={"large"}
+                            danger
+                        />
+                    </Popconfirm>
+                </Col>
+                {tools.map((tool: ToolsListItem) => {
+                    return (
+                        <Col xs={6}
+                            style={{textAlign: "center"}}
+                        >
+
+                            <Button
+                                type={currentTool === tool.toolName ? "primary" : "default"}
+                                shape="circle"
+                                size={"large"}
+                                icon={tool.toolIcon}
+                                onClick={() => setTool(tool.toolName)}
+                            />
+
+                        </Col>
+                    )
+                })}
+            </Row>
 
         </>
     )
