@@ -89,7 +89,7 @@ const GamePage = () => {
     }
 
     const createSocket = (player: IPlayer) => {
-        let webSocket = new WebSocket(process.env.REACT_APP_WEBSOCKET_ENDPOINT as string);
+        let webSocket = new WebSocket(import.meta.env.VITE_WEBSOCKET_ENDPOINT as string);
 
         setLoadingConnexion(true);
 
