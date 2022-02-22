@@ -17,6 +17,7 @@ export interface IRoomStatus {
     playerTurn: IPlayer[];
 }
 
+
 export interface IMessage {
     author: IPlayer;
     message: string;
@@ -36,21 +37,10 @@ export interface IDraw {
     lineWidth?: number;
 }
 
-export interface IRoomInfo {
-    roomId: string;
-    playerList: IPlayer[];
-}
-
 export interface IPlayer {
     name: string;
     imgUrl: string;
     playerId: string;
-}
-
-export interface Player {
-    playerId : string
-    name : string
-    imgUrl : string
 }
 
 export enum RoomState {
