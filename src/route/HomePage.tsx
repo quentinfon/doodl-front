@@ -11,8 +11,7 @@ const HomePage = () => {
                 style={{
                     marginTop: "5%"
                 }}
-                justify="center"
-                gutter={[50, 50]}
+                justify="space-around"
             >
                 <Col xs={24} md={20} lg={10}>
                     <JoinGame/>
