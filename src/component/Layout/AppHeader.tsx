@@ -1,11 +1,10 @@
-import {Layout, Menu} from "antd";
-import { message, Button, Space } from 'antd';
+import {Button, Menu, message} from "antd";
 import React from "react";
 import {Header} from "antd/lib/layout/layout";
 
 import './AppHeader.css';
+import logoUrl from '/logo.png'
 import {Link} from "react-router-dom";
-import Sider from "antd/lib/layout/Sider";
 
 const copyPageLink = async () => {
     navigator.clipboard.writeText(window.location.href)
@@ -29,7 +28,7 @@ export default function AppHeader() {
         <Header>
             <div>
                 <Link to="/">
-                    <img className="logo" src={process.env.PUBLIC_URL + "/logo.png"} alt="logo"/>
+                    <img className="logo" src={logoUrl} alt="logo"/>
                 </Link>
             </div>
 

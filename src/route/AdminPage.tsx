@@ -33,7 +33,7 @@ const AdminPage = () => {
     }
 
     const createSocket = (value: String) => {
-        let webSocket = new WebSocket(`${process.env.REACT_APP_WEBSOCKET_ENDPOINT_ADMIN}?token=${value}` as string);
+        let webSocket = new WebSocket(`${import.meta.env.VITE_WEBSOCKET_ENDPOINT_ADMIN}?token=${value}` as string);
 
         setLoadingConnexion(true);
 
