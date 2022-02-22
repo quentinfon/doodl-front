@@ -7,12 +7,11 @@ import logoUrl from '/logo.png'
 import {Link} from "react-router-dom";
 
 const copyPageLink = async () => {
-    navigator.clipboard.writeText(window.location.href)
-    // eslint-disable-next-line eqeqeq
-    if (await navigator.clipboard.readText() == window.location.href) {
-        copied()
-    }else{
-        notCopied()
+    try {
+        await navigator.clipboard.writeText(window.location.href);
+        copied();
+    } catch (err) {
+        notCopied();
     }
 }
 
@@ -35,12 +34,13 @@ export default function AppHeader() {
 
             <Menu theme="dark" mode="horizontal">
                 <Menu.Item key="home">
-                        <Link to="/">
-                            <span className="nav-text">Home</span>
-                        </Link>
+                    <Link to="/">
+                        <span className="nav-text">Home</span>
+                    </Link>
                 </Menu.Item>
-                <Space direction="vertical">
-                    <Button type="primary" onClick={copyPageLink} >
+
+                <Space direction="vertical" style={{marginLeft: "8px", marginRight: "8px"}}>
+                    <Button type={"primary"} onClick={copyPageLink}>
                         Share the link
                     </Button>
                 </Space>
