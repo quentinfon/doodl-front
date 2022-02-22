@@ -1,12 +1,7 @@
 import React, {ForwardedRef, forwardRef, MutableRefObject, useEffect, useImperativeHandle, useRef} from "react";
 import {DrawTool, ICoordinate, IDraw, IPlayer} from "../../../types/GameModel";
-import {
-    GameSocketChannel,
-    IDataDrawResponse,
-    ISocketMessageRequest,
-    ISocketMessageResponse
-} from "../../../types/SocketModel";
 import FloodFill from 'q-floodfill'
+import {GameSocketChannel, IDataDrawResponse, ISocketMessageRequest, ISocketMessageResponse } from "../../../types/GameSocketModel";
 
 export interface canvasFunctions {
     clear: () => any

@@ -1,7 +1,7 @@
 import {Avatar, Button, Card, Col, Comment, Form, Input, List, Row} from "antd";
 import React, {useEffect, useState} from "react";
 import {IMessage, IPlayer} from "../types/GameModel";
-import {GameSocketChannel, ISocketMessageRequest} from "../types/SocketModel";
+import {GameSocketChannel, ISocketMessageRequest} from "../types/GameSocketModel";
 
 interface GameChatProps {
     messages: IMessage[],

@@ -2,10 +2,12 @@ import React, {MutableRefObject, RefObject} from "react";
 import {Col, Row} from "antd";
 import DrawingToolTips from "../Canva/DrawingToolTips";
 import {DrawTool, IDraw, IMessage, IPlayer} from "../../../types/GameModel";
-import WordDisplayer from "../WordDisplayer";
+import WordDisplayer from "./WordDisplayer";
 import DrawingCanva, {canvasFunctions} from "../Canva/DrawingCanva";
 import GameChat from "../../GameChat";
-import {ISocketMessageRequest} from "../../../types/SocketModel";
+import {IDataInfoResponse, ISocketMessageRequest} from "../../../types/SocketModel";
+import GamePlayerList from "./GamePlayerList";
+import RoundDisplay from "./RoundDisplay";
 
 
 interface GameViewProps {
@@ -24,7 +26,8 @@ interface GameViewProps {
     colorRef: MutableRefObject<any>,
     player: IPlayer | undefined,
     initDraws: IDraw[],
-    messages: IMessage[]
+    messages: IMessage[],
+    gameData: IDataInfoResponse
 }
 
 const GameView = ({
@@ -43,7 +46,8 @@ const GameView = ({
                       colorRef,
                       player,
                       initDraws,
-                      messages
+                      messages,
+                      gameData
                   }: GameViewProps) => {
 
     const sendMessage = (message: ISocketMessageRequest) => {
@@ -53,13 +57,22 @@ const GameView = ({
     return (
         <>
             <Row>
-                {playerIsAllowedToDraw &&
-                    <Col xs={24} md={6} xl={4}>
+                <Col xs={24} md={6}>
+                    <RoundDisplay
+                        current={1}
+                        total={gameData.roomConfig.cycleRoundByGame}
+                    />
 
-                    </Col>
-                }
+                    <GamePlayerList
+                        adminPlayerId={gameData.playerAdminId ?? ""}
+                        players={gameData.playerList}
+                        drawingPlayers={gameData.playerTurn}
+                        currentPlayerId={player?.playerId ?? ""}
+                    />
 
-                <Col xs={24} md={12} xl={14}>
+                </Col>
+
+                <Col xs={24} md={12}>
                     <WordDisplayer
                         wordToDisplay={"Test ____"}
                     />
