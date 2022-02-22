@@ -1,4 +1,4 @@
-import {Button, Menu, message} from "antd";
+import {Button, Menu, message, Space} from "antd";
 import React from "react";
 import {Header} from "antd/lib/layout/layout";
 
@@ -7,11 +7,11 @@ import logoUrl from '/logo.png'
 import {Link} from "react-router-dom";
 
 const copyPageLink = async () => {
-    navigator.clipboard.writeText(window.location.href)
-    if (await navigator.clipboard.readText() == window.location.href) {
-        copied()
-    }else{
-        notCopied()
+    try {
+        await navigator.clipboard.writeText(window.location.href);
+        copied();
+    } catch (err) {
+        notCopied();
     }
 }
 
@@ -34,16 +34,16 @@ export default function AppHeader() {
 
             <Menu theme="dark" mode="horizontal">
                 <Menu.Item key="home">
-                        <Link to="/">
-                            <span className="nav-text">Home</span>
-                        </Link>
+                    <Link to="/">
+                        <span className="nav-text">Home</span>
+                    </Link>
                 </Menu.Item>
 
-                <Menu.Item key="share">
-                    <Button type="primary" onClick={copyPageLink} >
-                        Copier le lien
+                <Space direction="vertical" style={{marginLeft: "8px", marginRight: "8px"}}>
+                    <Button type={"primary"} onClick={copyPageLink}>
+                        Share the link
                     </Button>
-                </Menu.Item>
+                </Space>
             </Menu>
         </Header>
     )

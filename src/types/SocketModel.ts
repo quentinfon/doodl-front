@@ -11,6 +11,7 @@ export interface ISocketMessage {
     channel: GameSocketChannel;
 }
 
+
 export interface ISocketMessageRequest extends ISocketMessage {
     data?: IDataInitRequest | IDataChatRequest | IDraw | IRoomConfig;
 }
@@ -32,12 +33,6 @@ export interface IDataInitResponse {
     draws: IDraw[];
 }
 
-export interface IDataInitAdminResponse {
-    roomCount: number;
-    wsCount: number;
-    drawCount: number;
-    roomList: IRoomInfo[];
-}
 
 export interface IDataChatRequest {
     message: string;
