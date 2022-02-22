@@ -1,13 +1,6 @@
 import React, {useEffect, useRef, useState} from "react";
 import {useParams} from "react-router-dom";
 import {Grid} from 'antd';
-import {
-    GameSocketChannel,
-    IDataInfoResponse,
-    IDataInitResponse,
-    ISocketMessageRequest,
-    ISocketMessageResponse
-} from "../types/SocketModel";
 import {DrawTool, IDraw, IMessage, IPlayer, IRoomStatus, RoomState} from "../types/GameModel";
 import {getRoomData} from "../api/gameService";
 import RoomUnavailable from "../component/Room/RoomUnavailable";
@@ -17,6 +10,13 @@ import GameView from "../component/Room/Game/GameView";
 import RoomLobby from "../component/Room/Lobby/RoomLobby";
 import ErrorPage from "../component/Global/ErrorPage";
 import errorPage from "../component/Global/ErrorPage";
+import {
+    GameSocketChannel,
+    IDataInfoResponse,
+    IDataInitResponse,
+    ISocketMessageRequest,
+    ISocketMessageResponse
+} from "../types/GameSocketModel";
 
 const {useBreakpoint} = Grid;
 
@@ -143,7 +143,8 @@ const GamePage = () => {
                     playerId: init.playerId,
                     imgUrl: player.imgUrl,
                     name: player.name,
-                    point: 0
+                    totalPoint: 0,
+                    roundPoint: 0
                 });
                 messages.length = 0;
                 init.messages.forEach(msg => messages.push(msg));
@@ -187,7 +188,7 @@ const GamePage = () => {
                                         <>
                                             {gameData !== undefined ?
                                                 <>
-                                                    {gameData.roomState === RoomState.INGAME &&
+                                                    {gameData.roomState !== RoomState.LOBBY &&
                                                         <GameView
                                                             playerIsAllowedToDraw={playerIsAllowedToDraw}
                                                             canvasRef={canvasRef}
@@ -226,8 +227,6 @@ const GamePage = () => {
                                                             setConfig={(config) => {
                                                                 setGameData({
                                                                     ...gameData,
-                                                                    playerList: [...gameData?.playerList],
-                                                                    playerTurn: [...gameData?.playerTurn],
                                                                     roomConfig: config
                                                                 });
                                                             }}

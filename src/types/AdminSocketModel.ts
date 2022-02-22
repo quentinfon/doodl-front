@@ -5,7 +5,7 @@ export interface IAdminSocketMessage {
 }
 
 export interface IAdminSocketMessageRequest extends IAdminSocketMessage {
-    data?: IAdminSocketDeletePlayerRequest | IAdminSocketDeleteRoomRequest;
+    data?: IAdminSocketKickPlayerRequest | IAdminSocketDeleteRoomRequest;
 }
 
 export interface IAdminSocketConnectResponse extends IAdminSocketMessage {
@@ -23,7 +23,7 @@ export interface IAdminRoomInfo {
     drawCount: number;
 }
 
-export interface IAdminSocketDeletePlayerRequest {
+export interface IAdminSocketKickPlayerRequest {
     playerId: string;
     roomId: string;
 }

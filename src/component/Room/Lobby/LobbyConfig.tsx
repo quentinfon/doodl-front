@@ -1,15 +1,10 @@
 import React, {useEffect, useState} from "react";
 import {Button, Card, Col, Divider, Input, InputNumber, Row, Select, Tooltip, Typography} from "antd";
 import {IRoomConfig} from "../../../types/GameModel";
-import {
-    GameSocketChannel,
-    IDataInfoResponse,
-    ISocketMessageRequest,
-    ISocketMessageResponse
-} from "../../../types/SocketModel";
 import {fetchUtil} from "../../../api/request";
 import {getRoomCreationConfig} from "../../../api/gameService";
 import {FieldTimeOutlined, RedoOutlined} from '@ant-design/icons';
+import {GameSocketChannel, IDataInfoResponse, ISocketMessageRequest, ISocketMessageResponse} from "../../../types/GameSocketModel";
 import {IConfigResponse} from "../../../types/ConfigModel";
 
 
