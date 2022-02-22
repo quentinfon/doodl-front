@@ -5,7 +5,8 @@ import {DrawTool, IDraw, IMessage, IPlayer} from "../../../types/GameModel";
 import WordDisplayer from "./WordDisplayer";
 import DrawingCanva, {canvasFunctions} from "../Canva/DrawingCanva";
 import GameChat from "../../GameChat";
-import {ISocketMessageRequest} from "../../../types/SocketModel";
+import {IDataInfoResponse, ISocketMessageRequest} from "../../../types/SocketModel";
+import GamePlayerList from "./GamePlayerList";
 
 
 interface GameViewProps {
@@ -24,7 +25,8 @@ interface GameViewProps {
     colorRef: MutableRefObject<any>,
     player: IPlayer | undefined,
     initDraws: IDraw[],
-    messages: IMessage[]
+    messages: IMessage[],
+    gameData: IDataInfoResponse
 }
 
 const GameView = ({
@@ -43,7 +45,8 @@ const GameView = ({
                       colorRef,
                       player,
                       initDraws,
-                      messages
+                      messages,
+                      gameData
                   }: GameViewProps) => {
 
     const sendMessage = (message: ISocketMessageRequest) => {
@@ -54,6 +57,13 @@ const GameView = ({
         <>
             <Row>
                 <Col xs={24} md={6}>
+
+                    <GamePlayerList
+                        adminPlayerId={gameData.playerAdminId ?? ""}
+                        players={gameData.playerList}
+                        drawingPlayers={gameData.playerTurn}
+                        currentPlayerId={player?.playerId ?? ""}
+                    />
 
                 </Col>
 
