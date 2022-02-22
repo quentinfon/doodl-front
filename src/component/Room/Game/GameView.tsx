@@ -7,6 +7,7 @@ import DrawingCanva, {canvasFunctions} from "../Canva/DrawingCanva";
 import GameChat from "../../GameChat";
 import {IDataInfoResponse, ISocketMessageRequest} from "../../../types/SocketModel";
 import GamePlayerList from "./GamePlayerList";
+import RoundDisplay from "./RoundDisplay";
 
 
 interface GameViewProps {
@@ -57,6 +58,10 @@ const GameView = ({
         <>
             <Row>
                 <Col xs={24} md={6}>
+                    <RoundDisplay
+                        current={1}
+                        total={gameData.roomConfig.cycleRoundByGame}
+                    />
 
                     <GamePlayerList
                         adminPlayerId={gameData.playerAdminId ?? ""}
