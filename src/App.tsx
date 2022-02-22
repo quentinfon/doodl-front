@@ -12,14 +12,10 @@ const App = () => {
 
     return (
         <Router>
-            <AppHeader/>
+            <Layout style={{height: "100vh"}}>
+                <AppHeader/>
 
-            <Layout>
-                <Content
-                    style={{
-                        height: "100%"
-                    }}
-                >
+                <Content>
                     <Routes>
                         <Route path="/play/:gameId" element={<GamePage/>}/>
                         <Route path="/" element={<HomePage/>}/>
@@ -30,9 +26,8 @@ const App = () => {
                         />
                     </Routes>
                 </Content>
-                <Footer>
-
-                </Footer>
+                
+                <Footer/>
             </Layout>
         </Router>
     );
