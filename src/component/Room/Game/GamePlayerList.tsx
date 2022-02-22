@@ -1,6 +1,6 @@
 import React from "react";
 import {IPlayer} from "../../../types/GameModel";
-import {Avatar, Badge, Card, Col, Divider, List, Row, Typography} from "antd";
+import {Avatar, Badge, Card, Col, List, Row, Typography} from "antd";
 import {UserOutlined} from '@ant-design/icons';
 
 const {Title} = Typography;
@@ -80,13 +80,6 @@ const GamePlayerList = ({
     return (
         <>
             <Card>
-                <Title
-                    level={3}
-                >
-                    Players
-                </Title>
-
-                <Divider/>
 
                 <List
                     itemLayout="horizontal"
@@ -106,6 +99,7 @@ const GamePlayerList = ({
                         )
                     }}
                 />
+                
             </Card>
 
         </>
