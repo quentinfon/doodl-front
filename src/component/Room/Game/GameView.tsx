@@ -2,7 +2,7 @@ import React, {MutableRefObject, RefObject} from "react";
 import {Col, Row} from "antd";
 import DrawingToolTips from "../Canva/DrawingToolTips";
 import {DrawTool, IDraw, IMessage, IPlayer} from "../../../types/GameModel";
-import WordDisplayer from "../WordDisplayer";
+import WordDisplayer from "./WordDisplayer";
 import DrawingCanva, {canvasFunctions} from "../Canva/DrawingCanva";
 import GameChat from "../../GameChat";
 import {ISocketMessageRequest} from "../../../types/SocketModel";
@@ -53,13 +53,11 @@ const GameView = ({
     return (
         <>
             <Row>
-                {playerIsAllowedToDraw &&
-                    <Col xs={24} md={6} xl={4}>
+                <Col xs={24} md={6}>
 
-                    </Col>
-                }
+                </Col>
 
-                <Col xs={24} md={12} xl={14}>
+                <Col xs={24} md={12}>
                     <WordDisplayer
                         wordToDisplay={"Test ____"}
                     />
