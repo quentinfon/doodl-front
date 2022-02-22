@@ -214,6 +214,7 @@ const GamePage = () => {
                                                             player={player}
                                                             initDraws={initDraws}
                                                             messages={messages}
+                                                            gameData={gameData}
                                                         />
                                                     }
 
