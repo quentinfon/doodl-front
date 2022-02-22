@@ -15,12 +15,27 @@ const PlayerCreation = ({
                             loadingConnexion
                         }: PlayerCreationProps) => {
 
+    const pseudoLocalStorageKey = "pseudo";
+
     const [player, setPlayer] = useState<IPlayer>({
         playerId: "",
-        name: `Player${Math.random().toString().substring(2, 6)}`,
+        name: getPlayerName(),
         imgUrl: "",
         point: 0
     })
+
+    function getPlayerName(): string {
+        const itemPseudo: any = localStorage.getItem(pseudoLocalStorageKey);
+        if (itemPseudo) {
+            return itemPseudo;
+        }
+
+        return `Player${Math.random().toString().substring(2, 6)}`;
+    }
+
+    function updatePlayerLocalStorage(newValue: string) {
+        localStorage.setItem(pseudoLocalStorageKey, newValue);
+    }
 
     return (
         <>
@@ -50,7 +65,10 @@ const PlayerCreation = ({
                                 <Input.Group>
                                     <Input
                                         value={player.name}
-                                        onChange={(e) => setPlayer({...player, name: e.target.value})}
+                                        onChange={(e) => {
+                                            setPlayer({...player, name: e.target.value});
+                                            updatePlayerLocalStorage(e.target.value);
+                                        }}
                                     />
                                 </Input.Group>
                             </Col>
