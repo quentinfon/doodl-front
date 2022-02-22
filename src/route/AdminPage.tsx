@@ -10,9 +10,6 @@ import {
 const { Panel } = Collapse;
 const { Search } = Input;
 
-const {Panel} = Collapse;
-const {Search} = Input;
-
 const AdminPage = () => {
 
     const [userNumber, setUserNumber] = useState<number>(0);
