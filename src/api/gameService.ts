@@ -1,6 +1,6 @@
 import {fetchURL, HttpMethod} from './request';
 
-const service_endpoint = process.env.REACT_APP_API_ENDPOINT;
+const service_endpoint = import.meta.env.VITE_API_ENDPOINT;
 
 export const getRoomCreationConfig = () => {
     return fetchURL(`${service_endpoint}/config`, HttpMethod.GET);
