@@ -54,16 +54,6 @@ const GamePage = () => {
 
     const [errorSocket, setErrorSocket] = useState<any>();
 
-    const [isModalVisible, setIsModalVisible] = useState(true);
-
-    const showModal = () => {
-        setIsModalVisible(true);
-    };
-
-    const closeModal = () => {
-        setIsModalVisible(false);
-    };
-
 
     const getRoom = () => {
         setLoadingRoom(true);
@@ -200,11 +190,6 @@ const GamePage = () => {
                                                 <>
                                                     {gameData.roomState !== RoomState.LOBBY &&
                                                         <>
-                                                        <Modal title="Rounds Results" visible={isModalVisible} onOk={closeModal}>
-                                                        <p>Player 1...</p>
-                                                        <p>Player 2...</p>
-                                                        <p>Player 3...</p>
-                                                        </Modal>
                                                         <GameView
                                                             playerIsAllowedToDraw={gameData.roundData?.playerTurn.map(p => p.playerId).indexOf(player?.playerId ?? "") !== -1}
                                                             canvasRef={canvasRef}

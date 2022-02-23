@@ -1,5 +1,5 @@
 import React, {MutableRefObject, RefObject, useEffect, useRef, useState} from "react";
-import {Col, Drawer, Row} from "antd";
+import {Col, Drawer, Modal, Row} from "antd";
 import DrawingToolTips from "../Canva/DrawingToolTips";
 import {DrawTool, IDraw, IMessage, IPlayer} from "../../../types/GameModel";
 import WordDisplayer from "./WordDisplayer";
@@ -57,10 +57,33 @@ const GameView = ({
                   }: GameViewProps) => {
 
     const guessedList = useRef<IPlayer[]>([]);
+    const [isModalVisible, setIsModalVisible] = useState(true);
 
     const sendMessage = (message: ISocketMessageRequest) => {
         socket?.send(JSON.stringify(message));
     }
+
+    const modal_data = () => {
+        let acc = []
+        let players: IPlayer[]  =  gameData.playerList ?? [];
+        for(let i=0; i < players?.length ?? 0; i++){
+            acc.push(
+                <p>
+                    {players[i].name.toString() + " : " + players[i].roundPoint.toString() + " points"}
+                </p>
+
+            )
+        }
+        return acc
+    }
+
+    const showModal = () => {
+        setIsModalVisible(true);
+    };
+
+    const closeModal = () => {
+        setIsModalVisible(false);
+    };
 
     const [timeRemaining, setTimeRemaining] = useState<number>(0);
 
@@ -100,6 +123,11 @@ const GameView = ({
 
     return (
         <>
+
+            <Modal title={null} visible={isModalVisible} footer={null} closable={false}>
+                {modal_data()}
+            </Modal>
+
             <Row>
                 <Col xs={24} md={6}>
                     <RoundDisplay
