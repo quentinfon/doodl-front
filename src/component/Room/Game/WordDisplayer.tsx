@@ -28,7 +28,7 @@ const WordDisplayer = ({
             console.log("refresh")
             localTime.current = getRemainingTime();
             console.log(getRemainingTime());
-            //setTimerKey(timerKey + 1);
+            setTimerKey(timerKey + 1);
         }
     }
 
@@ -87,8 +87,8 @@ const WordDisplayer = ({
                     <CountdownCircleTimer
                         isPlaying
                         key={timerKey}
-                        initialRemainingTime={totalTime}
-                        duration={localTime.current}
+                        initialRemainingTime={localTime.current}
+                        duration={totalTime}
                         colors={['#1890ff', '#F7B801', '#A30000', '#A30000']}
                         colorsTime={[totalTime / 2, totalTime / 3, totalTime / 4, 0]}
                         size={50}
