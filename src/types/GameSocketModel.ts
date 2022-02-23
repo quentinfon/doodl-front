@@ -16,7 +16,7 @@ export interface ISocketMessageRequest extends ISocketMessage {
 }
 
 export interface ISocketMessageResponse extends ISocketMessage {
-    data: IDataInitResponse | IMessage | IDataDrawResponse | IDataInfoResponse | IRoomConfig | IDataKickResponse | IDataChooseWordAsk;
+    data: IDataInitResponse | IMessage | IDataDrawResponse | IDataInfoResponse | IRoomConfig | IDataKickResponse | IDataChooseWordResponse;
     error?: any;
 }
 
@@ -60,10 +60,6 @@ export interface IDataChooseWordRequest {
 }
 
 export interface IDataChooseWordResponse {
-    word: string;
-}
-
-export interface IDataChooseWordAsk {
     words: string[];
 }
 
@@ -76,7 +72,6 @@ export interface IDataGuessResponse {
 export interface IDataKickResponse {
     reason?: string;
 }
-
 
 
 export enum GameSocketChannel {

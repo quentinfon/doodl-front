@@ -51,8 +51,6 @@ const GamePage = () => {
 
     const [messages, setMessages] = useState<IMessage[]>([]);
 
-    const [playerIsAllowedToDraw, setPlayerIsAllowedToDraw] = useState<boolean>(true);
-
     const [errorSocket, setErrorSocket] = useState<any>();
 
     const getRoom = () => {
@@ -190,7 +188,7 @@ const GamePage = () => {
                                                 <>
                                                     {gameData.roomState !== RoomState.LOBBY &&
                                                         <GameView
-                                                            playerIsAllowedToDraw={playerIsAllowedToDraw}
+                                                            playerIsAllowedToDraw={gameData.roundData?.playerTurn.map(p => p.playerId).indexOf(player?.playerId ?? "") !== -1}
                                                             canvasRef={canvasRef}
                                                             sendDrawData={sendDrawData}
                                                             mode={mode}

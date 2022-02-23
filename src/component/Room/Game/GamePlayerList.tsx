@@ -10,6 +10,7 @@ interface GamePlayerListProps {
     adminPlayerId: string,
     players: IPlayer[],
     drawingPlayers: IPlayer[],
+    guessedList: IPlayer[],
     currentPlayerId: string
 }
 
@@ -17,6 +18,7 @@ const GamePlayerList = ({
                             adminPlayerId,
                             players,
                             drawingPlayers,
+                            guessedList,
                             currentPlayerId
                         }: GamePlayerListProps) => {
 
@@ -50,12 +52,13 @@ const GamePlayerList = ({
                         }: { player: IPlayer }) => {
 
         const drawing: boolean = drawingPlayers.map(p => p.playerId).indexOf(player.playerId) !== -1;
+        const guess: boolean = guessedList.map(p => p.playerId).indexOf(player.playerId) !== -1;
 
         return (
             <Row
                 gutter={[5, 5]}
                 style={{
-                    background: drawing ? "rgba(24,144,255,0.3)" : "",
+                    background: drawing ? "rgba(24,144,255,0.3)" : guess ? "rgba(24,255,78,0.3)" : "",
                     padding: "5px"
                 }}
             >
@@ -69,7 +72,7 @@ const GamePlayerList = ({
                     <Text
                         type="secondary"
                     >
-                        {player.point} points
+                        {player.totalPoint} points
                     </Text>
                 </Col>
 
@@ -99,7 +102,7 @@ const GamePlayerList = ({
                         )
                     }}
                 />
-                
+
             </Card>
 
         </>
