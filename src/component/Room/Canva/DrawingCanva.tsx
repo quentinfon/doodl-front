@@ -1,7 +1,12 @@
 import React, {ForwardedRef, forwardRef, MutableRefObject, useEffect, useImperativeHandle, useRef} from "react";
 import {DrawTool, ICoordinate, IDraw, IPlayer} from "../../../types/GameModel";
 import FloodFill from 'q-floodfill'
-import {GameSocketChannel, IDataDrawResponse, ISocketMessageRequest, ISocketMessageResponse } from "../../../types/GameSocketModel";
+import {
+    GameSocketChannel,
+    IDataDrawResponse,
+    ISocketMessageRequest,
+    ISocketMessageResponse
+} from "../../../types/GameSocketModel";
 
 export interface canvasFunctions {
     clear: () => any
@@ -14,7 +19,7 @@ interface DrawingCanvaProps {
     modeRef: MutableRefObject<any>,
     lineWidthRef: MutableRefObject<any>,
     colorRef: MutableRefObject<any>,
-    canDraw: boolean
+    canDraw: MutableRefObject<boolean>
 }
 
 const DrawingCanva = forwardRef(({
@@ -32,7 +37,7 @@ const DrawingCanva = forwardRef(({
 
     useImperativeHandle(ref, () => ({
         clear() {
-            if (canDraw)
+            if (canDraw.current)
                 clearCanva();
         }
     }));
@@ -93,7 +98,7 @@ const DrawingCanva = forwardRef(({
     }
 
     const draw = (data: IDraw, clientSide: boolean) => {
-        if (!canvasRef.current || (clientSide && !drawing) || (clientSide && !canDraw)) return;
+        if (!canvasRef.current || (clientSide && !drawing) || (clientSide && !canDraw.current)) return;
 
         const canvas: HTMLCanvasElement = canvasRef.current;
         const context = canvas.getContext("2d");
