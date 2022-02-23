@@ -56,6 +56,8 @@ const GameView = ({
                       gameData
                   }: GameViewProps) => {
 
+    const gameDataRef = useRef<IDataInfoResponse>(gameData);
+
     const [guessedList, setGuessedList] = useState<IPlayer[]>([]);
     const [isModalVisible, setIsModalVisible] = useState(true);
 
@@ -89,14 +91,14 @@ const GameView = ({
 
     const getTime = (): number => {
     const getRemainingTime = (): number => {
-        if (gameData?.roundData?.dateStartedDrawing == null) return 0;
-        return (new Date(gameData.roundData.dateStartedDrawing).getTime() + gameData.roomConfig.timeByTurn * 1000 - new Date().getTime()) / 1000;
+        if (gameDataRef.current?.roundData?.dateStartedDrawing == null) return 0;
+        return (new Date(gameDataRef.current.roundData.dateStartedDrawing).getTime() + gameDataRef.current.roomConfig.timeByTurn * 1000 - new Date().getTime()) / 1000;
     }
 
     const [timeLeft, setTimeLeft] = useState<number>(0);
 
     useEffect(() => {
-        console.log(gameData)
+        gameDataRef.current = gameData;
         if (gameData.roundData?.dateStartedDrawing != null)
             setTimeLeft(getRemainingTime());
     }, [gameData]);
