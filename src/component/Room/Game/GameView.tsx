@@ -2,7 +2,7 @@ import React, {MutableRefObject, RefObject, useEffect, useState} from "react";
 import {Col, Row} from "antd";
 import DrawingToolTips from "../Canva/DrawingToolTips";
 import {DrawTool, IDraw, IMessage, IPlayer} from "../../../types/GameModel";
-import WordDisplayer, {CountDownTime} from "./WordDisplayer";
+import WordDisplayer from "./WordDisplayer";
 import DrawingCanva, {canvasFunctions} from "../Canva/DrawingCanva";
 import GameChat from "../../GameChat";
 import GamePlayerList from "./GamePlayerList";
@@ -62,20 +62,20 @@ const GameView = ({
         socket?.send(JSON.stringify(message));
     }
 
-    const getTime = (): number => {
+    const getRemainingTime = (): number => {
+        console.log(gameData);
         if (gameData?.roundData?.dateStartedDrawing == null) return 0;
         return (new Date(gameData.roundData.dateStartedDrawing).getTime() + gameData.roomConfig.timeByTurn * 1000 - new Date().getTime()) / 1000;
     }
 
-    const [timeLeft, setTimeLeft] = useState<CountDownTime>({time: getTime(), key: 0});
+    const [timeLeft, setTimeLeft] = useState<number>(0);
 
     useEffect(() => {
-        setTimeLeft({time: getTime(), key: timeLeft.key + 1});
-    }, [gameData.roundData?.dateStartedDrawing]);
+        console.log(gameData)
+        if (gameData.roundData?.dateStartedDrawing != null)
+            setTimeLeft(getRemainingTime());
+    }, [gameData]);
 
-    useEffect(() => {
-
-    }, [gameData.roomState]);
 
     useEffect(() => {
         console.log(timeLeft);
@@ -125,9 +125,7 @@ const GameView = ({
                         wordToDisplay={gameData?.roundData?.word?.toUpperCase() ?? ""}
                         timeLeft={timeLeft}
                         totalTime={gameData.roomConfig.timeByTurn}
-                        refreshTimer={() => {
-                            setTimeLeft({time: getTime(), key: timeLeft.key + 1});
-                        }}
+                        getRemainingTime={getRemainingTime}
                     />
 
                     <DrawingCanva

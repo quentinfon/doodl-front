@@ -25,9 +25,7 @@ const GamePage = () => {
     const {gameId} = useParams<{ gameId: string }>();
 
     const canvasRef = useRef<canvasFunctions>(null);
-
-    const screens = useBreakpoint();
-
+    
     const [ws, setWs] = useState<WebSocket>();
     const socketRef = useRef<WebSocket>();
 
@@ -159,7 +157,7 @@ const GamePage = () => {
     }
 
     useEffect(() => {
-        console.debug(gameData)
+        console.log(gameData)
         if ([RoomState.CHOOSE_WORD, RoomState.END_GAME].includes(gameData?.roomState as RoomState)) {
             canvasRef?.current?.forceClear();
         }
