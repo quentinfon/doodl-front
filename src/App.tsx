@@ -12,7 +12,7 @@ const App = () => {
 
     return (
         <Router>
-            <Layout style={{minHeight: "100vh"}}>
+            <Layout style={{minHeight: "90vh"}}>
                 <AppHeader/>
 
                 <Content>
