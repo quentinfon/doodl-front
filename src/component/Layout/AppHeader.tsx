@@ -1,6 +1,9 @@
 import {Button, Menu, message, Space} from "antd";
 import React from "react";
 import {Header} from "antd/lib/layout/layout";
+import {
+ LinkOutlined
+} from '@ant-design/icons';
 
 import './AppHeader.css';
 import logoUrl from '/logo.png'
@@ -39,10 +42,8 @@ export default function AppHeader() {
                     </Link>
                 </Menu.Item>
 
-                <Space direction="vertical" style={{marginLeft: "8px", marginRight: "8px"}}>
-                    <Button type={"primary"} onClick={copyPageLink}>
-                        Share the link
-                    </Button>
+                <Space style={{marginLeft: "auto", marginRight: "8px", marginBottom: "-8px"}}>
+                    <LinkOutlined onClick={copyPageLink} style={{ fontSize: "200%"}}></LinkOutlined>
                 </Space>
             </Menu>
         </Header>
