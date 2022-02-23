@@ -1,14 +1,17 @@
-import {Card, Typography} from "antd";
+import {Card, Col, Row, Typography} from "antd";
 import React from "react";
+import {CountdownCircleTimer} from "react-countdown-circle-timer";
 
 const {Title} = Typography;
 
 interface WordDisplayerProps {
-    wordToDisplay: string
+    wordToDisplay: string,
+    timeLeft: number
 }
 
 const WordDisplayer = ({
-                           wordToDisplay
+                           wordToDisplay,
+                           timeLeft
                        }: WordDisplayerProps) => {
 
 
@@ -17,27 +20,51 @@ const WordDisplayer = ({
             style={{
                 textAlign: "center"
             }}
+            bodyStyle={{
+                padding: "13px"
+            }}
         >
-            <Title
-                level={4}
-                style={{
-                    margin: "0"
-                }}
+            <Row
+                justify={"space-between"}
+                align={"middle"}
             >
-                {wordToDisplay.split('').map(letter => {
+                <Col
+                    flex="auto"
+                >
+                    <Title
+                        level={4}
+                        style={{
+                            margin: "0"
+                        }}
+                    >
+                        {wordToDisplay.split('').map(letter => {
 
-                    return (
-                        <span
-                            style={{
-                                marginLeft: "5px",
-                                marginRight: "5px"
-                            }}
-                        >
+                            return (
+                                <span
+                                    style={{
+                                        marginLeft: "5px",
+                                        marginRight: "5px"
+                                    }}
+                                >
                             {letter}
                         </span>
-                    )
-                })}
-            </Title>
+                            )
+                        })}
+                    </Title>
+                </Col>
+                <Col>
+                    <CountdownCircleTimer
+                        isPlaying
+                        duration={timeLeft}
+                        colors={['#1890ff', '#F7B801', '#A30000', '#A30000']}
+                        colorsTime={[7, 5, 2, 0]}
+                        size={50}
+                        strokeWidth={5}
+                    >
+                        {({remainingTime}) => remainingTime}
+                    </CountdownCircleTimer>
+                </Col>
+            </Row>
         </Card>
     )
 }
