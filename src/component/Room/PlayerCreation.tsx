@@ -21,7 +21,8 @@ const PlayerCreation = ({
         playerId: "",
         name: getPlayerName(),
         imgUrl: "",
-        point: 0
+        totalPoint: 0,
+        roundPoint: 0
     })
 
     function getPlayerName(): string {

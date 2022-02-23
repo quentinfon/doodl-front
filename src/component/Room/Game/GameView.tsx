@@ -5,9 +5,9 @@ import {DrawTool, IDraw, IMessage, IPlayer} from "../../../types/GameModel";
 import WordDisplayer from "./WordDisplayer";
 import DrawingCanva, {canvasFunctions} from "../Canva/DrawingCanva";
 import GameChat from "../../GameChat";
-import {IDataInfoResponse, ISocketMessageRequest} from "../../../types/SocketModel";
 import GamePlayerList from "./GamePlayerList";
 import RoundDisplay from "./RoundDisplay";
+import {IDataInfoResponse, ISocketMessageRequest} from "../../../types/GameSocketModel";
 
 
 interface GameViewProps {
@@ -66,7 +66,7 @@ const GameView = ({
                     <GamePlayerList
                         adminPlayerId={gameData.playerAdminId ?? ""}
                         players={gameData.playerList}
-                        drawingPlayers={gameData.playerTurn}
+                        drawingPlayers={gameData.roundData?.playerTurn ?? []}
                         currentPlayerId={player?.playerId ?? ""}
                     />
 
@@ -74,7 +74,7 @@ const GameView = ({
 
                 <Col xs={24} md={12}>
                     <WordDisplayer
-                        wordToDisplay={"Test ____"}
+                        wordToDisplay={gameData?.roundData?.anonymeWord ?? ""}
                     />
                     <DrawingCanva
                         ref={canvasRef}
@@ -86,27 +86,30 @@ const GameView = ({
                         colorRef={colorRef}
                         canDraw={playerIsAllowedToDraw}
                     />
-                    <DrawingToolTips
-                        clearCanvas={() => {
-                            sendDrawData({tool: DrawTool.CLEAR});
-                            canvasRef?.current?.clear();
-                        }}
-                        tool={mode}
-                        setTool={(t: DrawTool) => {
-                            modeRef.current = t;
-                            setMode(t);
-                        }}
-                        color={color}
-                        setColor={(c: string) => {
-                            colorRef.current = c;
-                            setColor(c);
-                        }}
-                        lineWidth={lineWidth}
-                        setLineWidth={(s: number) => {
-                            lineWidthRef.current = s;
-                            setLineWidth(s);
-                        }}
-                    />
+
+                    {playerIsAllowedToDraw &&
+                        <DrawingToolTips
+                            clearCanvas={() => {
+                                sendDrawData({tool: DrawTool.CLEAR});
+                                canvasRef?.current?.clear();
+                            }}
+                            tool={mode}
+                            setTool={(t: DrawTool) => {
+                                modeRef.current = t;
+                                setMode(t);
+                            }}
+                            color={color}
+                            setColor={(c: string) => {
+                                colorRef.current = c;
+                                setColor(c);
+                            }}
+                            lineWidth={lineWidth}
+                            setLineWidth={(s: number) => {
+                                lineWidthRef.current = s;
+                                setLineWidth(s);
+                            }}
+                        />
+                    }
                 </Col>
 
                 <Col xs={24} md={6}>
