@@ -56,7 +56,7 @@ const GameView = ({
                       gameData
                   }: GameViewProps) => {
 
-    const guessedList = useRef<IPlayer[]>([]);
+    const [guessedList, setGuessedList] = useState<IPlayer[]>([]);
     const [isModalVisible, setIsModalVisible] = useState(true);
 
     const sendMessage = (message: ISocketMessageRequest) => {
@@ -89,18 +89,22 @@ const GameView = ({
 
     const getTime = (): number => {
         if (gameData?.roundData?.dateStartedDrawing == null) return 0;
-
         return (new Date(gameData.roundData.dateStartedDrawing).getTime() + gameData.roomConfig.timeByTurn * 1000 - new Date().getTime()) / 1000;
     }
 
-    useEffect(() => {
-        console.debug(gameData.roundData)
-        setTimeRemaining(getTime());
-    }, [gameData.roundData]);
+    const [totalTime, setTotalTime] = useState<number>(getTime());
 
     useEffect(() => {
-        console.log(timeRemaining);
-    }, [timeRemaining]);
+        setTotalTime(getTime());
+    }, [gameData.roundData?.dateStartedDrawing]);
+
+    useEffect(() => {
+
+    }, [gameData.roomState]);
+
+    useEffect(() => {
+        console.log(totalTime);
+    }, [totalTime]);
 
 
     const handlePickWord = (event: any) => {
@@ -110,7 +114,7 @@ const GameView = ({
         const data: IDataGuessResponse = msg.data as IDataGuessResponse;
         if (!data) return;
 
-        guessedList.current = data.playersGuess;
+        setGuessedList(data.playersGuess);
     }
 
     useEffect(() => {
@@ -131,7 +135,7 @@ const GameView = ({
             <Row>
                 <Col xs={24} md={6}>
                     <RoundDisplay
-                        current={1}
+                        current={gameData.roundData?.roundCurrentCycle ?? 0}
                         total={gameData.roomConfig.cycleRoundByGame}
                     />
 
@@ -140,7 +144,7 @@ const GameView = ({
                         players={gameData.playerList}
                         drawingPlayers={gameData.roundData?.playerTurn ?? []}
                         currentPlayerId={player?.playerId ?? ""}
-                        guessedList={guessedList.current ?? []}
+                        guessedList={guessedList}
                     />
 
                 </Col>
@@ -149,7 +153,8 @@ const GameView = ({
 
                     <WordDisplayer
                         wordToDisplay={gameData?.roundData?.word?.toUpperCase() ?? ""}
-                        timeLeft={timeRemaining}
+                        timeLeft={totalTime}
+                        totalTime={totalTime}
                     />
 
                     <DrawingCanva

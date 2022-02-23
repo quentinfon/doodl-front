@@ -17,7 +17,8 @@ import {
 } from "../../../types/GameSocketModel";
 
 export interface canvasFunctions {
-    clear: () => any
+    clear: () => any,
+    forceClear: () => any
 }
 
 interface DrawingCanvaProps {
@@ -47,6 +48,10 @@ const DrawingCanva = forwardRef(({
         clear() {
             if (canDraw.current)
                 clearCanva();
+        },
+
+        forceClear() {
+            clearCanva();
         }
     }));
 

@@ -6,12 +6,14 @@ const {Title} = Typography;
 
 interface WordDisplayerProps {
     wordToDisplay: string,
-    timeLeft: number
+    timeLeft: number,
+    totalTime: number
 }
 
 const WordDisplayer = ({
                            wordToDisplay,
-                           timeLeft
+                           timeLeft,
+                           totalTime
                        }: WordDisplayerProps) => {
 
 
@@ -55,6 +57,7 @@ const WordDisplayer = ({
                 <Col>
                     <CountdownCircleTimer
                         isPlaying
+                        initialRemainingTime={totalTime}
                         duration={timeLeft}
                         colors={['#1890ff', '#F7B801', '#A30000', '#A30000']}
                         colorsTime={[timeLeft / 2, timeLeft / 3, timeLeft / 4, 0]}
