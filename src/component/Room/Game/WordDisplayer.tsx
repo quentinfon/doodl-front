@@ -1,21 +1,32 @@
 import {Card, Col, Row, Typography} from "antd";
-import React from "react";
+import React, {useEffect} from "react";
 import {CountdownCircleTimer} from "react-countdown-circle-timer";
 
 const {Title} = Typography;
 
 interface WordDisplayerProps {
     wordToDisplay: string,
-    timeLeft: number,
-    totalTime: number
+    timeLeft: CountDownTime,
+    totalTime: number,
+    refreshTimer: () => any
+}
+
+export interface CountDownTime {
+    time: number,
+    key: number
 }
 
 const WordDisplayer = ({
                            wordToDisplay,
                            timeLeft,
-                           totalTime
+                           totalTime,
+                           refreshTimer
                        }: WordDisplayerProps) => {
 
+    /* On Timer Mounted */
+    useEffect(() => {
+        refreshTimer();
+    }, [])
 
     return (
         <Card
@@ -57,10 +68,11 @@ const WordDisplayer = ({
                 <Col>
                     <CountdownCircleTimer
                         isPlaying
+                        key={timeLeft.key}
                         initialRemainingTime={totalTime}
-                        duration={timeLeft}
+                        duration={timeLeft.time}
                         colors={['#1890ff', '#F7B801', '#A30000', '#A30000']}
-                        colorsTime={[timeLeft / 2, timeLeft / 3, timeLeft / 4, 0]}
+                        colorsTime={[totalTime / 2, totalTime / 3, totalTime / 4, 0]}
                         size={50}
                         strokeWidth={5}
                     >
