@@ -2,7 +2,7 @@ import React, {MutableRefObject, RefObject, useEffect, useRef, useState} from "r
 import {Col, Drawer, Modal, Row} from "antd";
 import DrawingToolTips from "../Canva/DrawingToolTips";
 import {DrawTool, IDraw, IMessage, IPlayer} from "../../../types/GameModel";
-import WordDisplayer from "./WordDisplayer";
+import WordDisplayer, {CountDownTime} from "./WordDisplayer";
 import DrawingCanva, {canvasFunctions} from "../Canva/DrawingCanva";
 import GameChat from "../../GameChat";
 import GamePlayerList from "./GamePlayerList";
@@ -92,10 +92,10 @@ const GameView = ({
         return (new Date(gameData.roundData.dateStartedDrawing).getTime() + gameData.roomConfig.timeByTurn * 1000 - new Date().getTime()) / 1000;
     }
 
-    const [totalTime, setTotalTime] = useState<number>(getTime());
+    const [timeLeft, setTimeLeft] = useState<CountDownTime>({time: getTime(), key: 0});
 
     useEffect(() => {
-        setTotalTime(getTime());
+        setTimeLeft({time: getTime(), key: timeLeft.key + 1});
     }, [gameData.roundData?.dateStartedDrawing]);
 
     useEffect(() => {
@@ -103,8 +103,8 @@ const GameView = ({
     }, [gameData.roomState]);
 
     useEffect(() => {
-        console.log(totalTime);
-    }, [totalTime]);
+        console.log(timeLeft);
+    }, [timeLeft]);
 
 
     const handlePickWord = (event: any) => {
@@ -153,8 +153,11 @@ const GameView = ({
 
                     <WordDisplayer
                         wordToDisplay={gameData?.roundData?.word?.toUpperCase() ?? ""}
-                        timeLeft={totalTime}
-                        totalTime={totalTime}
+                        timeLeft={timeLeft}
+                        totalTime={gameData.roomConfig.timeByTurn}
+                        refreshTimer={() => {
+                            setTimeLeft({time: getTime(), key: timeLeft.key + 1});
+                        }}
                     />
 
                     <DrawingCanva
