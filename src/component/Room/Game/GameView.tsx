@@ -1,7 +1,7 @@
 import React, {MutableRefObject, RefObject, useEffect, useRef, useState} from "react";
 import {Col, Drawer, Modal, Row} from "antd";
 import DrawingToolTips from "../Canva/DrawingToolTips";
-import {DrawTool, IDraw, IMessage, IPlayer} from "../../../types/GameModel";
+import {DrawTool, IDraw, IMessage, IPlayer, RoomState} from "../../../types/GameModel";
 import WordDisplayer from "./WordDisplayer";
 import DrawingCanva, {canvasFunctions} from "../Canva/DrawingCanva";
 import GameChat from "../../GameChat";
@@ -9,11 +9,13 @@ import GamePlayerList from "./GamePlayerList";
 import RoundDisplay from "./RoundDisplay";
 import {
     GameSocketChannel,
+    IDataChooseWordResponse,
     IDataGuessResponse,
     IDataInfoResponse,
     ISocketMessageRequest,
     ISocketMessageResponse
 } from "../../../types/GameSocketModel";
+import DisabledDisplay from "./DisabledDisplay";
 
 
 interface GameViewProps {
@@ -109,7 +111,7 @@ const GameView = ({
     }, [timeLeft]);
 
 
-    const handlePickWord = (event: any) => {
+    const handleGuess = (event: any) => {
         const msg: ISocketMessageResponse = JSON.parse(event.data);
         if (msg.channel !== GameSocketChannel.GUESS) return;
 
@@ -119,13 +121,29 @@ const GameView = ({
         setGuessedList(data.playersGuess);
     }
 
+    const [chooseWordList, setChooseWordList] = useState<string[]>([]);
+
+    const handleWordList = (event: any) => {
+        const msg: ISocketMessageResponse = JSON.parse(event.data);
+        if (msg.channel !== GameSocketChannel.CHOOSE_WORD) return;
+
+        const data: IDataChooseWordResponse = msg.data as IDataChooseWordResponse;
+        if (!data) return;
+
+        console.log(data)
+
+        setChooseWordList(data.words);
+    }
+
     useEffect(() => {
-        socket.addEventListener("message", handlePickWord);
+        socket.addEventListener("message", handleGuess);
+        socket.addEventListener("message", handleWordList);
 
         return (() => {
-            socket.removeEventListener("message", handlePickWord);
+            socket.removeEventListener("message", handleGuess);
+            socket.removeEventListener("message", handleWordList);
         })
-    }, [socket])
+    }, [socket]);
 
     return (
         <>
@@ -169,6 +187,14 @@ const GameView = ({
                         lineWidthRef={lineWidthRef}
                         colorRef={colorRef}
                         canDraw={playerIsAllowedToDraw}
+                        disabled={gameData.roomState !== RoomState.DRAWING}
+                        disabledDisplay={
+                            <DisabledDisplay
+                                wordList={chooseWordList}
+                                onChooseWord={(word: string) => {
+
+                                }}
+                            />}
                     />
 
                     {playerIsAllowedToDraw.current &&

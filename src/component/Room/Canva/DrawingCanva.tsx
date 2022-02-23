@@ -28,7 +28,9 @@ interface DrawingCanvaProps {
     modeRef: MutableRefObject<any>,
     lineWidthRef: MutableRefObject<any>,
     colorRef: MutableRefObject<any>,
-    canDraw: MutableRefObject<boolean>
+    canDraw: MutableRefObject<boolean>,
+    disabled: boolean,
+    disabledDisplay: any
 }
 
 const DrawingCanva = forwardRef(({
@@ -38,7 +40,9 @@ const DrawingCanva = forwardRef(({
                                      modeRef,
                                      lineWidthRef,
                                      colorRef,
-                                     canDraw
+                                     canDraw,
+                                     disabled,
+                                     disabledDisplay
                                  }: DrawingCanvaProps
     , ref: ForwardedRef<canvasFunctions>) => {
 
@@ -233,18 +237,49 @@ const DrawingCanva = forwardRef(({
     }, [initDraw]);
 
     return (
-        <>
-
+        <div
+            style={{
+                position: "relative"
+            }}
+        >
             <canvas
                 ref={canvasRef}
                 height={canvasSize.height}
                 width={canvasSize.width}
                 style={{
-                    width: "100%"
-                }}>
-            </canvas>
+                    width: "100%",
+                    zIndex: "1"
+                }}/>
 
-        </>
+            <div
+                style={{
+                    position: "absolute",
+                    background: disabled ? "rgba(0,0,0,0.8)" : "",
+                    width: "100%",
+                    height: "99%",
+                    top: "0",
+                    left: "0",
+                    zIndex: "2",
+                    alignItems: "center"
+                }}
+            />
+
+            {disabled &&
+                <div
+                    style={{
+                        position: "absolute",
+                        margin: "0",
+                        top: "50%",
+                        left: "50%",
+                        zIndex: "3",
+                        msTransform: "translate(-50%, -50%)",
+                        transform: "translate(-50%, -50%)"
+                    }}>
+                    {disabledDisplay}
+                </div>
+            }
+
+        </div>
     )
 })
 
