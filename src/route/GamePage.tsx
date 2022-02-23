@@ -75,10 +75,6 @@ const GamePage = () => {
         }
     }, [ws])
 
-    const sendMessage = (message: ISocketMessageRequest) => {
-        ws?.send(JSON.stringify(message));
-    }
-
     const sendDrawData = (drawData: IDraw) => {
         const message: ISocketMessageRequest = {
             channel: GameSocketChannel.DRAW,
@@ -163,6 +159,11 @@ const GamePage = () => {
     }
 
     useEffect(() => {
+        console.debug(gameData)
+        if ([RoomState.CHOOSE_WORD, RoomState.END_GAME].includes(gameData?.roomState as RoomState)) {
+            canvasRef?.current?.forceClear();
+        }
+
         if (gameData?.roomState !== RoomState.DRAWING) {
             canDraw.current = false;
         } else {
