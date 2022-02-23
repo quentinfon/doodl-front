@@ -70,11 +70,11 @@ const AdminPage = () => {
         let items = []
         items.push(<List.Item><p>{"RoomID : " + roomInfo.roomId}</p></List.Item>)
         for(let i=0; i<roomInfo.playerList.length; i++){
-            items.push(<List.Item><p>{roomInfo.playerList[i].name + " "}{<Popconfirm  title={"DO YOU REALLY WANT TO KICK THIS PLAYER ?"} onConfirm={() => playerSuppression(roomInfo.playerList[i].playerId,roomInfo.roomId)} okText="Yes" cancelText="No">
+            items.push(<List.Item>{roomInfo.playerList[i].name + " "}{<Popconfirm  title={"DO YOU REALLY WANT TO KICK THIS PLAYER ?"} onConfirm={() => playerSuppression(roomInfo.playerList[i].playerId,roomInfo.roomId)} okText="Yes" cancelText="No">
                 <Button danger type="primary" shape="circle" size="small">
                     X
                 </Button>
-            </Popconfirm>}</p></List.Item>)
+            </Popconfirm>}</List.Item>)
         }
         return (
             <>
