@@ -54,6 +54,7 @@ const GamePage = () => {
 
     const [errorSocket, setErrorSocket] = useState<any>();
 
+    const canDraw = useRef<boolean>(false);
 
     const getRoom = () => {
         setLoadingRoom(true);
@@ -162,6 +163,14 @@ const GamePage = () => {
         };
     }
 
+    useEffect(() => {
+        if (gameData?.roomState !== RoomState.DRAWING) {
+            canDraw.current = false;
+        } else {
+            canDraw.current = gameData?.roundData?.playerTurn.map(p => p.playerId).indexOf(player?.playerId ?? "") !== -1;
+        }
+    }, [gameData])
+
     return (
         <>
             {errorSocket ? <ErrorPage errorMsg={errorPage}/>
@@ -191,7 +200,7 @@ const GamePage = () => {
                                                     {gameData.roomState !== RoomState.LOBBY &&
                                                         <>
                                                         <GameView
-                                                            playerIsAllowedToDraw={gameData.roundData?.playerTurn.map(p => p.playerId).indexOf(player?.playerId ?? "") !== -1}
+                                                            playerIsAllowedToDraw={canDraw}
                                                             canvasRef={canvasRef}
                                                             sendDrawData={sendDrawData}
                                                             mode={mode}

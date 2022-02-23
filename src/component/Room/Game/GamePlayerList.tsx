@@ -72,7 +72,7 @@ const GamePlayerList = ({
                     <Text
                         type="secondary"
                     >
-                        {player.totalPoint} points
+                        {Math.round(player.totalPoint)} points
                     </Text>
                 </Col>
 

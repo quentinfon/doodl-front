@@ -57,7 +57,7 @@ const WordDisplayer = ({
                         isPlaying
                         duration={timeLeft}
                         colors={['#1890ff', '#F7B801', '#A30000', '#A30000']}
-                        colorsTime={[7, 5, 2, 0]}
+                        colorsTime={[timeLeft / 2, timeLeft / 3, timeLeft / 4, 0]}
                         size={50}
                         strokeWidth={5}
                     >

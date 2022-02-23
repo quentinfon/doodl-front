@@ -17,7 +17,7 @@ import {
 
 
 interface GameViewProps {
-    playerIsAllowedToDraw: boolean,
+    playerIsAllowedToDraw: MutableRefObject<boolean>,
     canvasRef: RefObject<canvasFunctions> | undefined,
     sendDrawData: (drawData: IDraw) => any,
     mode: DrawTool,
@@ -156,14 +156,14 @@ const GameView = ({
                         ref={canvasRef}
                         initDraw={initDraws}
                         webSocket={socket}
-                        player={player}
                         modeRef={modeRef}
+                        player={player}
                         lineWidthRef={lineWidthRef}
                         colorRef={colorRef}
                         canDraw={playerIsAllowedToDraw}
                     />
 
-                    {playerIsAllowedToDraw &&
+                    {playerIsAllowedToDraw.current &&
                         <DrawingToolTips
                             clearCanvas={() => {
                                 sendDrawData({tool: DrawTool.CLEAR});
