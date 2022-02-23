@@ -69,7 +69,7 @@ const GamePlayerList = ({
                     <Text
                         type="secondary"
                     >
-                        {player.point} points
+                        {player.totalPoint} points
                     </Text>
                 </Col>
 
@@ -99,7 +99,7 @@ const GamePlayerList = ({
                         )
                     }}
                 />
-                
+
             </Card>
 
         </>
