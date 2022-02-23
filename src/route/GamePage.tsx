@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from "react";
 import {useParams} from "react-router-dom";
-import {Grid} from 'antd';
+import {Button, Grid, Modal} from 'antd';
 import {DrawTool, IDraw, IMessage, IPlayer, IRoomStatus, RoomState} from "../types/GameModel";
 import {getRoomData} from "../api/gameService";
 import RoomUnavailable from "../component/Room/RoomUnavailable";
@@ -31,6 +31,7 @@ const GamePage = () => {
     const [ws, setWs] = useState<WebSocket>();
     const socketRef = useRef<WebSocket>();
 
+
     const [gameData, setGameData] = useState<IDataInfoResponse>();
 
     const [player, setPlayer] = useState<IPlayer>();
@@ -52,6 +53,17 @@ const GamePage = () => {
     const [messages, setMessages] = useState<IMessage[]>([]);
 
     const [errorSocket, setErrorSocket] = useState<any>();
+
+    const [isModalVisible, setIsModalVisible] = useState(true);
+
+    const showModal = () => {
+        setIsModalVisible(true);
+    };
+
+    const closeModal = () => {
+        setIsModalVisible(false);
+    };
+
 
     const getRoom = () => {
         setLoadingRoom(true);
@@ -187,6 +199,12 @@ const GamePage = () => {
                                             {gameData !== undefined ?
                                                 <>
                                                     {gameData.roomState !== RoomState.LOBBY &&
+                                                        <>
+                                                        <Modal title="Rounds Results" visible={isModalVisible} onOk={closeModal}>
+                                                        <p>Player 1...</p>
+                                                        <p>Player 2...</p>
+                                                        <p>Player 3...</p>
+                                                        </Modal>
                                                         <GameView
                                                             playerIsAllowedToDraw={gameData.roundData?.playerTurn.map(p => p.playerId).indexOf(player?.playerId ?? "") !== -1}
                                                             canvasRef={canvasRef}
@@ -215,6 +233,7 @@ const GamePage = () => {
                                                             messages={messages}
                                                             gameData={gameData}
                                                         />
+                                                        </>
                                                     }
 
                                                     {gameData.roomState === RoomState.LOBBY &&

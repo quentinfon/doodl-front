@@ -1,5 +1,5 @@
 import React, {MutableRefObject, RefObject, useEffect, useRef, useState} from "react";
-import {Col, Row} from "antd";
+import {Col, Drawer, Row} from "antd";
 import DrawingToolTips from "../Canva/DrawingToolTips";
 import {DrawTool, IDraw, IMessage, IPlayer} from "../../../types/GameModel";
 import WordDisplayer from "./WordDisplayer";

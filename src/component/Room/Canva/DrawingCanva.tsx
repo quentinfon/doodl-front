@@ -1,7 +1,16 @@
-import React, {ForwardedRef, forwardRef, MutableRefObject, useEffect, useImperativeHandle, useRef} from "react";
+import React, {
+    ForwardedRef,
+    forwardRef,
+    MutableRefObject,
+    useEffect,
+    useImperativeHandle,
+    useRef,
+    useState
+} from "react";
 import {DrawTool, ICoordinate, IDraw, IPlayer} from "../../../types/GameModel";
 import FloodFill from 'q-floodfill'
 import {GameSocketChannel, IDataDrawResponse, ISocketMessageRequest, ISocketMessageResponse } from "../../../types/GameSocketModel";
+import {Drawer} from "antd";
 
 export interface canvasFunctions {
     clear: () => any
@@ -223,7 +232,8 @@ const DrawingCanva = forwardRef(({
                 width={canvasSize.width}
                 style={{
                     width: "100%"
-                }}/>
+                }}>
+            </canvas>
 
         </>
     )
