@@ -67,19 +67,6 @@ const GameView = ({
         socket?.send(JSON.stringify(message));
     }
 
-    const modal_data = () => {
-        let acc = []
-        let players: IPlayer[] = gameData.playerList ?? [];
-        for (let i = 0; i < players?.length ?? 0; i++) {
-            acc.push(
-                <p>
-                    {players[i].name.toString() + " : " + players[i].roundPoint.toString() + " points"}
-                </p>
-            )
-        }
-        return acc
-    }
-
     const getRemainingTime = (): number => {
         if (gameDataRef.current?.roundData?.dateStartedDrawing == null) return 0;
         return (new Date(gameDataRef.current.roundData.dateStartedDrawing).getTime() + gameDataRef.current.roomConfig.timeByTurn * 1000 - new Date().getTime()) / 1000;
@@ -177,6 +164,7 @@ const GameView = ({
                                 playerId={player?.playerId ?? ""}
                                 roomState={gameData.roomState}
                                 drawingPlayers={gameData.roundData?.playerTurn ?? []}
+                                players={gameData.playerList}
                             />}
                     />
 
