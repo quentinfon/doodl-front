@@ -5,15 +5,15 @@ const {Title} = Typography;
 
 interface WordChooserProps {
     words: string[],
-    chooseWord: (word: string) => any
+    chooseWord: (word: string) => any,
+    disabled: boolean
 }
 
 const WordChooser = ({
                          words,
-                         chooseWord
+                         chooseWord,
+                         disabled
                      }: WordChooserProps) => {
-
-    console.log(words);
 
     return (
         <>
@@ -33,13 +33,14 @@ const WordChooser = ({
                 justify={"center"}
                 gutter={[10, 10]}
             >
-                {["Test", "Billy boy", "Bob"].map((word: string) => {
+                {words.map((word: string) => {
 
                     return (
                         <Col xs={24}>
                             <Button
                                 type="dashed"
                                 onClick={() => chooseWord(word)}
+                                disabled={disabled}
                                 style={{
                                     width: "100%"
                                 }}

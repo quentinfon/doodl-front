@@ -11,6 +11,7 @@ import ErrorPage from "../component/Global/ErrorPage";
 import errorPage from "../component/Global/ErrorPage";
 import {
     GameSocketChannel,
+    IDataChooseWordResponse,
     IDataInfoResponse,
     IDataInitResponse,
     ISocketMessageRequest,
@@ -49,6 +50,7 @@ const GamePage = () => {
     const [messages, setMessages] = useState<IMessage[]>([]);
 
     const [errorSocket, setErrorSocket] = useState<any>();
+    const [chooseWordList, setChooseWordList] = useState<string[]>([]);
 
     const canDraw = useRef<boolean>(false);
 
@@ -148,7 +150,11 @@ const GamePage = () => {
             }
 
             if (msg.channel === GameSocketChannel.CHAT) {
-                setMessages([...messages, msg.data as IMessage])
+                setMessages([...messages, msg.data as IMessage]);
+            }
+
+            if (msg.channel === GameSocketChannel.CHOOSE_WORD) {
+                setChooseWordList((msg.data as IDataChooseWordResponse).words);
             }
         };
     }
@@ -163,8 +169,6 @@ const GamePage = () => {
         } else {
             canDraw.current = gameData?.roundData?.playerTurn.map(p => p.playerId).indexOf(player?.playerId ?? "") !== -1;
         }
-
-        console.log(canDraw.current)
     }, [gameData])
 
     return (
@@ -222,6 +226,8 @@ const GamePage = () => {
                                                                 initDraws={initDraws}
                                                                 messages={messages}
                                                                 gameData={gameData}
+                                                                chooseWordList={chooseWordList}
+                                                                setChooseWordList={setChooseWordList}
                                                             />
                                                         </>
                                                     }

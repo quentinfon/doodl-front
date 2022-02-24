@@ -9,7 +9,6 @@ import GamePlayerList from "./GamePlayerList";
 import RoundDisplay from "./RoundDisplay";
 import {
     GameSocketChannel,
-    IDataChooseWordResponse,
     IDataGuessResponse,
     IDataInfoResponse,
     ISocketMessageRequest,
@@ -35,7 +34,9 @@ interface GameViewProps {
     player: IPlayer | undefined,
     initDraws: IDraw[],
     messages: IMessage[],
-    gameData: IDataInfoResponse
+    gameData: IDataInfoResponse,
+    chooseWordList: string[],
+    setChooseWordList: (words: string[]) => any
 }
 
 const GameView = ({
@@ -55,7 +56,9 @@ const GameView = ({
                       player,
                       initDraws,
                       messages,
-                      gameData
+                      gameData,
+                      chooseWordList,
+                      setChooseWordList
                   }: GameViewProps) => {
 
     const gameDataRef = useRef<IDataInfoResponse>(gameData);
@@ -81,6 +84,9 @@ const GameView = ({
         if ([RoomState.CHOOSE_WORD, RoomState.END_GAME].includes(gameData?.roomState as RoomState)) {
             setGuessedList([]);
         }
+        if (gameData.roomState === RoomState.DRAWING) {
+            setChooseWordList([]);
+        }
 
         if (gameData.roomState !== RoomState.DRAWING) {
             setTimeLeft(0);
@@ -100,27 +106,12 @@ const GameView = ({
         setGuessedList(data.playersGuess);
     }
 
-    const [chooseWordList, setChooseWordList] = useState<string[]>([]);
-
-    const handleWordList = (event: any) => {
-        const msg: ISocketMessageResponse = JSON.parse(event.data);
-        if (msg.channel !== GameSocketChannel.CHOOSE_WORD) return;
-
-        const data: IDataChooseWordResponse = msg.data as IDataChooseWordResponse;
-        if (!data) return;
-
-        console.log(data)
-
-        setChooseWordList(data.words);
-    }
 
     useEffect(() => {
         socket.addEventListener("message", handleGuess);
-        socket.addEventListener("message", handleWordList);
 
         return (() => {
             socket.removeEventListener("message", handleGuess);
-            socket.removeEventListener("message", handleWordList);
         })
     }, [socket]);
 
@@ -168,6 +159,10 @@ const GameView = ({
                                 wordList={chooseWordList}
                                 onChooseWord={(word: string) => {
 
+                                    socket.send(JSON.stringify({
+                                        channel: GameSocketChannel.CHOOSE_WORD,
+                                        data: {word: word}
+                                    } as ISocketMessageRequest))
                                 }}
                                 playerId={player?.playerId ?? ""}
                                 roomState={gameData.roomState}
