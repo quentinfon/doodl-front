@@ -5,14 +5,12 @@ const {Title} = Typography;
 
 interface WordChooserProps {
     words: string[],
-    chooseWord: (word: string) => any,
-    disabled: boolean
+    chooseWord: (word: string) => any
 }
 
 const WordChooser = ({
                          words,
-                         chooseWord,
-                         disabled
+                         chooseWord
                      }: WordChooserProps) => {
 
     return (
@@ -40,7 +38,6 @@ const WordChooser = ({
                             <Button
                                 type="dashed"
                                 onClick={() => chooseWord(word)}
-                                disabled={disabled}
                                 style={{
                                     width: "100%"
                                 }}

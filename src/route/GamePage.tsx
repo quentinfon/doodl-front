@@ -150,7 +150,9 @@ const GamePage = () => {
             }
 
             if (msg.channel === GameSocketChannel.CHAT) {
-                setMessages([...messages, msg.data as IMessage]);
+                let arr = [...messages];
+                arr.push(msg.data as IMessage);
+                setMessages([...arr]);
             }
 
             if (msg.channel === GameSocketChannel.CHOOSE_WORD) {

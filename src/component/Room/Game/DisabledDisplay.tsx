@@ -1,6 +1,9 @@
 import React from "react";
 import WordChooser from "./WordChooser";
 import {IPlayer, RoomState} from "../../../types/GameModel";
+import {Row, Typography} from "antd";
+
+const {Title} = Typography;
 
 interface DisabledDisplayProps {
     wordList: string[],
@@ -26,6 +29,20 @@ const DisabledDisplay = ({
                 words={wordList}
                 chooseWord={onChooseWord}
             />
+        )
+    } else if (!isDrawing && roomState === RoomState.CHOOSE_WORD) {
+        return (
+            <Row justify="center">
+                <Title
+                    level={3}
+                    style={{
+                        color: "#fff"
+                    }}
+                >
+                    {drawingPlayers.map(p => p.name).join(', ')} {drawingPlayers.length > 1 ? "are" : "is"} choosing a
+                    word...
+                </Title>
+            </Row>
         )
     }
 
