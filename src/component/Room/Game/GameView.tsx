@@ -1,7 +1,7 @@
 import React, {MutableRefObject, RefObject, useEffect, useRef, useState} from "react";
-import {Col, Drawer, Modal, Row} from "antd";
+import {Col, Modal, Row} from "antd";
 import DrawingToolTips from "../Canva/DrawingToolTips";
-import {DrawTool, IDraw, IMessage, IPlayer} from "../../../types/GameModel";
+import {DrawTool, IDraw, IMessage, IPlayer, RoomState} from "../../../types/GameModel";
 import WordDisplayer from "./WordDisplayer";
 import DrawingCanva, {canvasFunctions} from "../Canva/DrawingCanva";
 import GameChat from "../../GameChat";
@@ -9,15 +9,17 @@ import GamePlayerList from "./GamePlayerList";
 import RoundDisplay from "./RoundDisplay";
 import {
     GameSocketChannel,
+    IDataChooseWordResponse,
     IDataGuessResponse,
     IDataInfoResponse,
     ISocketMessageRequest,
     ISocketMessageResponse
 } from "../../../types/GameSocketModel";
+import DisabledDisplay from "./DisabledDisplay";
 
 
 interface GameViewProps {
-    playerIsAllowedToDraw: boolean,
+    playerIsAllowedToDraw: MutableRefObject<boolean>,
     canvasRef: RefObject<canvasFunctions> | undefined,
     sendDrawData: (drawData: IDraw) => any,
     mode: DrawTool,
@@ -56,7 +58,9 @@ const GameView = ({
                       gameData
                   }: GameViewProps) => {
 
-    const guessedList = useRef<IPlayer[]>([]);
+    const gameDataRef = useRef<IDataInfoResponse>(gameData);
+
+    const [guessedList, setGuessedList] = useState<IPlayer[]>([]);
     const [isModalVisible, setIsModalVisible] = useState(true);
 
     const sendMessage = (message: ISocketMessageRequest) => {
@@ -65,13 +69,12 @@ const GameView = ({
 
     const modal_data = () => {
         let acc = []
-        let players: IPlayer[]  =  gameData.playerList ?? [];
-        for(let i=0; i < players?.length ?? 0; i++){
+        let players: IPlayer[] = gameData.playerList ?? [];
+        for (let i = 0; i < players?.length ?? 0; i++) {
             acc.push(
                 <p>
                     {players[i].name.toString() + " : " + players[i].roundPoint.toString() + " points"}
                 </p>
-
             )
         }
         return acc
@@ -85,41 +88,54 @@ const GameView = ({
         setIsModalVisible(false);
     };
 
-    const [timeRemaining, setTimeRemaining] = useState<number>(0);
-
-    const getTime = (): number => {
-        if (gameData?.roundData?.dateStartedDrawing == null) return 0;
-
-        return (new Date(gameData.roundData.dateStartedDrawing).getTime() + gameData.roomConfig.timeByTurn * 1000 - new Date().getTime()) / 1000;
+    const getRemainingTime = (): number => {
+        if (gameDataRef.current?.roundData?.dateStartedDrawing == null) return 0;
+        return (new Date(gameDataRef.current.roundData.dateStartedDrawing).getTime() + gameDataRef.current.roomConfig.timeByTurn * 1000 - new Date().getTime()) / 1000;
     }
 
-    useEffect(() => {
-        console.debug(gameData.roundData)
-        setTimeRemaining(getTime());
-    }, [gameData.roundData]);
+    const [timeLeft, setTimeLeft] = useState<number>(0);
+
 
     useEffect(() => {
-        console.log(timeRemaining);
-    }, [timeRemaining]);
+        gameDataRef.current = gameData;
+        if (gameData.roundData?.dateStartedDrawing != null)
+            setTimeLeft(getRemainingTime());
+    }, [gameData]);
+    
 
-
-    const handlePickWord = (event: any) => {
+    const handleGuess = (event: any) => {
         const msg: ISocketMessageResponse = JSON.parse(event.data);
         if (msg.channel !== GameSocketChannel.GUESS) return;
 
         const data: IDataGuessResponse = msg.data as IDataGuessResponse;
         if (!data) return;
 
-        guessedList.current = data.playersGuess;
+        setGuessedList(data.playersGuess);
+    }
+
+    const [chooseWordList, setChooseWordList] = useState<string[]>([]);
+
+    const handleWordList = (event: any) => {
+        const msg: ISocketMessageResponse = JSON.parse(event.data);
+        if (msg.channel !== GameSocketChannel.CHOOSE_WORD) return;
+
+        const data: IDataChooseWordResponse = msg.data as IDataChooseWordResponse;
+        if (!data) return;
+
+        console.log(data)
+
+        setChooseWordList(data.words);
     }
 
     useEffect(() => {
-        socket.addEventListener("message", handlePickWord);
+        socket.addEventListener("message", handleGuess);
+        socket.addEventListener("message", handleWordList);
 
         return (() => {
-            socket.removeEventListener("message", handlePickWord);
+            socket.removeEventListener("message", handleGuess);
+            socket.removeEventListener("message", handleWordList);
         })
-    }, [socket])
+    }, [socket]);
 
     return (
         <>
@@ -131,7 +147,7 @@ const GameView = ({
             <Row>
                 <Col xs={24} md={6}>
                     <RoundDisplay
-                        current={1}
+                        current={gameData.roundData?.roundCurrentCycle ?? 0}
                         total={gameData.roomConfig.cycleRoundByGame}
                     />
 
@@ -140,7 +156,7 @@ const GameView = ({
                         players={gameData.playerList}
                         drawingPlayers={gameData.roundData?.playerTurn ?? []}
                         currentPlayerId={player?.playerId ?? ""}
-                        guessedList={guessedList.current ?? []}
+                        guessedList={guessedList}
                     />
 
                 </Col>
@@ -149,21 +165,31 @@ const GameView = ({
 
                     <WordDisplayer
                         wordToDisplay={gameData?.roundData?.word?.toUpperCase() ?? ""}
-                        timeLeft={timeRemaining}
+                        timeLeft={timeLeft}
+                        totalTime={gameData.roomConfig.timeByTurn}
+                        getRemainingTime={getRemainingTime}
                     />
 
                     <DrawingCanva
                         ref={canvasRef}
                         initDraw={initDraws}
                         webSocket={socket}
-                        player={player}
                         modeRef={modeRef}
+                        player={player}
                         lineWidthRef={lineWidthRef}
                         colorRef={colorRef}
                         canDraw={playerIsAllowedToDraw}
+                        disabled={gameData.roomState !== RoomState.DRAWING}
+                        disabledDisplay={
+                            <DisabledDisplay
+                                wordList={chooseWordList}
+                                onChooseWord={(word: string) => {
+
+                                }}
+                            />}
                     />
 
-                    {playerIsAllowedToDraw &&
+                    {playerIsAllowedToDraw.current &&
                         <DrawingToolTips
                             clearCanvas={() => {
                                 sendDrawData({tool: DrawTool.CLEAR});

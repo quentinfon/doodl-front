@@ -9,11 +9,16 @@ import React, {
 } from "react";
 import {DrawTool, ICoordinate, IDraw, IPlayer} from "../../../types/GameModel";
 import FloodFill from 'q-floodfill'
-import {GameSocketChannel, IDataDrawResponse, ISocketMessageRequest, ISocketMessageResponse } from "../../../types/GameSocketModel";
-import {Drawer} from "antd";
+import {
+    GameSocketChannel,
+    IDataDrawResponse,
+    ISocketMessageRequest,
+    ISocketMessageResponse
+} from "../../../types/GameSocketModel";
 
 export interface canvasFunctions {
-    clear: () => any
+    clear: () => any,
+    forceClear: () => any
 }
 
 interface DrawingCanvaProps {
@@ -23,7 +28,9 @@ interface DrawingCanvaProps {
     modeRef: MutableRefObject<any>,
     lineWidthRef: MutableRefObject<any>,
     colorRef: MutableRefObject<any>,
-    canDraw: boolean
+    canDraw: MutableRefObject<boolean>,
+    disabled: boolean,
+    disabledDisplay: any
 }
 
 const DrawingCanva = forwardRef(({
@@ -33,7 +40,9 @@ const DrawingCanva = forwardRef(({
                                      modeRef,
                                      lineWidthRef,
                                      colorRef,
-                                     canDraw
+                                     canDraw,
+                                     disabled,
+                                     disabledDisplay
                                  }: DrawingCanvaProps
     , ref: ForwardedRef<canvasFunctions>) => {
 
@@ -41,8 +50,12 @@ const DrawingCanva = forwardRef(({
 
     useImperativeHandle(ref, () => ({
         clear() {
-            if (canDraw)
+            if (canDraw.current)
                 clearCanva();
+        },
+
+        forceClear() {
+            clearCanva();
         }
     }));
 
@@ -102,7 +115,7 @@ const DrawingCanva = forwardRef(({
     }
 
     const draw = (data: IDraw, clientSide: boolean) => {
-        if (!canvasRef.current || (clientSide && !drawing) || (clientSide && !canDraw)) return;
+        if (!canvasRef.current || (clientSide && !drawing) || (clientSide && !canDraw.current)) return;
 
         const canvas: HTMLCanvasElement = canvasRef.current;
         const context = canvas.getContext("2d");
@@ -224,18 +237,49 @@ const DrawingCanva = forwardRef(({
     }, [initDraw]);
 
     return (
-        <>
-
+        <div
+            style={{
+                position: "relative"
+            }}
+        >
             <canvas
                 ref={canvasRef}
                 height={canvasSize.height}
                 width={canvasSize.width}
                 style={{
-                    width: "100%"
-                }}>
-            </canvas>
+                    width: "100%",
+                    zIndex: "1"
+                }}/>
 
-        </>
+            <div
+                style={{
+                    position: "absolute",
+                    background: disabled ? "rgba(0,0,0,0.8)" : "",
+                    width: "100%",
+                    height: "99%",
+                    top: "0",
+                    left: "0",
+                    zIndex: "2",
+                    alignItems: "center"
+                }}
+            />
+
+            {disabled &&
+                <div
+                    style={{
+                        position: "absolute",
+                        margin: "0",
+                        top: "50%",
+                        left: "50%",
+                        zIndex: "3",
+                        msTransform: "translate(-50%, -50%)",
+                        transform: "translate(-50%, -50%)"
+                    }}>
+                    {disabledDisplay}
+                </div>
+            }
+
+        </div>
     )
 })
 

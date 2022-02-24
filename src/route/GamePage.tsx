@@ -25,9 +25,7 @@ const GamePage = () => {
     const {gameId} = useParams<{ gameId: string }>();
 
     const canvasRef = useRef<canvasFunctions>(null);
-
-    const screens = useBreakpoint();
-
+    
     const [ws, setWs] = useState<WebSocket>();
     const socketRef = useRef<WebSocket>();
 
@@ -54,6 +52,7 @@ const GamePage = () => {
 
     const [errorSocket, setErrorSocket] = useState<any>();
 
+    const canDraw = useRef<boolean>(false);
 
     const getRoom = () => {
         setLoadingRoom(true);
@@ -74,10 +73,6 @@ const GamePage = () => {
             ws?.close();
         }
     }, [ws])
-
-    const sendMessage = (message: ISocketMessageRequest) => {
-        ws?.send(JSON.stringify(message));
-    }
 
     const sendDrawData = (drawData: IDraw) => {
         const message: ISocketMessageRequest = {
@@ -162,6 +157,19 @@ const GamePage = () => {
         };
     }
 
+    useEffect(() => {
+        console.log(gameData)
+        if ([RoomState.CHOOSE_WORD, RoomState.END_GAME].includes(gameData?.roomState as RoomState)) {
+            canvasRef?.current?.forceClear();
+        }
+
+        if (gameData?.roomState !== RoomState.DRAWING) {
+            canDraw.current = false;
+        } else {
+            canDraw.current = gameData?.roundData?.playerTurn.map(p => p.playerId).indexOf(player?.playerId ?? "") !== -1;
+        }
+    }, [gameData])
+
     return (
         <>
             {errorSocket ? <ErrorPage errorMsg={errorPage}/>
@@ -191,7 +199,7 @@ const GamePage = () => {
                                                     {gameData.roomState !== RoomState.LOBBY &&
                                                         <>
                                                         <GameView
-                                                            playerIsAllowedToDraw={gameData.roundData?.playerTurn.map(p => p.playerId).indexOf(player?.playerId ?? "") !== -1}
+                                                            playerIsAllowedToDraw={canDraw}
                                                             canvasRef={canvasRef}
                                                             sendDrawData={sendDrawData}
                                                             mode={mode}
