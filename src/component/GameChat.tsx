@@ -2,7 +2,9 @@ import {Avatar, Button, Card, Input, List, Tooltip} from "antd";
 import React, {useEffect, useState} from "react";
 import {IMessage, IPlayer} from "../types/GameModel";
 import {GameSocketChannel, ISocketMessageRequest} from "../types/GameSocketModel";
-import {SendOutlined} from '@ant-design/icons';
+import {EyeOutlined, SendOutlined} from '@ant-design/icons';
+import SimpleBar from 'simplebar-react';
+import 'simplebar/dist/simplebar.min.css';
 
 interface GameChatProps {
     messages: IMessage[],
@@ -58,7 +60,7 @@ const GameChat = ({
             <Card
                 size="small"
             >
-                <div
+                <SimpleBar
                     style={{
                         height: chatHeight + 'px'
                     }}
@@ -66,25 +68,35 @@ const GameChat = ({
                     <List
                         id={LIST_ID}
                         dataSource={messages}
-                        style={{
-                            overflowY: "scroll",
-                            maxHeight: "100%"
-                        }}
                         renderItem={(msg: IMessage, idx: number) => (
                             <Card
                                 size="small"
+                                style={{
+                                    background: msg.isSpectator ? "rgba(242,242,242,0.6)" : ""
+                                }}
                             >
-                                <List.Item key={idx} style={{padding: "0px"}}>
-                                    <List.Item.Meta
-                                        avatar={<Avatar src={msg.author.imgUrl}/>}
-                                        title={<>{msg.author.name}</>}
-                                        description={msg.message}
-                                    />
-                                </List.Item>
+                                {msg.isSpectator ?
+                                    <List.Item key={idx} style={{padding: "0px"}}>
+                                        <List.Item.Meta
+                                            avatar={<Avatar src={msg.author.imgUrl}/>}
+                                            title={<>{msg.author.name} <EyeOutlined/></>}
+                                            description={<i>{msg.message}</i>}
+                                        />
+                                    </List.Item>
+                                    :
+                                    <List.Item key={idx} style={{padding: "0px"}}>
+                                        <List.Item.Meta
+                                            avatar={<Avatar src={msg.author.imgUrl}/>}
+                                            title={<>{msg.author.name}</>}
+                                            description={msg.message}
+                                        />
+                                    </List.Item>
+                                }
+
                             </Card>
                         )}
                     />
-                </div>
+                </SimpleBar>
 
                 <div
                     style={{
