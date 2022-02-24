@@ -24,7 +24,7 @@ const EndRoundScoreDisplayer = ({
                         color: "#fff"
                     }}
                 >
-                    The words was {word}
+                    The word was {word}
                 </Title>
             </Row>
 
