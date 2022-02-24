@@ -1,6 +1,12 @@
 import React from "react";
-import {BgColorsOutlined, ClearOutlined, DeleteOutlined, HighlightOutlined, QuestionCircleOutlined } from '@ant-design/icons';
-import {Button, Col, List, Popconfirm, Row, Typography} from "antd";
+import {
+    BgColorsOutlined,
+    ClearOutlined,
+    DeleteOutlined,
+    HighlightOutlined,
+    QuestionCircleOutlined
+} from '@ant-design/icons';
+import {Button, Col, Popconfirm, Row, Typography} from "antd";
 import {DrawTool} from "../../../types/GameModel";
 
 const {Title} = Typography;
@@ -47,8 +53,8 @@ const ToolPicker = ({
                 <Col xs={6}
                      style={{textAlign: "center"}}
                 >
-                    <Popconfirm title="Are you sure？" icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
-                        onConfirm={clearCanvas}
+                    <Popconfirm title="Are you sure？" icon={<QuestionCircleOutlined style={{color: 'red'}}/>}
+                                onConfirm={clearCanvas}
                     >
                         <Button
                             icon={<DeleteOutlined/>}
@@ -59,10 +65,11 @@ const ToolPicker = ({
                         />
                     </Popconfirm>
                 </Col>
-                {tools.map((tool: ToolsListItem) => {
+                {tools.map((tool: ToolsListItem, index: number) => {
                     return (
                         <Col xs={6}
-                            style={{textAlign: "center"}}
+                             style={{textAlign: "center"}}
+                             key={index}
                         >
 
                             <Button
