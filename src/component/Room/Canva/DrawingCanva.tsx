@@ -1,12 +1,4 @@
-import React, {
-    ForwardedRef,
-    forwardRef,
-    MutableRefObject,
-    useEffect,
-    useImperativeHandle,
-    useRef,
-    useState
-} from "react";
+import React, {ForwardedRef, forwardRef, MutableRefObject, useEffect, useImperativeHandle, useRef} from "react";
 import {DrawTool, ICoordinate, IDraw, IPlayer} from "../../../types/GameModel";
 import FloodFill from 'q-floodfill'
 import {
@@ -251,32 +243,35 @@ const DrawingCanva = forwardRef(({
                     zIndex: "1"
                 }}/>
 
-            <div
-                style={{
-                    position: "absolute",
-                    background: disabled ? "rgba(0,0,0,0.8)" : "",
-                    width: "100%",
-                    height: "99%",
-                    top: "0",
-                    left: "0",
-                    zIndex: "2",
-                    alignItems: "center"
-                }}
-            />
-
             {disabled &&
-                <div
-                    style={{
-                        position: "absolute",
-                        margin: "0",
-                        top: "50%",
-                        left: "50%",
-                        zIndex: "3",
-                        msTransform: "translate(-50%, -50%)",
-                        transform: "translate(-50%, -50%)"
-                    }}>
-                    {disabledDisplay}
-                </div>
+                <>
+                    <div
+                        style={{
+                            position: "absolute",
+                            background: disabled ? "rgba(0,0,0,0.8)" : "",
+                            width: "100%",
+                            height: "99%",
+                            top: "0",
+                            left: "0",
+                            zIndex: "2",
+                            alignItems: "center"
+
+                        }}
+                    />
+
+                    <div
+                        style={{
+                            position: "absolute",
+                            margin: "0",
+                            top: "50%",
+                            left: "50%",
+                            zIndex: "3",
+                            msTransform: "translate(-50%, -50%)",
+                            transform: "translate(-50%, -50%)"
+                        }}>
+                        {disabledDisplay}
+                    </div>
+                </>
             }
 
         </div>

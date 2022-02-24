@@ -1,5 +1,5 @@
 import React, {MutableRefObject, RefObject, useEffect, useRef, useState} from "react";
-import {Col, Modal, Row} from "antd";
+import {Col, Row} from "antd";
 import DrawingToolTips from "../Canva/DrawingToolTips";
 import {DrawTool, IDraw, IMessage, IPlayer, RoomState} from "../../../types/GameModel";
 import WordDisplayer from "./WordDisplayer";
@@ -93,7 +93,7 @@ const GameView = ({
         if (gameData.roundData?.dateStartedDrawing != null)
             setTimeLeft(getRemainingTime());
     }, [gameData]);
-    
+
 
     const handleGuess = (event: any) => {
         const msg: ISocketMessageResponse = JSON.parse(event.data);
@@ -174,6 +174,9 @@ const GameView = ({
                                 onChooseWord={(word: string) => {
 
                                 }}
+                                playerId={player?.playerId ?? ""}
+                                roomState={gameData.roomState}
+                                drawingPlayers={gameData.roundData?.playerTurn ?? []}
                             />}
                     />
 
