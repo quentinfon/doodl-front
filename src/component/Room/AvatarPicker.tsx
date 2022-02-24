@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import {Accessoires, Eyebrows, Eyes, Mouth} from "@dicebear/adventurer-neutral/dist/options";
 import {Button, Card, Col, Row, Typography} from "antd";
 import {LeftOutlined, RightOutlined} from '@ant-design/icons';
+import {BackgroundColor} from "@dicebear/avatars";
 
 const {Title} = Typography;
 
@@ -16,7 +17,6 @@ function getRandomInt(min: number, max: number) {
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min) + min);
 }
-
 
 const getValueFromLocalStorage = function <T>(name: string, list: T[]): T {
     const item: any = localStorage.getItem(getLocalStorageKey(name));
@@ -61,11 +61,13 @@ const AvatarPicker = ({
     const eyeBrowsList: Eyebrows[] = getVariant(10) as unknown as Eyebrows[];
     const mouthList: Mouth[] = getVariant(30) as unknown as Mouth[];
     const accessoiresList: Accessoires[] = ["", "sunglasses", "glasses", "smallGlasses", "mustache", "blush", "birthmark"] as unknown as Accessoires[];
+    const backgroundColorList: BackgroundColor[] = ["variant02", "variant03", "variant04", "variant05"] as unknown as BackgroundColor[];
 
     const [eye, setEye] = useState<Eyes>(getValueFromLocalStorage('eye', eyeList));
     const [eyeBrows, setEyeBrows] = useState<Eyebrows>(getValueFromLocalStorage('eyeBrows', eyeBrowsList));
     const [mouth, setMouth] = useState<Mouth>(getValueFromLocalStorage('mouth', mouthList));
     const [accessoires, setAccessoires] = useState<Accessoires>(getValueFromLocalStorage('accessoires', accessoiresList));
+    const [backgroundColor, setBackgroundColor] = useState<BackgroundColor>(getValueFromLocalStorage('backgroundColor', backgroundColorList));
 
     const [currentAvatarUrl, setCurrentAvatarUrl] = useState<string>(getAvatar());
 
@@ -74,6 +76,7 @@ const AvatarPicker = ({
         urlParams.append("eyes", eye.toString());
         urlParams.append("eyebrows", eyeBrows.toString());
         urlParams.append("mouth", mouth.toString());
+        urlParams.append("backgroundColor", backgroundColor.toString());
         if (accessoires.toString() !== '') {
             urlParams.append("accessoires", accessoires.toString());
             urlParams.append("accessoiresProbability", "100");
@@ -87,6 +90,7 @@ const AvatarPicker = ({
         setLocalStorage('eyeBrows', eyeBrows, eyeBrowsList);
         setLocalStorage('mouth', mouth, mouthList);
         setLocalStorage('accessoires', accessoires, accessoiresList);
+        setLocalStorage('backgroundColor', backgroundColor, backgroundColorList);
     }
 
     useEffect(() => {
@@ -94,12 +98,13 @@ const AvatarPicker = ({
         setCurrentAvatarUrl(newImg);
         setPlayerImg(newImg);
         updateLocalStorage();
-    }, [eye, eyeBrows, mouth, accessoires])
+    }, [eye, eyeBrows, mouth, accessoires, backgroundColor])
 
     const random = () => {
         setEye(eyeList[getRandomInt(0, eyeList.length - 1)]);
         setEyeBrows(eyeBrowsList[getRandomInt(0, eyeBrowsList.length - 1)]);
         setMouth(mouthList[getRandomInt(0, mouthList.length - 1)]);
+        setBackgroundColor(backgroundColorList[getRandomInt(0, backgroundColorList.length - 1)]);
         //30% de génération avec accessoires
         if (getRandomInt(0, 100) < 30) {
             setAccessoires(accessoiresList[getRandomInt(0, accessoiresList.length - 1)]);
@@ -203,7 +208,7 @@ const AvatarPicker = ({
                             <Title
                                 level={3}
                             >
-                                Accessoires
+                                Accessories
                             </Title>
                         </Col>
                         <Col span={2}>
@@ -211,6 +216,29 @@ const AvatarPicker = ({
                                 shape="circle"
                                 icon={<RightOutlined/>}
                                 onClick={() => setAccessoires(getNext<Accessoires>(accessoires, accessoiresList))}
+                            />
+                        </Col>
+                    </Row>
+                    <Row justify={"space-around"}>
+                        <Col span={2}>
+                            <Button
+                                shape="circle"
+                                icon={<LeftOutlined/>}
+                                onClick={() => setBackgroundColor(getPrev<BackgroundColor>(backgroundColor, backgroundColorList))}
+                            />
+                        </Col>
+                        <Col span={20} style={{display: "flex", justifyContent: "center"}}>
+                            <Title
+                                level={3}
+                            >
+                                Background
+                            </Title>
+                        </Col>
+                        <Col span={2}>
+                            <Button
+                                shape="circle"
+                                icon={<RightOutlined/>}
+                                onClick={() => setBackgroundColor(getNext<BackgroundColor>(backgroundColor, backgroundColorList))}
                             />
                         </Col>
                     </Row>
