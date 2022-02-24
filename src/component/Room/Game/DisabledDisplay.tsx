@@ -10,6 +10,7 @@ interface DisabledDisplayProps {
     drawingPlayers: IPlayer[],
     roomState: RoomState,
     players: IPlayer[]
+    word: string
 }
 
 const DisabledDisplay = ({
@@ -18,7 +19,8 @@ const DisabledDisplay = ({
                              playerId,
                              drawingPlayers,
                              roomState,
-                             players
+                             players,
+                             word
                          }: DisabledDisplayProps) => {
 
     const isDrawing = drawingPlayers.map(p => p.playerId).includes(playerId);
@@ -28,11 +30,13 @@ const DisabledDisplay = ({
             <WordChooser
                 words={wordList}
                 chooseWord={onChooseWord}
-            />
+             disabled/>
         )
     } else if (roomState === RoomState.END_ROUND) {
         return (
-            <EndRoundScoreDisplayer players={players}/>
+            <EndRoundScoreDisplayer
+                players={players}
+                word={word}/>
         )
     }
 

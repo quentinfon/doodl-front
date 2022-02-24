@@ -5,11 +5,13 @@ import {IPlayer} from "../../../types/GameModel";
 const {Title} = Typography;
 
 interface ScoreProps {
-    players: IPlayer[]
+    players: IPlayer[],
+    word: string
 }
 
 const EndRoundScoreDisplayer = ({
-                                    players
+                                    players,
+                                    word
                                 }: ScoreProps) => {
 
 
@@ -22,7 +24,7 @@ const EndRoundScoreDisplayer = ({
                         color: "#fff"
                     }}
                 >
-                    Score Displayer
+                    The words was {word}
                 </Title>
             </Row>
 
