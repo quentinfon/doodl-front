@@ -1,29 +1,26 @@
-import {Avatar, Button, Card, Col, Comment, Form, Input, List, Row} from "antd";
+import {Avatar, Button, Card, Input, List, Tooltip} from "antd";
 import React, {useEffect, useState} from "react";
 import {IMessage, IPlayer} from "../types/GameModel";
 import {GameSocketChannel, ISocketMessageRequest} from "../types/GameSocketModel";
+import {SendOutlined} from '@ant-design/icons';
 
 interface GameChatProps {
     messages: IMessage[],
     sendMessage: (message: ISocketMessageRequest) => any,
-    player: IPlayer | undefined
+    player: IPlayer | undefined,
+    chatHeight: number
 }
 
 const GameChat = ({
                       messages,
                       sendMessage,
-                      player
+                      player,
+                      chatHeight
                   }: GameChatProps) => {
 
     const [currentMsg, setCurrentMessage] = useState<string>("");
     const LIST_ID = "game-chat-list";
 
-
-    const [chatHeight, setChatHeight] = useState<number>(window.innerHeight - 200);
-
-    useEffect(() => {
-        setChatHeight(window.innerHeight - 200);
-    }, [window.innerHeight])
 
     useEffect(autoScrollBottomChat, [messages]);
     useEffect(autoScrollBottomChat);
@@ -55,62 +52,66 @@ const GameChat = ({
         }
     }
 
+
     return (
         <>
-            <div
-                style={{
-                    height: chatHeight + 'px'
-                }}
+            <Card
+                size="small"
             >
-                <List
-                    id={LIST_ID}
-                    dataSource={messages}
+                <div
                     style={{
-                        overflowY: "scroll",
-                        overflowX: "hidden",
-                        maxHeight: "100%"
+                        height: chatHeight + 'px'
                     }}
-                    renderItem={(msg: IMessage, idx: number) => (
-                        <Card
-                            size="small"
-                        >
-                            <List.Item key={idx}>
-                                <List.Item.Meta
-                                    avatar={<Avatar src={msg.author.imgUrl}/>}
-                                    title={<>{msg.author.name}</>}
-                                    description={msg.message}
-                                />
-                            </List.Item>
-                        </Card>
-                    )}
-                />
-            </div>
-            <div>
-                <Card
-                    size="small"
                 >
-                    <Comment
-                        avatar={<Avatar src={player?.imgUrl}/>}
-                        content={
-                            <Form.Item>
-                                <Row>
-                                    <Col span={20}>
-                                        <Input
-                                            type={'text'}
-                                            onKeyDown={onKeyDown}
-                                            onChange={(e: any) => setCurrentMessage(e.target.value)}
-                                            value={currentMsg}
-                                        />
-                                    </Col>
-                                    <Col span={4}>
-                                        <Button onClick={sendCurrentMsg} onKeyDown={onKeyDown}>Send</Button>
-                                    </Col>
-                                </Row>
-                            </Form.Item>
-                        }
+                    <List
+                        id={LIST_ID}
+                        dataSource={messages}
+                        style={{
+                            overflowY: "scroll",
+                            maxHeight: "100%"
+                        }}
+                        renderItem={(msg: IMessage, idx: number) => (
+                            <Card
+                                size="small"
+                            >
+                                <List.Item key={idx} style={{padding: "0px"}}>
+                                    <List.Item.Meta
+                                        avatar={<Avatar src={msg.author.imgUrl}/>}
+                                        title={<>{msg.author.name}</>}
+                                        description={msg.message}
+                                    />
+                                </List.Item>
+                            </Card>
+                        )}
                     />
-                </Card>
-            </div>
+                </div>
+
+                <div
+                    style={{
+                        marginTop: "16px",
+                        marginBottom: "8px"
+                    }}
+                >
+                    <Input.Group
+                        style={{width: "100%"}}
+                    >
+                        <Input
+                            style={{width: 'calc(100% - 32px)'}}
+                            onKeyDown={onKeyDown}
+                            onChange={(e: any) => setCurrentMessage(e.target.value)}
+                            value={currentMsg}
+                        />
+                        <Tooltip title="Send message">
+                            <Button
+                                onClick={sendCurrentMsg}
+                                onKeyDown={onKeyDown}
+                                icon={<SendOutlined/>}
+                            />
+                        </Tooltip>
+                    </Input.Group>
+                </div>
+
+            </Card>
         </>
     )
 }

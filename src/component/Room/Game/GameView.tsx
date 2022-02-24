@@ -65,9 +65,12 @@ const GameView = ({
 
     const [guessedList, setGuessedList] = useState<IPlayer[]>([]);
 
+    const [canvasHeight, setCanvasHeight] = useState<number>(0);
+
     const sendMessage = (message: ISocketMessageRequest) => {
         socket?.send(JSON.stringify(message));
     }
+
 
     const getRemainingTime = (): number => {
         if (gameDataRef.current?.roomState !== RoomState.DRAWING) return 0;
@@ -154,6 +157,7 @@ const GameView = ({
                         colorRef={colorRef}
                         canDraw={playerIsAllowedToDraw}
                         disabled={gameData.roomState !== RoomState.DRAWING}
+                        setCanvasHeight={setCanvasHeight}
                         disabledDisplay={
                             <DisabledDisplay
                                 wordList={chooseWordList}
@@ -202,6 +206,7 @@ const GameView = ({
                         messages={messages}
                         sendMessage={sendMessage}
                         player={player}
+                        chatHeight={canvasHeight}
                     />
                 </Col>
             </Row>
