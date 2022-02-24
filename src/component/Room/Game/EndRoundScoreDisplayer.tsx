@@ -29,8 +29,7 @@ const EndRoundScoreDisplayer = ({
             </Row>
 
 
-                {players.map((player: IPlayer, idx: number) => {
-
+                {players.sort((p1: IPlayer, p2: IPlayer) => p2.roundPoint - p1.roundPoint).map((player: IPlayer, idx: number) => {
                     return (
                         <Row
                             justify={"space-between"}
@@ -54,7 +53,6 @@ const EndRoundScoreDisplayer = ({
                         </Row>
                     )
                 })}
-
         </>
     )
 }
