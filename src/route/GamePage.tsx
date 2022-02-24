@@ -1,13 +1,5 @@
 import React, {useEffect, useRef, useState} from "react";
 import {useParams} from "react-router-dom";
-import {Grid} from 'antd';
-import {
-    GameSocketChannel,
-    IDataInfoResponse,
-    IDataInitResponse,
-    ISocketMessageRequest,
-    ISocketMessageResponse
-} from "../types/SocketModel";
 import {DrawTool, IDraw, IMessage, IPlayer, IRoomStatus, RoomState} from "../types/GameModel";
 import {getRoomData} from "../api/gameService";
 import RoomUnavailable from "../component/Room/RoomUnavailable";
@@ -17,8 +9,14 @@ import GameView from "../component/Room/Game/GameView";
 import RoomLobby from "../component/Room/Lobby/RoomLobby";
 import ErrorPage from "../component/Global/ErrorPage";
 import errorPage from "../component/Global/ErrorPage";
+import {
+    GameSocketChannel,
+    IDataInfoResponse,
+    IDataInitResponse,
+    ISocketMessageRequest,
+    ISocketMessageResponse
+} from "../types/GameSocketModel";
 
-const {useBreakpoint} = Grid;
 
 const GamePage = () => {
 
@@ -26,10 +24,9 @@ const GamePage = () => {
 
     const canvasRef = useRef<canvasFunctions>(null);
 
-    const screens = useBreakpoint();
-
     const [ws, setWs] = useState<WebSocket>();
     const socketRef = useRef<WebSocket>();
+
 
     const [gameData, setGameData] = useState<IDataInfoResponse>();
 
@@ -51,9 +48,9 @@ const GamePage = () => {
 
     const [messages, setMessages] = useState<IMessage[]>([]);
 
-    const [playerIsAllowedToDraw, setPlayerIsAllowedToDraw] = useState<boolean>(true);
-
     const [errorSocket, setErrorSocket] = useState<any>();
+
+    const canDraw = useRef<boolean>(false);
 
     const getRoom = () => {
         setLoadingRoom(true);
@@ -74,10 +71,6 @@ const GamePage = () => {
             ws?.close();
         }
     }, [ws])
-
-    const sendMessage = (message: ISocketMessageRequest) => {
-        ws?.send(JSON.stringify(message));
-    }
 
     const sendDrawData = (drawData: IDraw) => {
         const message: ISocketMessageRequest = {
@@ -143,7 +136,8 @@ const GamePage = () => {
                     playerId: init.playerId,
                     imgUrl: player.imgUrl,
                     name: player.name,
-                    point: 0
+                    totalPoint: 0,
+                    roundPoint: 0
                 });
                 messages.length = 0;
                 init.messages.forEach(msg => messages.push(msg));
@@ -160,6 +154,20 @@ const GamePage = () => {
             }
         };
     }
+
+    useEffect(() => {
+        if ([RoomState.CHOOSE_WORD, RoomState.END_GAME].includes(gameData?.roomState as RoomState)) {
+            canvasRef?.current?.forceClear();
+        }
+
+        if (gameData?.roomState !== RoomState.DRAWING) {
+            canDraw.current = false;
+        } else {
+            canDraw.current = gameData?.roundData?.playerTurn.map(p => p.playerId).indexOf(player?.playerId ?? "") !== -1;
+        }
+
+        console.log(canDraw.current)
+    }, [gameData])
 
     return (
         <>
@@ -187,34 +195,37 @@ const GamePage = () => {
                                         <>
                                             {gameData !== undefined ?
                                                 <>
-                                                    {gameData.roomState === RoomState.INGAME &&
-                                                        <GameView
-                                                            playerIsAllowedToDraw={playerIsAllowedToDraw}
-                                                            canvasRef={canvasRef}
-                                                            sendDrawData={sendDrawData}
-                                                            mode={mode}
-                                                            setMode={(tool: DrawTool) => {
-                                                                setMode(tool);
-                                                                modeRef.current = tool;
-                                                            }}
-                                                            color={color}
-                                                            setColor={(color: string) => {
-                                                                setColor(color);
-                                                                colorRef.current = color;
-                                                            }}
-                                                            lineWidth={lineWidth}
-                                                            setLineWidth={(width: number) => {
-                                                                setLineWidth(width);
-                                                                lineWidthRef.current = width;
-                                                            }}
-                                                            socket={ws}
-                                                            modeRef={modeRef}
-                                                            lineWidthRef={lineWidthRef}
-                                                            colorRef={colorRef}
-                                                            player={player}
-                                                            initDraws={initDraws}
-                                                            messages={messages}
-                                                        />
+                                                    {gameData.roomState !== RoomState.LOBBY &&
+                                                        <>
+                                                            <GameView
+                                                                playerIsAllowedToDraw={canDraw}
+                                                                canvasRef={canvasRef}
+                                                                sendDrawData={sendDrawData}
+                                                                mode={mode}
+                                                                setMode={(tool: DrawTool) => {
+                                                                    setMode(tool);
+                                                                    modeRef.current = tool;
+                                                                }}
+                                                                color={color}
+                                                                setColor={(color: string) => {
+                                                                    setColor(color);
+                                                                    colorRef.current = color;
+                                                                }}
+                                                                lineWidth={lineWidth}
+                                                                setLineWidth={(width: number) => {
+                                                                    setLineWidth(width);
+                                                                    lineWidthRef.current = width;
+                                                                }}
+                                                                socket={ws}
+                                                                modeRef={modeRef}
+                                                                lineWidthRef={lineWidthRef}
+                                                                colorRef={colorRef}
+                                                                player={player}
+                                                                initDraws={initDraws}
+                                                                messages={messages}
+                                                                gameData={gameData}
+                                                            />
+                                                        </>
                                                     }
 
                                                     {gameData.roomState === RoomState.LOBBY &&
@@ -225,8 +236,6 @@ const GamePage = () => {
                                                             setConfig={(config) => {
                                                                 setGameData({
                                                                     ...gameData,
-                                                                    playerList: [...gameData?.playerList],
-                                                                    playerTurn: [...gameData?.playerTurn],
                                                                     roomConfig: config
                                                                 });
                                                             }}

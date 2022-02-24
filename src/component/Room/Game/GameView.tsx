@@ -1,15 +1,25 @@
-import React, {MutableRefObject, RefObject} from "react";
+import React, {MutableRefObject, RefObject, useEffect, useRef, useState} from "react";
 import {Col, Row} from "antd";
 import DrawingToolTips from "../Canva/DrawingToolTips";
-import {DrawTool, IDraw, IMessage, IPlayer} from "../../../types/GameModel";
-import WordDisplayer from "../WordDisplayer";
+import {DrawTool, IDraw, IMessage, IPlayer, RoomState} from "../../../types/GameModel";
+import WordDisplayer from "./WordDisplayer";
 import DrawingCanva, {canvasFunctions} from "../Canva/DrawingCanva";
 import GameChat from "../../GameChat";
-import {ISocketMessageRequest} from "../../../types/SocketModel";
+import GamePlayerList from "./GamePlayerList";
+import RoundDisplay from "./RoundDisplay";
+import {
+    GameSocketChannel,
+    IDataChooseWordResponse,
+    IDataGuessResponse,
+    IDataInfoResponse,
+    ISocketMessageRequest,
+    ISocketMessageResponse
+} from "../../../types/GameSocketModel";
+import DisabledDisplay from "./DisabledDisplay";
 
 
 interface GameViewProps {
-    playerIsAllowedToDraw: boolean,
+    playerIsAllowedToDraw: MutableRefObject<boolean>,
     canvasRef: RefObject<canvasFunctions> | undefined,
     sendDrawData: (drawData: IDraw) => any,
     mode: DrawTool,
@@ -24,7 +34,8 @@ interface GameViewProps {
     colorRef: MutableRefObject<any>,
     player: IPlayer | undefined,
     initDraws: IDraw[],
-    messages: IMessage[]
+    messages: IMessage[],
+    gameData: IDataInfoResponse
 }
 
 const GameView = ({
@@ -43,57 +54,149 @@ const GameView = ({
                       colorRef,
                       player,
                       initDraws,
-                      messages
+                      messages,
+                      gameData
                   }: GameViewProps) => {
+
+    const gameDataRef = useRef<IDataInfoResponse>(gameData);
+
+    const [guessedList, setGuessedList] = useState<IPlayer[]>([]);
 
     const sendMessage = (message: ISocketMessageRequest) => {
         socket?.send(JSON.stringify(message));
     }
 
+    const getRemainingTime = (): number => {
+        if (gameDataRef.current?.roundData?.dateStartedDrawing == null) return 0;
+        return (new Date(gameDataRef.current.roundData.dateStartedDrawing).getTime() + gameDataRef.current.roomConfig.timeByTurn * 1000 - new Date().getTime()) / 1000;
+    }
+
+    const [timeLeft, setTimeLeft] = useState<number>(0);
+
+
+    useEffect(() => {
+        gameDataRef.current = gameData;
+
+        if ([RoomState.CHOOSE_WORD, RoomState.END_GAME].includes(gameData?.roomState as RoomState)) {
+            setGuessedList([]);
+        }
+
+        if (gameData.roomState !== RoomState.DRAWING) {
+            setTimeLeft(0);
+        } else if (gameData.roundData?.dateStartedDrawing != null) {
+            setTimeLeft(getRemainingTime());
+        }
+    }, [gameData]);
+
+
+    const handleGuess = (event: any) => {
+        const msg: ISocketMessageResponse = JSON.parse(event.data);
+        if (msg.channel !== GameSocketChannel.GUESS) return;
+
+        const data: IDataGuessResponse = msg.data as IDataGuessResponse;
+        if (!data) return;
+
+        setGuessedList(data.playersGuess);
+    }
+
+    const [chooseWordList, setChooseWordList] = useState<string[]>([]);
+
+    const handleWordList = (event: any) => {
+        const msg: ISocketMessageResponse = JSON.parse(event.data);
+        if (msg.channel !== GameSocketChannel.CHOOSE_WORD) return;
+
+        const data: IDataChooseWordResponse = msg.data as IDataChooseWordResponse;
+        if (!data) return;
+
+        console.log(data)
+
+        setChooseWordList(data.words);
+    }
+
+    useEffect(() => {
+        socket.addEventListener("message", handleGuess);
+        socket.addEventListener("message", handleWordList);
+
+        return (() => {
+            socket.removeEventListener("message", handleGuess);
+            socket.removeEventListener("message", handleWordList);
+        })
+    }, [socket]);
+
     return (
         <>
+
             <Row>
-                {playerIsAllowedToDraw &&
-                    <Col xs={24} md={6} xl={4}>
-
-                    </Col>
-                }
-
-                <Col xs={24} md={12} xl={14}>
-                    <WordDisplayer
-                        wordToDisplay={"Test ____"}
+                <Col xs={24} md={6}>
+                    <RoundDisplay
+                        current={gameData.roundData?.roundCurrentCycle ?? 0}
+                        total={gameData.roomConfig.cycleRoundByGame}
                     />
+
+                    <GamePlayerList
+                        adminPlayerId={gameData.playerAdminId ?? ""}
+                        players={gameData.playerList}
+                        drawingPlayers={gameData.roundData?.playerTurn ?? []}
+                        currentPlayerId={player?.playerId ?? ""}
+                        guessedList={guessedList}
+                    />
+
+                </Col>
+
+                <Col xs={24} md={12}>
+
+                    <WordDisplayer
+                        wordToDisplay={gameData?.roundData?.word?.toUpperCase() ?? ""}
+                        timeLeft={timeLeft}
+                        totalTime={gameData.roomConfig.timeByTurn}
+                        getRemainingTime={getRemainingTime}
+                    />
+
                     <DrawingCanva
                         ref={canvasRef}
                         initDraw={initDraws}
                         webSocket={socket}
-                        player={player}
                         modeRef={modeRef}
+                        player={player}
                         lineWidthRef={lineWidthRef}
                         colorRef={colorRef}
                         canDraw={playerIsAllowedToDraw}
+                        disabled={gameData.roomState !== RoomState.DRAWING}
+                        disabledDisplay={
+                            <DisabledDisplay
+                                wordList={chooseWordList}
+                                onChooseWord={(word: string) => {
+
+                                }}
+                                playerId={player?.playerId ?? ""}
+                                roomState={gameData.roomState}
+                                drawingPlayers={gameData.roundData?.playerTurn ?? []}
+                            />}
                     />
-                    <DrawingToolTips
-                        clearCanvas={() => {
-                            sendDrawData({tool: DrawTool.CLEAR});
-                            canvasRef?.current?.clear();
-                        }}
-                        tool={mode}
-                        setTool={(t: DrawTool) => {
-                            modeRef.current = t;
-                            setMode(t);
-                        }}
-                        color={color}
-                        setColor={(c: string) => {
-                            colorRef.current = c;
-                            setColor(c);
-                        }}
-                        lineWidth={lineWidth}
-                        setLineWidth={(s: number) => {
-                            lineWidthRef.current = s;
-                            setLineWidth(s);
-                        }}
-                    />
+
+                    {playerIsAllowedToDraw.current &&
+                        <DrawingToolTips
+                            clearCanvas={() => {
+                                sendDrawData({tool: DrawTool.CLEAR});
+                                canvasRef?.current?.clear();
+                            }}
+                            tool={mode}
+                            setTool={(t: DrawTool) => {
+                                modeRef.current = t;
+                                setMode(t);
+                            }}
+                            color={color}
+                            setColor={(c: string) => {
+                                colorRef.current = c;
+                                setColor(c);
+                            }}
+                            lineWidth={lineWidth}
+                            setLineWidth={(s: number) => {
+                                lineWidthRef.current = s;
+                                setLineWidth(s);
+                            }}
+                        />
+                    }
                 </Col>
 
                 <Col xs={24} md={6}>

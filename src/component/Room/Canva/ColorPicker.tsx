@@ -38,11 +38,11 @@ const ColorPicker = ({
             <Row
                 gutter={[15,15]}
             >
-                {colors.map((color: string) => {
-
+                {colors.map((color: string, index: number) => {
                     return (
                         <Col xs={4} sm={3} lg={4} xl={3}
                              onClick={() => setColor(color)}
+                             key={index}
                         >
                             <svg viewBox="0 0 100 100"
                                  className={currentColor === color ? "selectedColor" : "selectableColor"}>

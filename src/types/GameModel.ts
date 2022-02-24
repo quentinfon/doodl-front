@@ -8,7 +8,15 @@ export interface IPlayer {
     name: string;
     imgUrl: string;
     playerId: string;
-    point: number;
+    totalPoint: number;
+    roundPoint: number;
+}
+
+export interface RoundData {
+    dateStartedDrawing: Date | null;
+    roundCurrentCycle: number;
+    word: string;
+    playerTurn: IPlayer[];
 }
 
 export interface IRoomStatus {
@@ -16,7 +24,6 @@ export interface IRoomStatus {
     playerList: IPlayer[];
     playerTurn: IPlayer[];
 }
-
 
 export interface IMessage {
     author: IPlayer;
@@ -37,15 +44,12 @@ export interface IDraw {
     lineWidth?: number;
 }
 
-export interface IPlayer {
-    name: string;
-    imgUrl: string;
-    playerId: string;
-}
-
 export enum RoomState {
     LOBBY = "LOBBY",
-    INGAME = "INGAME"
+    CHOOSE_WORD = "CHOOSE_WORD",
+    DRAWING = "DRAWING",
+    END_ROUND = "END_ROUND",
+    END_GAME = "END_GAME"
 }
 
 export enum DrawTool {

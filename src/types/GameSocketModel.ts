@@ -1,4 +1,4 @@
-import {IDraw, IMessage, IPlayer, IRoomConfig, IRoomInfo, RoomState} from './GameModel';
+import {IDraw, IMessage, IPlayer, IRoomConfig, RoomState, RoundData} from './GameModel';
 
 export interface SocketUser {
     socket: WebSocket;
@@ -11,13 +11,12 @@ export interface ISocketMessage {
     channel: GameSocketChannel;
 }
 
-
 export interface ISocketMessageRequest extends ISocketMessage {
-    data?: IDataInitRequest | IDataChatRequest | IDraw | IRoomConfig;
+    data?: IDataInitRequest | IDataChatRequest | IDraw | IRoomConfig | IDataChooseWordRequest;
 }
 
 export interface ISocketMessageResponse extends ISocketMessage {
-    data: IDataInitResponse | IMessage | IDataDrawResponse | IDataInfoResponse | IRoomConfig | IDataInitAdminResponse;
+    data: IDataInitResponse | IMessage | IDataDrawResponse | IDataInfoResponse | IRoomConfig | IDataKickResponse | IDataChooseWordResponse;
     error?: any;
 }
 
@@ -33,7 +32,6 @@ export interface IDataInitResponse {
     draws: IDraw[];
 }
 
-
 export interface IDataChatRequest {
     message: string;
 }
@@ -48,34 +46,44 @@ export interface IDataDrawResponse extends IDraw {
 // IDataInfoRequest is empty
 export interface IDataInfoResponse {
     roomState: RoomState;
+    roundData?: RoundData;
     playerAdminId: string | undefined;
     playerList: IPlayer[];
-    playerTurn: IPlayer[];
     roomConfig: IRoomConfig;
 }
 
 // IDataStartRequest = IRoomConfig
 // IDataStartResponse = IRoomConfig on success
 
+export interface IDataChooseWordRequest {
+    word: string;
+}
+
+export interface IDataChooseWordResponse {
+    words: string[];
+}
+
 // IDataGuessRequest doesn't exist
 export interface IDataGuessResponse {
-    guessGainPoint: number;
-    drawGainPoint: number;
-    guesser: IPlayer;
+    playersGuess: IPlayer[];
 }
+
+// IDataKickRequest doesn't exist
+export interface IDataKickResponse {
+    reason?: string;
+}
+
 
 export enum GameSocketChannel {
     PING = "PING",
     PONG = "PONG",
     INIT = "INIT",
     CHAT = "CHAT",
-    CONFIG = "CONFIG",
     DRAW = "DRAW",
     INFO = "INFO",
+    CONFIG = "CONFIG",
+    CHOOSE_WORD = "CHOOSE_WORD",
     START = "START",
-    GUESS = "GUESS"
-}
-
-export enum AdminSocketChannel {
-    GLOBAL_DATA = "GLOBAL_DATA"
+    GUESS = "GUESS",
+    KICK = "KICK"
 }

@@ -1,3 +1,7 @@
+body {
+    background-color: #f0f2f5;
+}
+
 canvas {
     touch-action: none;
     border: 2px solid;

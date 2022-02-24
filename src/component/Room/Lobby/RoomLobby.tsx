@@ -1,9 +1,9 @@
 import {Col, Row} from "antd";
 import React from "react";
-import {IDataInfoResponse} from "../../../types/SocketModel";
 import LobbyPlayerList from "./LobbyPlayerList";
 import {IPlayer, IRoomConfig} from "../../../types/GameModel";
 import LobbyConfig from "./LobbyConfig";
+import {IDataInfoResponse} from "../../../types/GameSocketModel";
 
 interface RoomLobbyProps {
     player: IPlayer | undefined,
