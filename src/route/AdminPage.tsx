@@ -7,8 +7,8 @@ import {
     IAdminSocketMessageRequest
 } from "../types/AdminSocketModel";
 
-const { Panel } = Collapse;
-const { Search } = Input;
+const {Panel} = Collapse;
+const {Search} = Input;
 
 const AdminPage = () => {
 
@@ -17,7 +17,7 @@ const AdminPage = () => {
     const [drawNumber, setDrawNumber] = useState<number>(0);
     const [connected, setConnected] = useState<boolean>(false);
     const [rooms, setRooms] = useState<IAdminRoomInfo[]>([]);
-    const [pingInterval, setPingInterval] = useState<NodeJS.Timer>();
+    const [refreshInterval, setRefreshInterval] = useState<NodeJS.Timer>();
     const [adminWs, setAdminWs] = useState<WebSocket>();
 
     const sendAdminMessage = (message: IAdminSocketMessageRequest) => {
@@ -38,43 +38,47 @@ const AdminPage = () => {
         webSocket.onopen = () => {
             setAdminWs(webSocket);
             setConnected(true);
-            /*
-            setPingInterval(setInterval(() => {
+
+            setRefreshInterval(setInterval(() => {
                 webSocket.send(JSON.stringify({channel: AdminSocketChannel.GLOBAL_DATA}))
             }, 5 * 1000))
-             */
-            
         };
 
         webSocket.onclose = () => {
             console.debug("Socket closed");
             setAdminWs(undefined);
-            if (pingInterval) {
-                clearInterval(pingInterval);
-                setPingInterval(undefined);
+            if (refreshInterval) {
+                clearInterval(refreshInterval);
+                setRefreshInterval(undefined);
             }
         }
 
         webSocket.onmessage = e => {
             console.log('e', JSON.parse(e.data));
             let init: IAdminSocketConnectResponse = JSON.parse(e.data);
-            if(init.channel == AdminSocketChannel.GLOBAL_DATA){
+            if (init.channel == AdminSocketChannel.GLOBAL_DATA) {
                 setRooms(init.data.roomList);
-                updateStats(init.data.roomCount,init.data.wsCount, init.data.drawCount);
+                updateStats(init.data.roomCount, init.data.wsCount, init.data.drawCount);
             }
         };
     }
 
-    const explicit = (roomInfo : IAdminRoomInfo) => {
-        console.log(roomInfo)
+    const explicit = (roomInfo: IAdminRoomInfo) => {
         let items = []
-        items.push(<List.Item><p>{"RoomID : " + roomInfo.roomId}</p></List.Item>)
-        for(let i=0; i<roomInfo.playerList.length; i++){
-            items.push(<List.Item>{roomInfo.playerList[i].name + " "}{<Popconfirm  title={"DO YOU REALLY WANT TO KICK THIS PLAYER ?"} onConfirm={() => playerSuppression(roomInfo.playerList[i].playerId,roomInfo.roomId)} okText="Yes" cancelText="No">
-                <Button danger type="primary" shape="circle" size="small">
-                    X
-                </Button>
-            </Popconfirm>}</List.Item>)
+        items.push(<List.Item key={"rommheader" + roomInfo.roomId}><span>{"RoomID : " + roomInfo.roomId}</span></List.Item>)
+        for (let i = 0; i < roomInfo.playerList.length; i++) {
+            items.push(
+                <List.Item key={"room" + roomInfo.roomId + "-" + i}>
+                    {roomInfo.playerList[i].name + " "}{
+                    <Popconfirm title={"DO YOU REALLY WANT TO KICK THIS PLAYER ?"}
+                                onConfirm={() => playerSuppression(roomInfo.playerList[i].playerId, roomInfo.roomId)}
+                                okText="Yes" cancelText="No">
+                        <Button danger type="primary" shape="circle" size="small">
+                            X
+                        </Button>
+                    </Popconfirm>
+                }
+                </List.Item>)
         }
         return (
             <>
@@ -85,11 +89,11 @@ const AdminPage = () => {
         )
     }
 
-    const playerSuppression = (playerId:string, roomId: string) => {
+    const playerSuppression = (playerId: string, roomId: string) => {
         sendAdminMessage({
             channel: AdminSocketChannel.KICK_PLAYER,
             data: {
-                playerId : playerId,
+                playerId: playerId,
                 roomId: roomId
             }
         });
@@ -97,7 +101,7 @@ const AdminPage = () => {
         message.success('Player Deleted :)');
     }
 
-    const roomSuppression = (roomId : string) => {
+    const roomSuppression = (roomId: string) => {
         console.log(roomId)
         sendAdminMessage({
             channel: AdminSocketChannel.DELETE_ROOM,
@@ -112,29 +116,28 @@ const AdminPage = () => {
     function card(i: number) {
         return (
             <Col span={6}>
-                    <Collapse >
-                        <Panel header={"Room " + i.toString()} key={i} extra={
-                            <div onClick={e => e.stopPropagation()}>
-                                <Popconfirm  title={"DO YOU REALLY WANT TO SUPPRESS THIS ROOM ?"} onConfirm={() => roomSuppression(rooms[i].roomId)} okText="Yes" cancelText="No">
-                                    <Button danger type="primary" shape="circle" size="small">
-                                        X
-                                    </Button>
-                                </Popconfirm>
-                            </div>
-                        }>
-                            <p>{explicit(rooms[i])}</p>
-                        </Panel>
-                    </Collapse>
+                <Collapse>
+                    <Panel header={"Room " + i.toString()} key={i} extra={
+                        <div onClick={e => e.stopPropagation()}>
+                            <Popconfirm title={"DO YOU REALLY WANT TO SUPPRESS THIS ROOM ?"}
+                                        onConfirm={() => roomSuppression(rooms[i].roomId)} okText="Yes" cancelText="No">
+                                <Button danger type="primary" shape="circle" size="small">
+                                    X
+                                </Button>
+                            </Popconfirm>
+                        </div>
+                    }>
+                        <span>{explicit(rooms[i])}</span>
+                    </Panel>
+                </Collapse>
             </Col>
         )
     }
 
     const render = () => {
-
         const items = []
-        console.log(rooms[0])
         for (let i = 0; i < roomNumber; i += 4) {
-            items.push(<Row>
+            items.push(<Row key={i}>
                 {i < roomNumber &&
                     card(i)
                 }
@@ -176,10 +179,9 @@ const AdminPage = () => {
     }
 
     function connectionInput() {
-        return(
+        return (
             <div>
-                <Row gutter={14}>
-                    <Col span={9}/>
+                <Row justify={"center"}>
                     <Col span={6}>
                         <Search
                             type={"password"}
@@ -195,54 +197,54 @@ const AdminPage = () => {
             </div>
         );
     }
+
     const drawName = () => {
-        if(drawNumber>1){
+        if (drawNumber > 1) {
             return "draws";
-        }else{
+        } else {
             return "draw"
         }
     }
 
     function stats() {
         return (
-        <div className="site-statistic-demo-card">
-            <Row gutter={16}>
-                <Col span={6}/>
-                <Col span={4}>
-                    <Card>
-                        <Statistic
-                            title="Active users"
-                            value={userNumber}
-                            precision={0}
-                            valueStyle={{ color: '#3f8600' }}
-                            suffix={userName()}
-                        />
-                    </Card>
-                </Col>
-                <Col span={4}>
-                    <Card>
-                        <Statistic
-                            title="Active rooms"
-                            value={roomNumber}
-                            precision={0}
-                            valueStyle={{ color: '#3f8600' }}
-                            suffix={roomName()}
-                        />
-                    </Card>
-                </Col>
-                <Col span={4}>
-                    <Card>
-                        <Statistic
-                            title="Draw Count"
-                            value={drawNumber}
-                            precision={0}
-                            valueStyle={{ color: '#3f8600' }}
-                            suffix={drawName()}
-                        />
-                    </Card>
-                </Col>
-            </Row>
-        </div>
+            <div className="site-statistic-demo-card">
+                <Row justify={"center"}>
+                    <Col span={4}>
+                        <Card>
+                            <Statistic
+                                title="Active users"
+                                value={userNumber}
+                                precision={0}
+                                valueStyle={{color: '#3f8600'}}
+                                suffix={userName()}
+                            />
+                        </Card>
+                    </Col>
+                    <Col span={4}>
+                        <Card>
+                            <Statistic
+                                title="Active rooms"
+                                value={roomNumber}
+                                precision={0}
+                                valueStyle={{color: '#3f8600'}}
+                                suffix={roomName()}
+                            />
+                        </Card>
+                    </Col>
+                    <Col span={4}>
+                        <Card>
+                            <Statistic
+                                title="Draw Count"
+                                value={drawNumber}
+                                precision={0}
+                                valueStyle={{color: '#3f8600'}}
+                                suffix={drawName()}
+                            />
+                        </Card>
+                    </Col>
+                </Row>
+            </div>
         )
     }
 
@@ -251,7 +253,7 @@ const AdminPage = () => {
             <br/>
             {!connected && connectionInput()}
             {connected && stats()},
-            {connected && rooms.length>0 && render()}
+            {connected && rooms.length > 0 && render()}
         </>
     )
 }
