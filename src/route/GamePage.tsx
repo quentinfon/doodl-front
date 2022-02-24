@@ -150,7 +150,7 @@ const GamePage = () => {
             }
 
             if (msg.channel === GameSocketChannel.CHAT) {
-                let arr = [...messages];
+                let arr = messages;
                 arr.push(msg.data as IMessage);
                 setMessages([...arr]);
             }
