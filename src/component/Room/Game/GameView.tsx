@@ -1,5 +1,5 @@
 import React, {MutableRefObject, RefObject, useEffect, useRef, useState} from "react";
-import {Col, Drawer, Modal, Row} from "antd";
+import {Col, Modal, Row} from "antd";
 import DrawingToolTips from "../Canva/DrawingToolTips";
 import {DrawTool, IDraw, IMessage, IPlayer, RoomState} from "../../../types/GameModel";
 import WordDisplayer from "./WordDisplayer";
@@ -69,13 +69,12 @@ const GameView = ({
 
     const modal_data = () => {
         let acc = []
-        let players: IPlayer[]  =  gameData.playerList ?? [];
-        for(let i=0; i < players?.length ?? 0; i++){
+        let players: IPlayer[] = gameData.playerList ?? [];
+        for (let i = 0; i < players?.length ?? 0; i++) {
             acc.push(
                 <p>
                     {players[i].name.toString() + " : " + players[i].roundPoint.toString() + " points"}
                 </p>
-
             )
         }
         return acc
@@ -89,9 +88,6 @@ const GameView = ({
         setIsModalVisible(false);
     };
 
-    const [timeRemaining, setTimeRemaining] = useState<number>(0);
-
-    const getTime = (): number => {
     const getRemainingTime = (): number => {
         if (gameDataRef.current?.roundData?.dateStartedDrawing == null) return 0;
         return (new Date(gameDataRef.current.roundData.dateStartedDrawing).getTime() + gameDataRef.current.roomConfig.timeByTurn * 1000 - new Date().getTime()) / 1000;
@@ -104,12 +100,7 @@ const GameView = ({
         if (gameData.roundData?.dateStartedDrawing != null)
             setTimeLeft(getRemainingTime());
     }, [gameData]);
-
-
-    useEffect(() => {
-        console.log(timeLeft);
-    }, [timeLeft]);
-
+    
 
     const handleGuess = (event: any) => {
         const msg: ISocketMessageResponse = JSON.parse(event.data);
