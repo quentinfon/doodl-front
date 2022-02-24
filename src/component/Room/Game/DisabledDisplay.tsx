@@ -3,6 +3,7 @@ import WordChooser from "./WordChooser";
 import {IPlayer, RoomState} from "../../../types/GameModel";
 import EndRoundScoreDisplayer from "./EndRoundScoreDisplayer";
 import {Row, Typography} from "antd";
+import EndGameScoreDisplayer from "./EndGameScoreDisplayer";
 
 const {Title} = Typography;
 
@@ -54,6 +55,10 @@ const DisabledDisplay = ({
             <EndRoundScoreDisplayer
                 players={players}
                 word={word}/>
+        )
+    }  if (roomState === RoomState.END_GAME) {
+        return (
+            <EndGameScoreDisplayer players={players}/>
         )
     }
 
