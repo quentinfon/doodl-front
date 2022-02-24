@@ -1,6 +1,5 @@
 import React, {useEffect, useRef, useState} from "react";
 import {useParams} from "react-router-dom";
-import {Grid} from 'antd';
 import {DrawTool, IDraw, IMessage, IPlayer, IRoomStatus, RoomState} from "../types/GameModel";
 import {getRoomData} from "../api/gameService";
 import RoomUnavailable from "../component/Room/RoomUnavailable";
@@ -18,7 +17,6 @@ import {
     ISocketMessageResponse
 } from "../types/GameSocketModel";
 
-const {useBreakpoint} = Grid;
 
 const GamePage = () => {
 
@@ -158,7 +156,6 @@ const GamePage = () => {
     }
 
     useEffect(() => {
-        console.log(gameData)
         if ([RoomState.CHOOSE_WORD, RoomState.END_GAME].includes(gameData?.roomState as RoomState)) {
             canvasRef?.current?.forceClear();
         }

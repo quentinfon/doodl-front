@@ -61,23 +61,9 @@ const GameView = ({
     const gameDataRef = useRef<IDataInfoResponse>(gameData);
 
     const [guessedList, setGuessedList] = useState<IPlayer[]>([]);
-    const [isModalVisible, setIsModalVisible] = useState(true);
 
     const sendMessage = (message: ISocketMessageRequest) => {
         socket?.send(JSON.stringify(message));
-    }
-
-    const modal_data = () => {
-        let acc = []
-        let players: IPlayer[] = gameData.playerList ?? [];
-        for (let i = 0; i < players?.length ?? 0; i++) {
-            acc.push(
-                <p>
-                    {players[i].name.toString() + " : " + players[i].roundPoint.toString() + " points"}
-                </p>
-            )
-        }
-        return acc
     }
 
     const getRemainingTime = (): number => {
@@ -90,8 +76,16 @@ const GameView = ({
 
     useEffect(() => {
         gameDataRef.current = gameData;
-        if (gameData.roundData?.dateStartedDrawing != null)
+
+        if ([RoomState.CHOOSE_WORD, RoomState.END_GAME].includes(gameData?.roomState as RoomState)) {
+            setGuessedList([]);
+        }
+
+        if (gameData.roomState !== RoomState.DRAWING) {
+            setTimeLeft(0);
+        } else if (gameData.roundData?.dateStartedDrawing != null) {
             setTimeLeft(getRemainingTime());
+        }
     }, [gameData]);
 
 
