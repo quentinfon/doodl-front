@@ -3,7 +3,7 @@ import {Button, Card, Col, Input, Row, Typography} from "antd";
 import {IPlayer} from "../../types/GameModel";
 import AvatarPicker from "./AvatarPicker";
 
-const {Title, Text} = Typography;
+const {Title} = Typography;
 
 interface PlayerCreationProps {
     createPlayer: (player: IPlayer) => any,
@@ -38,6 +38,10 @@ const PlayerCreation = ({
         localStorage.setItem(pseudoLocalStorageKey, newValue);
     }
 
+    function isValidPlayerName(playerName: string, checkMinSize: boolean = true): boolean {
+        return (!checkMinSize || playerName.trim().length >= 3) && playerName.trim().length <= 32;
+    }
+
     return (
         <>
 
@@ -67,8 +71,11 @@ const PlayerCreation = ({
                                     <Input
                                         value={player.name}
                                         onChange={(e) => {
-                                            setPlayer({...player, name: e.target.value});
-                                            updatePlayerLocalStorage(e.target.value);
+                                            const playerName = e.target.value.trim();
+                                            if (!isValidPlayerName(playerName, false)) return;
+
+                                            setPlayer({...player, name: playerName});
+                                            updatePlayerLocalStorage(playerName);
                                         }}
                                     />
                                 </Input.Group>
@@ -84,7 +91,7 @@ const PlayerCreation = ({
                         >
                             <Button
                                 onClick={() => createPlayer(player)}
-                                disabled={loadingConnexion}
+                                disabled={loadingConnexion || !isValidPlayerName(player.name)}
                                 loading={loadingConnexion}
                                 type="primary"
                             >
@@ -96,8 +103,6 @@ const PlayerCreation = ({
 
                 </Col>
             </Row>
-
-
         </>
     )
 

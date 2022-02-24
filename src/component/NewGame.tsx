@@ -45,60 +45,6 @@ const NewGame = () => {
 
                 <Divider/>
 
-                {/*
-                <Row
-                    gutter={20}
-                    style={{
-                        marginBottom: 20
-                    }}
-                >
-                    <Col sm={24} md={12} lg={8}>
-                        <Text>Max players</Text>
-                        <InputNumber
-                            style={{width: "100%"}}
-                            prefix={<UserOutlined style={{paddingRight: "5px"}}/>}
-                            min={roomConfigParam.minMaxPlayer}
-                            max={roomConfigParam.maxMaxPlayer}
-                            value={newGameConfig.maxPlayer}
-                            onChange={(e) => setNewGameConfig({...newGameConfig, maxPlayer: e})}
-                        />
-                    </Col>
-
-                    <Col sm={24} md={12} lg={8}>
-                        <Text>Time by turn</Text>
-                        <InputNumber
-                            style={{width: "100%"}}
-                            min={roomConfigParam.minTimeByTurn}
-                            max={roomConfigParam.maxTimeByTurn}
-                            value={newGameConfig.timeByTurn}
-                            onChange={(e) => setNewGameConfig({...newGameConfig, timeByTurn: e})}
-                            prefix={<FieldTimeOutlined style={{paddingRight: "5px"}}/>}
-                            addonAfter="seconds"
-                        />
-                    </Col>
-
-                    <Col sm={24} md={12} lg={8}>
-                        <Text>Game mode</Text>
-                        <Input.Group>
-                            <Select
-                                style={{width: "100%"}}
-                                value={newGameConfig.gameMode}
-                                onChange={(e) => setNewGameConfig({...newGameConfig, gameMode: e})}
-                            >
-                                {Object.keys(GameMode).map((mode: string, idx: number) => {
-                                    return (
-                                        <Option key={idx}
-                                                value={mode}>{mode.charAt(0).toUpperCase() + mode.slice(1).toLowerCase()}</Option>
-                                    )
-                                })}
-                            </Select>
-                        </Input.Group>
-                    </Col>
-
-                </Row>
-                */}
-
-
                 <Row justify="end">
                     <Button
                         disabled={loadingNewRoom}
