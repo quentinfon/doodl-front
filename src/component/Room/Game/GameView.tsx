@@ -80,14 +80,6 @@ const GameView = ({
         return acc
     }
 
-    const showModal = () => {
-        setIsModalVisible(true);
-    };
-
-    const closeModal = () => {
-        setIsModalVisible(false);
-    };
-
     const getRemainingTime = (): number => {
         if (gameDataRef.current?.roundData?.dateStartedDrawing == null) return 0;
         return (new Date(gameDataRef.current.roundData.dateStartedDrawing).getTime() + gameDataRef.current.roomConfig.timeByTurn * 1000 - new Date().getTime()) / 1000;
@@ -139,10 +131,6 @@ const GameView = ({
 
     return (
         <>
-
-            <Modal title={null} visible={isModalVisible} footer={null} closable={false}>
-                {modal_data()}
-            </Modal>
 
             <Row>
                 <Col xs={24} md={6}>
