@@ -46,7 +46,7 @@ const EndRoundScoreDisplayer = ({
                             <Col >
                                 <Title level={4}  key={"score-" + idx} style={{color: player.roundPoint > 0 ? "green" : "red"}}>
                                     {
-                                        Math.round(player.roundPoint) + " point" + (player.roundPoint > 1 && "s")
+                                        Math.round(player.roundPoint) + " point" + (player.roundPoint > 1 ? "s" : "")
                                     }
                                 </Title>
                             </Col>
