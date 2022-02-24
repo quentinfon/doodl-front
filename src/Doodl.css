@@ -37,26 +37,3 @@ canvas {
     transform: scale(1.1);
     opacity: 1;
 }
-
-/* width */
-::-webkit-scrollbar {
-    width: 2px;
-
-}
-
-/* Track */
-::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 100px;
-}
-
-/* Handle */
-::-webkit-scrollbar-thumb {
-    background: #001529;
-    border-radius: 100px;
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-    background: #1890ff;
-}
