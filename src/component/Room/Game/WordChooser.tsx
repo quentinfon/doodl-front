@@ -13,8 +13,6 @@ const WordChooser = ({
                          chooseWord
                      }: WordChooserProps) => {
 
-    console.log(words);
-
     return (
         <>
             <Row justify="center">
@@ -33,7 +31,7 @@ const WordChooser = ({
                 justify={"center"}
                 gutter={[10, 10]}
             >
-                {["Test", "Billy boy", "Bob"].map((word: string) => {
+                {words.map((word: string) => {
 
                     return (
                         <Col xs={24}>

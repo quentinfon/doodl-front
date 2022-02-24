@@ -23,11 +23,8 @@ const WordDisplayer = ({
     const localTime = useRef<number>(timeLeft);
 
     const onVisibilityChange = (e: any) => {
-        console.log(`Tab state : ${document.visibilityState}`);
         if (document.visibilityState === "visible") {
-            console.log("refresh")
             localTime.current = getRemainingTime();
-            console.log(getRemainingTime());
             setTimerKey(timerKey + 1);
         }
     }
