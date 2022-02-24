@@ -22,7 +22,8 @@ interface DrawingCanvaProps {
     colorRef: MutableRefObject<any>,
     canDraw: MutableRefObject<boolean>,
     disabled: boolean,
-    disabledDisplay: any
+    disabledDisplay: any,
+    setCanvasHeight: (height: number) => any
 }
 
 const DrawingCanva = forwardRef(({
@@ -34,7 +35,8 @@ const DrawingCanva = forwardRef(({
                                      colorRef,
                                      canDraw,
                                      disabled,
-                                     disabledDisplay
+                                     disabledDisplay,
+                                     setCanvasHeight
                                  }: DrawingCanvaProps
     , ref: ForwardedRef<canvasFunctions>) => {
 
@@ -203,14 +205,24 @@ const DrawingCanva = forwardRef(({
         drawing = false;
     }
 
+    const handleResize = () => {
+        const canvas = canvasRef.current;
+        if (canvas) {
+            setCanvasHeight(canvas.clientHeight);
+        }
+    }
+
     useEffect(() => {
         clearCanva();
 
         const canvas = canvasRef.current;
         if (canvas) {
+            setCanvasHeight(canvas.clientHeight);
+
             canvas.addEventListener('pointerdown', onPointerDown, false);
             canvas.addEventListener('pointermove', onMove, false);
             window.addEventListener('pointerup', stopDrawing, false);
+            window.addEventListener('resize', handleResize)
         }
 
         return () => {
@@ -218,9 +230,11 @@ const DrawingCanva = forwardRef(({
                 canvas.removeEventListener('pointerdown', onPointerDown, false);
                 canvas.removeEventListener('pointermove', onMove, false);
                 window.removeEventListener('pointerup', stopDrawing, false);
+                window.removeEventListener('resize', handleResize)
             }
         }
     }, [canvasRef])
+
 
     useEffect(() => {
         initDraw.forEach((data: IDraw) => {
