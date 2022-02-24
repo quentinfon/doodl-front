@@ -1,6 +1,5 @@
 import React, {useEffect, useRef, useState} from "react";
 import {useParams} from "react-router-dom";
-import {Button, Grid, Modal} from 'antd';
 import {DrawTool, IDraw, IMessage, IPlayer, IRoomStatus, RoomState} from "../types/GameModel";
 import {getRoomData} from "../api/gameService";
 import RoomUnavailable from "../component/Room/RoomUnavailable";
@@ -18,14 +17,13 @@ import {
     ISocketMessageResponse
 } from "../types/GameSocketModel";
 
-const {useBreakpoint} = Grid;
 
 const GamePage = () => {
 
     const {gameId} = useParams<{ gameId: string }>();
 
     const canvasRef = useRef<canvasFunctions>(null);
-    
+
     const [ws, setWs] = useState<WebSocket>();
     const socketRef = useRef<WebSocket>();
 
@@ -158,7 +156,6 @@ const GamePage = () => {
     }
 
     useEffect(() => {
-        console.log(gameData)
         if ([RoomState.CHOOSE_WORD, RoomState.END_GAME].includes(gameData?.roomState as RoomState)) {
             canvasRef?.current?.forceClear();
         }
@@ -168,6 +165,8 @@ const GamePage = () => {
         } else {
             canDraw.current = gameData?.roundData?.playerTurn.map(p => p.playerId).indexOf(player?.playerId ?? "") !== -1;
         }
+
+        console.log(canDraw.current)
     }, [gameData])
 
     return (
@@ -198,34 +197,34 @@ const GamePage = () => {
                                                 <>
                                                     {gameData.roomState !== RoomState.LOBBY &&
                                                         <>
-                                                        <GameView
-                                                            playerIsAllowedToDraw={canDraw}
-                                                            canvasRef={canvasRef}
-                                                            sendDrawData={sendDrawData}
-                                                            mode={mode}
-                                                            setMode={(tool: DrawTool) => {
-                                                                setMode(tool);
-                                                                modeRef.current = tool;
-                                                            }}
-                                                            color={color}
-                                                            setColor={(color: string) => {
-                                                                setColor(color);
-                                                                colorRef.current = color;
-                                                            }}
-                                                            lineWidth={lineWidth}
-                                                            setLineWidth={(width: number) => {
-                                                                setLineWidth(width);
-                                                                lineWidthRef.current = width;
-                                                            }}
-                                                            socket={ws}
-                                                            modeRef={modeRef}
-                                                            lineWidthRef={lineWidthRef}
-                                                            colorRef={colorRef}
-                                                            player={player}
-                                                            initDraws={initDraws}
-                                                            messages={messages}
-                                                            gameData={gameData}
-                                                        />
+                                                            <GameView
+                                                                playerIsAllowedToDraw={canDraw}
+                                                                canvasRef={canvasRef}
+                                                                sendDrawData={sendDrawData}
+                                                                mode={mode}
+                                                                setMode={(tool: DrawTool) => {
+                                                                    setMode(tool);
+                                                                    modeRef.current = tool;
+                                                                }}
+                                                                color={color}
+                                                                setColor={(color: string) => {
+                                                                    setColor(color);
+                                                                    colorRef.current = color;
+                                                                }}
+                                                                lineWidth={lineWidth}
+                                                                setLineWidth={(width: number) => {
+                                                                    setLineWidth(width);
+                                                                    lineWidthRef.current = width;
+                                                                }}
+                                                                socket={ws}
+                                                                modeRef={modeRef}
+                                                                lineWidthRef={lineWidthRef}
+                                                                colorRef={colorRef}
+                                                                player={player}
+                                                                initDraws={initDraws}
+                                                                messages={messages}
+                                                                gameData={gameData}
+                                                            />
                                                         </>
                                                     }
 
