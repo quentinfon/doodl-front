@@ -12,19 +12,6 @@ const EndRoundScoreDisplayer = ({
                                     players
                                 }: ScoreProps) => {
 
-    const modal_data = () => {
-        let acc = []
-        for (let i = 0; i < players?.length ?? 0; i++) {
-            acc.push(
-                <p key={"score-" + i} style={{color: players[i].roundPoint > 0 ? "green" : "red", fontStyle: "bold"}}>
-                    {
-                        players[i].name.toString() + " + " + Math.round(players[i].roundPoint) + " point" + (players[i].roundPoint > 1 && "s")
-                    }
-                </p>
-            )
-        }
-        return acc
-    }
 
     return (
         <>
@@ -40,21 +27,31 @@ const EndRoundScoreDisplayer = ({
             </Row>
 
 
-            <Row
-                justify={"center"}
-                gutter={[10, 10]}
-            >
-                {modal_data().map((word: JSX.Element) => {
+                {players.map((player: IPlayer, idx: number) => {
 
                     return (
-                        <Col xs={24}>
-                            <Card size={"small"} style={{textAlign: 'center'}}>
-                                {word}
-                            </Card>
-                        </Col>
+                        <Row
+                            justify={"space-between"}
+                            gutter={15}
+                        >
+                            <Col>
+                                <Title level={4} key={"score-" + idx} style={{color: "#fff"}}>
+                                    {
+                                        player.name.toString()
+                                    }
+                                </Title>
+                            </Col>
+                            <Col >
+                                <Title level={4}  key={"score-" + idx} style={{color: player.roundPoint > 0 ? "green" : "red"}}>
+                                    {
+                                        Math.round(player.roundPoint) + " point" + (player.roundPoint > 1 && "s")
+                                    }
+                                </Title>
+                            </Col>
+
+                        </Row>
                     )
                 })}
-            </Row>
 
         </>
     )
