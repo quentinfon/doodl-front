@@ -95,6 +95,7 @@ const GameView = ({
 
     const [timeLeft, setTimeLeft] = useState<number>(0);
 
+
     useEffect(() => {
         gameDataRef.current = gameData;
         if (gameData.roundData?.dateStartedDrawing != null)
