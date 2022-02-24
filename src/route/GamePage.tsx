@@ -139,8 +139,7 @@ const GamePage = () => {
                     totalPoint: 0,
                     roundPoint: 0
                 });
-                messages.length = 0;
-                init.messages.forEach(msg => messages.push(msg));
+                setMessages(init.messages ?? []);
                 setInitDraws(init.draws);
             }
 
@@ -149,8 +148,7 @@ const GamePage = () => {
             }
 
             if (msg.channel === GameSocketChannel.CHAT) {
-                messages.push(msg.data as IMessage)
-                setMessages([...messages])
+                setMessages([...messages, msg.data as IMessage])
             }
         };
     }

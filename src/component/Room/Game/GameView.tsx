@@ -67,6 +67,7 @@ const GameView = ({
     }
 
     const getRemainingTime = (): number => {
+        if (gameDataRef.current?.roomState !== RoomState.DRAWING) return 0;
         if (gameDataRef.current?.roundData?.dateStartedDrawing == null) return 0;
         return (new Date(gameDataRef.current.roundData.dateStartedDrawing).getTime() + gameDataRef.current.roomConfig.timeByTurn * 1000 - new Date().getTime()) / 1000;
     }
