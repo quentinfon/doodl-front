@@ -64,9 +64,11 @@ const GameView = ({
     const gameDataRef = useRef<IDataInfoResponse>(gameData);
 
     const [guessedList, setGuessedList] = useState<IPlayer[]>([]);
+    const messageSound = new Audio("/message.mp3")
 
     const sendMessage = (message: ISocketMessageRequest) => {
         socket?.send(JSON.stringify(message));
+        messageSound.play()
     }
 
     const getRemainingTime = (): number => {
