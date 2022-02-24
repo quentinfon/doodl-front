@@ -33,7 +33,7 @@ const DisabledDisplay = ({
             <WordChooser
                 words={wordList}
                 chooseWord={onChooseWord}
-             disabled/>
+            />
         )
     } else if (!isDrawing && roomState === RoomState.CHOOSE_WORD) {
         return (
