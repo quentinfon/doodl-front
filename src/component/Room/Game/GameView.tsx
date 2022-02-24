@@ -167,6 +167,7 @@ const GameView = ({
                                 playerId={player?.playerId ?? ""}
                                 roomState={gameData.roomState}
                                 drawingPlayers={gameData.roundData?.playerTurn ?? []}
+                                players={gameData.playerList}
                             />}
                     />
 

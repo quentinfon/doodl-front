@@ -1,13 +1,15 @@
 import React from "react";
 import WordChooser from "./WordChooser";
 import {IPlayer, RoomState} from "../../../types/GameModel";
+import EndRoundScoreDisplayer from "./EndRoundScoreDisplayer";
 
 interface DisabledDisplayProps {
     wordList: string[],
     onChooseWord: (word: string) => any,
     playerId: string,
     drawingPlayers: IPlayer[],
-    roomState: RoomState
+    roomState: RoomState,
+    players: IPlayer[]
 }
 
 const DisabledDisplay = ({
@@ -15,7 +17,8 @@ const DisabledDisplay = ({
                              onChooseWord,
                              playerId,
                              drawingPlayers,
-                             roomState
+                             roomState,
+                             players
                          }: DisabledDisplayProps) => {
 
     const isDrawing = drawingPlayers.map(p => p.playerId).includes(playerId);
@@ -26,6 +29,10 @@ const DisabledDisplay = ({
                 words={wordList}
                 chooseWord={onChooseWord}
             />
+        )
+    } else if (roomState === RoomState.END_ROUND) {
+        return (
+            <EndRoundScoreDisplayer players={players}/>
         )
     }
 
