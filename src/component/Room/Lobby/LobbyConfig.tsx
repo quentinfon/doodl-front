@@ -95,7 +95,8 @@ const LobbyConfig = ({
             maxChatMessageLength: 240,
             minPointGuess: 0,
             maxPointGuess: 2000
-        }
+        },
+        wordList: []
     });
 
     return (
@@ -151,6 +152,25 @@ const LobbyConfig = ({
                                 disabled={readOnly}
                             >
                                 {roomConfigParam.gameMode.map((mode: string, idx: number) => {
+                                    return (
+                                        <Option key={idx}
+                                                value={mode}>{mode.charAt(0).toUpperCase() + mode.slice(1).toLowerCase()}</Option>
+                                    )
+                                })}
+                            </Select>
+                        </Input.Group>
+                    </Col>
+
+                    <Col sm={24} lg={12}>
+                        <Text>Word list</Text>
+                        <Input.Group>
+                            <Select
+                                style={{width: "100%"}}
+                                value={gameConfig.wordList}
+                                onChange={(e) => setNewConfig({...gameConfig, wordList: e})}
+                                disabled={readOnly}
+                            >
+                                {roomConfigParam.wordList.map((mode: string, idx: number) => {
                                     return (
                                         <Option key={idx}
                                                 value={mode}>{mode.charAt(0).toUpperCase() + mode.slice(1).toLowerCase()}</Option>
