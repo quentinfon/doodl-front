@@ -82,7 +82,7 @@ const AvatarPicker = ({
             urlParams.append("accessoiresProbability", "100");
         }
 
-        return `https://avatars.dicebear.com/api/adventurer-neutral/doodl.svg?${urlParams.toString()}`;
+        return `${import.meta.env.VITE_AVATAR_ENDPOINT}/api/adventurer-neutral/doodl.svg?${urlParams.toString()}`;
     }
 
     function updateLocalStorage() {
