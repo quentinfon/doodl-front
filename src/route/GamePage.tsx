@@ -48,6 +48,7 @@ const GamePage = () => {
     const [pingInterval, setPingInterval] = useState<NodeJS.Timer>();
 
     const [messages, setMessages] = useState<IMessage[]>([]);
+    const messagesRef = useRef<IMessage[]>(messages);
 
     const [errorSocket, setErrorSocket] = useState<any>();
     const [chooseWordList, setChooseWordList] = useState<string[]>([]);
@@ -138,7 +139,8 @@ const GamePage = () => {
                     totalPoint: 0,
                     roundPoint: 0
                 });
-                setMessages(init.messages ?? []);
+                setMessages(init.messages);
+                messagesRef.current = init.messages;
                 setInitDraws(init.draws);
             }
 
@@ -147,9 +149,8 @@ const GamePage = () => {
             }
 
             if (msg.channel === GameSocketChannel.CHAT) {
-                let arr = messages;
-                arr.push(msg.data as IMessage);
-                setMessages([...arr]);
+                messagesRef.current.push(msg.data as IMessage);
+                setMessages([...messagesRef.current]);
             }
 
             if (msg.channel === GameSocketChannel.CHOOSE_WORD) {
