@@ -187,7 +187,8 @@ const GamePage = () => {
             maxChatMessageLength: 240,
             minPointGuess: 0,
             maxPointGuess: 2000
-        }
+        },
+        wordList: []
     });
 
     const [loadingParams, setLoadingParams] = useState<boolean>(false);
