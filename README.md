@@ -1,6 +1,6 @@
 # Doodl-front
 
-> Thomas FILLION (@Skylok)  
+> Thomas FILLION (@Skyloq)  
 > Quentin FONTAINE (@quentinfon)  
 > Antonin HUAUT (@AntoninHuaut)
 
