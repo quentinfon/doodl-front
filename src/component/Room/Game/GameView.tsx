@@ -65,8 +65,11 @@ const GameView = ({
 
     const [guessedList, setGuessedList] = useState<IPlayer[]>([]);
     const messageSound = new Audio("/message.mp3")
+<<<<<<< HEAD
 
     const [canvasHeight, setCanvasHeight] = useState<number>(0);
+=======
+>>>>>>> sound
 
     const sendMessage = (message: ISocketMessageRequest) => {
         socket?.send(JSON.stringify(message));
