@@ -43,7 +43,7 @@ const JoinGame = () => {
                     align="bottom"
                 >
                     <Col sm={24} md={12}>
-                        <Text>Room id</Text>
+                        <Text>Room Id</Text>
                         <Input.Group
                             style={{width: "100%"}}
                         >

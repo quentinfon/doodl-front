@@ -243,6 +243,7 @@ const GamePage = () => {
                                                                     roomConfig: config
                                                                 });
                                                             }}
+                                                            roomId={gameId ?? ""}
                                                         />
                                                     }
 
