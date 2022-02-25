@@ -1,7 +1,7 @@
 import React, {useEffect, useRef, useState} from "react";
 import {useParams} from "react-router-dom";
 import {DrawTool, IDraw, IMessage, IPlayer, IRoomStatus, RoomState} from "../types/GameModel";
-import {getRoomData} from "../api/gameService";
+import {getRoomCreationConfig, getRoomData} from "../api/gameService";
 import RoomUnavailable from "../component/Room/RoomUnavailable";
 import PlayerCreation from "../component/Room/PlayerCreation";
 import {canvasFunctions} from "../component/Room/Canva/DrawingCanva";
@@ -17,6 +17,8 @@ import {
     ISocketMessageRequest,
     ISocketMessageResponse
 } from "../types/GameSocketModel";
+import {IConfigResponse} from "../types/ConfigModel";
+import {fetchUtil} from "../api/request";
 
 
 const GamePage = () => {
@@ -171,6 +173,37 @@ const GamePage = () => {
         }
     }, [gameData])
 
+    const [roomConfigParam, setRoomConfigParam] = useState<IConfigResponse>({
+        gameMode: [],
+        roomServerConfig: {
+            minPlayerPerRoom: 2,
+            maxPlayerPerRoom: 32,
+            minPlayerNameLength: 3,
+            maxPlayerNameLength: 16,
+            minTimeByTurn: 15,
+            maxTimeByTurn: 300,
+            minCycleRoundByGame: 2,
+            maxCycleRoundByGame: 20,
+            maxChatMessageLength: 240,
+            minPointGuess: 0,
+            maxPointGuess: 2000
+        }
+    });
+
+    const [loadingParams, setLoadingParams] = useState<boolean>(false);
+    const [error, setError] = useState<string>("");
+
+    const getRoomConfigParam = () => {
+        fetchUtil(getRoomCreationConfig(),
+            setRoomConfigParam,
+            setLoadingParams,
+            setError);
+    }
+
+    useEffect(() => {
+        getRoomConfigParam();
+    }, []);
+
     return (
         <>
             {errorSocket ? <ErrorPage errorMsg={errorPage}/>
@@ -189,6 +222,8 @@ const GamePage = () => {
                                             <PlayerCreation
                                                 createPlayer={createSocket}
                                                 loadingConnexion={loadingConnexion}
+                                                minPlayerNameLength={roomConfigParam.roomServerConfig.minPlayerNameLength}
+                                                maxPlayerNameLength={roomConfigParam.roomServerConfig.maxPlayerNameLength}
                                             />
                                         </>
 

@@ -4,7 +4,12 @@ import {IRoomConfig} from "../../../types/GameModel";
 import {fetchUtil} from "../../../api/request";
 import {getRoomCreationConfig} from "../../../api/gameService";
 import {FieldTimeOutlined, RedoOutlined} from '@ant-design/icons';
-import {GameSocketChannel, IDataInfoResponse, ISocketMessageRequest, ISocketMessageResponse} from "../../../types/GameSocketModel";
+import {
+    GameSocketChannel,
+    IDataInfoResponse,
+    ISocketMessageRequest,
+    ISocketMessageResponse
+} from "../../../types/GameSocketModel";
 import {IConfigResponse} from "../../../types/ConfigModel";
 
 
@@ -88,6 +93,8 @@ const LobbyConfig = ({
         roomServerConfig: {
             minPlayerPerRoom: 2,
             maxPlayerPerRoom: 32,
+            minPlayerNameLength: 3,
+            maxPlayerNameLength: 16,
             minTimeByTurn: 15,
             maxTimeByTurn: 300,
             minCycleRoundByGame: 2,

@@ -7,12 +7,16 @@ const {Title} = Typography;
 
 interface PlayerCreationProps {
     createPlayer: (player: IPlayer) => any,
-    loadingConnexion: boolean
+    loadingConnexion: boolean,
+    minPlayerNameLength: number,
+    maxPlayerNameLength: number
 }
 
 const PlayerCreation = ({
                             createPlayer,
-                            loadingConnexion
+                            loadingConnexion,
+                            minPlayerNameLength,
+                            maxPlayerNameLength
                         }: PlayerCreationProps) => {
 
     const pseudoLocalStorageKey = "pseudo";
@@ -39,7 +43,7 @@ const PlayerCreation = ({
     }
 
     function isValidPlayerName(playerName: string, checkMinSize: boolean = true): boolean {
-        return (!checkMinSize || playerName.trim().length >= 3) && playerName.trim().length <= 32;
+        return (!checkMinSize || playerName.trim().length >= minPlayerNameLength) && playerName.trim().length <= maxPlayerNameLength;
     }
 
     return (
