@@ -4,31 +4,42 @@ import LobbyPlayerList from "./LobbyPlayerList";
 import {IPlayer, IRoomConfig} from "../../../types/GameModel";
 import LobbyConfig from "./LobbyConfig";
 import {IDataInfoResponse} from "../../../types/GameSocketModel";
+import LobbyInfo from "./LobbyInfo";
 
 interface RoomLobbyProps {
     player: IPlayer | undefined,
     gameData: IDataInfoResponse,
     webSocket: WebSocket,
-    setConfig: (config: IRoomConfig) => any
+    setConfig: (config: IRoomConfig) => any,
+    roomId: string
 }
 
 const RoomLobby = ({
                        player,
                        gameData,
                        webSocket,
-                       setConfig
+                       setConfig,
+                       roomId
                    }: RoomLobbyProps) => {
 
 
     return (
         <>
-            <Row>
+
+            <LobbyInfo
+                roomId={roomId}
+            />
+
+            <Row
+                style={{
+                    margin: "2.5%"
+                }}
+                gutter={[30, 30]}
+            >
+
                 <Col
                     xs={24}
                     lg={12}
-                    style={{
-                        padding: "5%"
-                    }}
                 >
                     <LobbyConfig
                         gameData={gameData}
@@ -41,9 +52,6 @@ const RoomLobby = ({
                 <Col
                     xs={24}
                     lg={12}
-                    style={{
-                        padding: "5%"
-                    }}
                 >
                     <LobbyPlayerList
                         adminPlayerId={gameData.playerAdminId ?? ""}

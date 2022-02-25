@@ -1,9 +1,7 @@
-import {Button, Menu, message, Space} from "antd";
+import {Menu, message, Space} from "antd";
 import React from "react";
 import {Header} from "antd/lib/layout/layout";
-import {
- LinkOutlined
-} from '@ant-design/icons';
+import {LinkOutlined} from '@ant-design/icons';
 
 import './AppHeader.css';
 import logoUrl from '/logo.png'
@@ -23,7 +21,7 @@ const copied = () => {
 }
 
 const notCopied = () => {
-    message.error('Link has not been copied')
+    message.error('Error while copying Link')
 };
 
 export default function AppHeader() {
@@ -43,7 +41,7 @@ export default function AppHeader() {
                 </Menu.Item>
 
                 <Space style={{marginLeft: "auto", marginRight: "8px", marginBottom: "-8px"}}>
-                    <LinkOutlined onClick={copyPageLink} style={{ fontSize: "200%"}}></LinkOutlined>
+                    <LinkOutlined onClick={copyPageLink} style={{fontSize: "200%"}}></LinkOutlined>
                 </Space>
             </Menu>
         </Header>
