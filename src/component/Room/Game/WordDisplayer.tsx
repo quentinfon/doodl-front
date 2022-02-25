@@ -65,10 +65,10 @@ const WordDisplayer = ({
                             margin: "0"
                         }}
                     >
-                        {wordToDisplay.split('').map(letter => {
-
+                        {wordToDisplay.split('').map((letter: string, idx: number) => {
                             return (
                                 <span
+                                    key={idx}
                                     style={{
                                         marginLeft: "5px",
                                         marginRight: "5px"

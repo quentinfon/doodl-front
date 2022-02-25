@@ -20,17 +20,17 @@ const GameChat = ({
                       chatHeight
                   }: GameChatProps) => {
 
-    const [currentMsg, setCurrentMessage] = useState<string>("");
-    const LIST_ID = "game-chat-list";
+    const scrollbarRef = React.useRef<SimpleBar>(null);
 
+    const [currentMsg, setCurrentMessage] = useState<string>("");
 
     useEffect(autoScrollBottomChat, [messages]);
     useEffect(autoScrollBottomChat);
 
     function autoScrollBottomChat() {
-        const list = document.getElementById(LIST_ID);
-        if (list) {
-            list.scrollTop = list.scrollHeight;
+        const scrollBar = scrollbarRef.current?.getScrollElement();
+        if (scrollBar) {
+            scrollBar.scrollTop = scrollBar.scrollHeight;
         }
     }
 
@@ -61,12 +61,12 @@ const GameChat = ({
                 size="small"
             >
                 <SimpleBar
+                    ref={scrollbarRef}
                     style={{
                         height: chatHeight + 'px'
                     }}
                 >
                     <List
-                        id={LIST_ID}
                         dataSource={messages}
                         renderItem={(msg: IMessage, idx: number) => (
                             <Card
