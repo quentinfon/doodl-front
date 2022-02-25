@@ -23,18 +23,17 @@ export function fetchURL(url: string, httpMethod: HttpMethod, headers?: Headers,
     if (body != null) {
         params.body = JSON.stringify(body);
     }
-    console.debug(url, params)
     return fetch(url, params);
 }
 
 
 export const fetchUtil = (fetch: Promise<Response>, setData: (data: any) => any, setLoading: (l: boolean) => any, setError: (e: string) => any) => {
     setLoading(true);
-    fetch.then(async res => {
+    fetch.then(async (res) => {
         setData(await res.json())
-    }).catch(e => {
-        console.error(e);
-        setError(e);
+    }).catch((err) => {
+        console.error(err);
+        setError(err);
     }).finally(() => {
         setLoading(false);
     })
