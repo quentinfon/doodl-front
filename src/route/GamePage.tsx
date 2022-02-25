@@ -109,25 +109,22 @@ const GamePage = () => {
         };
 
         webSocket.onclose = () => {
-            console.debug("Socket closed");
             if (pingInterval) {
                 clearInterval(pingInterval);
                 setPingInterval(undefined);
             }
             setWs(undefined);
             socketRef.current = undefined;
-            console.log("success close");
         }
 
-        webSocket.onerror = e => {
-            console.error(e);
+        webSocket.onerror = (err) => {
+            console.error(err);
         }
 
         webSocket.onmessage = e => {
             let msg: ISocketMessageResponse = JSON.parse(e.data);
 
             if (msg.error) {
-                console.debug(msg);
                 if (msg.channel === GameSocketChannel.INIT)
                     setErrorSocket(msg.error);
             }
