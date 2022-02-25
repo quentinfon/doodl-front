@@ -15,6 +15,7 @@ import {
     ISocketMessageResponse
 } from "../../../types/GameSocketModel";
 import DisabledDisplay from "./DisabledDisplay";
+import {Sound} from "../Component/Sound";
 
 
 interface GameViewProps {
@@ -62,6 +63,11 @@ const GameView = ({
                   }: GameViewProps) => {
 
     const gameDataRef = useRef<IDataInfoResponse>(gameData);
+    const roundStart = new Audio(Sound.ROUND_START)
+    const roundEnd = new Audio(Sound.ROUND_END)
+    const wordGuessed = new Audio(Sound.WORD_GUESSED)
+    const gameJoin = new Audio(Sound.GAME_JOIN)
+    const gameLeave = new Audio(Sound.GAME_LEAVE)
 
     const [guessedList, setGuessedList] = useState<IPlayer[]>([]);
     const messageSound = new Audio("/message.mp3")
