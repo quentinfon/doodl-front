@@ -31,10 +31,9 @@ const WordChooser = ({
                 justify={"center"}
                 gutter={[10, 10]}
             >
-                {words.map((word: string) => {
-
+                {words.map((word: string, idx: number) => {
                     return (
-                        <Col xs={24}>
+                        <Col xs={24} key={idx}>
                             <Button
                                 type="dashed"
                                 onClick={() => chooseWord(word)}
