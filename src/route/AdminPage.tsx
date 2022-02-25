@@ -61,8 +61,13 @@ const AdminPage = () => {
     }
 
     const explicit = (roomInfo: IAdminRoomInfo) => {
+        if (!roomInfo) return [];
+
         let items = []
-        items.push(<List.Item key={"rommheader" + roomInfo.roomId}><span>{"RoomID : " + roomInfo.roomId}</span></List.Item>)
+        items.push(<List.Item key={"rommheader" + roomInfo.roomId}>
+            <span>{"RoomID : " + roomInfo.roomId}</span>
+        </List.Item>)
+        
         for (let i = 0; i < roomInfo.playerList.length; i++) {
             items.push(
                 <List.Item key={"room" + roomInfo.roomId + "-" + i}>
