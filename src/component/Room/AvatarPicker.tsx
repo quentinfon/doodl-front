@@ -169,7 +169,7 @@ const AvatarPicker = ({
                             <Button
                                 shape="circle"
                                 icon={<RightOutlined/>}
-                                onClick={() => setEye(getPrev<Eyes>(eye, eyeList))}
+                                onClick={() => setEye(getNext<Eyes>(eye, eyeList))}
                             />
                         </Col>
                     </Row>
