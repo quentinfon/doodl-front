@@ -205,7 +205,6 @@ const GameView = ({
                     <GameChat
                         messages={messages}
                         sendMessage={sendMessage}
-                        player={player}
                         chatHeight={canvasHeight}
                     />
                 </Col>

@@ -1,6 +1,6 @@
 import {Avatar, Button, Card, Input, List, Tooltip} from "antd";
 import React, {useEffect, useState} from "react";
-import {IMessage, IPlayer} from "../types/GameModel";
+import {IMessage} from "../types/GameModel";
 import {GameSocketChannel, ISocketMessageRequest} from "../types/GameSocketModel";
 import {EyeOutlined, SendOutlined} from '@ant-design/icons';
 import SimpleBar from 'simplebar-react';
@@ -9,14 +9,12 @@ import 'simplebar/dist/simplebar.min.css';
 interface GameChatProps {
     messages: IMessage[],
     sendMessage: (message: ISocketMessageRequest) => any,
-    player: IPlayer | undefined,
     chatHeight: number
 }
 
 const GameChat = ({
                       messages,
                       sendMessage,
-                      player,
                       chatHeight
                   }: GameChatProps) => {
 
@@ -31,7 +29,7 @@ const GameChat = ({
         const scrollBar = scrollbarRef.current?.getScrollElement();
         if (scrollBar) {
             // scrollBar.scrollTop = scrollBar.scrollHeight;
-            scrollBar.scroll({ top: scrollBar.scrollHeight, behavior: 'smooth' });
+            scrollBar.scroll({top: scrollBar.scrollHeight, behavior: 'smooth'});
         }
     }
 
@@ -54,7 +52,6 @@ const GameChat = ({
             sendCurrentMsg()
         }
     }
-
 
     return (
         <>
