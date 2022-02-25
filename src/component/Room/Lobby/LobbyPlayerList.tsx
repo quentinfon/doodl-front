@@ -1,6 +1,6 @@
 import React from "react";
 import {IPlayer} from "../../../types/GameModel";
-import {Avatar, Badge, Card, Divider, List, Typography} from "antd";
+import {Avatar, Badge, Card, Divider, List, Tag, Typography} from "antd";
 import {UserOutlined} from '@ant-design/icons';
 
 const {Title} = Typography;
@@ -28,12 +28,16 @@ const LobbyPlayerList = ({
                 >
                     {player.name}
                     {player.playerId === adminPlayerId &&
-                        <UserOutlined
+                        <Tag
+                            icon={<UserOutlined/>}
+                            color="error"
                             style={{
-                                paddingLeft: "10px",
-                                color: '#ff4d4f'
+                                marginLeft: "10px"
                             }}
-                        />
+                        >
+                            Admin
+                        </Tag>
+
                     }
                 </Text>
             </>
