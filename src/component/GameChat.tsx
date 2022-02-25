@@ -79,6 +79,7 @@ const GameChat = ({
                                             avatar={<Avatar src={msg.author.imgUrl}/>}
                                             title={<>{msg.author.name} <EyeOutlined/></>}
                                             description={<i>{msg.message}</i>}
+                                            style={{wordBreak: "break-all"}}
                                         />
                                     </List.Item>
                                     :
@@ -87,6 +88,7 @@ const GameChat = ({
                                             avatar={<Avatar src={msg.author.imgUrl}/>}
                                             title={<>{msg.author.name}</>}
                                             description={msg.message}
+                                            style={{wordBreak: "break-all"}}
                                         />
                                     </List.Item>
                                 }
