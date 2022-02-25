@@ -22,7 +22,7 @@ const EndRoundScoreDisplayer = ({
                         color: "#fff"
                     }}
                 >
-                    The word was {word}
+                    {word.length > 0 ? "The word was " + word : "No word was selected"}
                 </Title>
             </Row>
 
