@@ -1,15 +1,9 @@
 import React from "react";
-import {
-    BgColorsOutlined,
-    ClearOutlined,
-    DeleteOutlined,
-    HighlightOutlined,
-    QuestionCircleOutlined
-} from '@ant-design/icons';
-import {Button, Col, Popconfirm, Row, Typography} from "antd";
+import {BgColorsOutlined, DeleteOutlined, HighlightOutlined, QuestionCircleOutlined} from '@ant-design/icons';
+import {Button, Col, Popconfirm, Row} from "antd";
 import {DrawTool} from "../../../types/GameModel";
 
-const {Title} = Typography;
+import eraserUrl from '/eraser.svg';
 
 interface ToolPickerProps {
     currentTool: DrawTool,
@@ -39,7 +33,9 @@ const ToolPicker = ({
         },
         {
             toolName: DrawTool.ERASER,
-            toolIcon: <ClearOutlined className="canvasItemsIcon"/>
+            toolIcon: <span role="img" aria-label="bg-colors" className="anticon anticon-bg-colors canvasItemsIcon">
+                <img src={eraserUrl} style={{maxWidth: "100%"}} alt={"Eraser icon"}/>
+            </span>
         }
     ]
 
