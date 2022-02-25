@@ -45,6 +45,8 @@ const AdminPage = () => {
 
         webSocket.onclose = () => {
             setAdminWs(undefined);
+            setConnected(false);
+
             if (refreshInterval) {
                 clearInterval(refreshInterval);
                 setRefreshInterval(undefined);
