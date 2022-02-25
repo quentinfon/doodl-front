@@ -62,30 +62,23 @@ const GameView = ({
                       setChooseWordList
                   }: GameViewProps) => {
 
+    const [guessedList, setGuessedList] = useState<IPlayer[]>([]);
+
+    const [canvasHeight, setCanvasHeight] = useState<number>(0);
+
+    const [actualRoomState,setactualRoomState] = useState<RoomState>(RoomState.LOBBY)
+    const [actualPlayerNumber,setactualPlayerNumber] = useState<number>(gameData.playerList.length)
+    const [actualPlayerGuess,setactualPlayerGuess] = useState<number>(0)
     const gameDataRef = useRef<IDataInfoResponse>(gameData);
     const roundStart = new Audio(Sound.ROUND_START)
     const roundEnd = new Audio(Sound.ROUND_END)
     const wordGuessed = new Audio(Sound.WORD_GUESSED)
     const gameJoin = new Audio(Sound.GAME_JOIN)
     const gameLeave = new Audio(Sound.GAME_LEAVE)
-
-    const [guessedList, setGuessedList] = useState<IPlayer[]>([]);
-
-    const [canvasHeight, setCanvasHeight] = useState<number>(0);
-
-    const [actualRoomState,setactualRoomState] = useState<RoomState>(RoomState.LOBBY)
-
-    const soundManager = () => {
-        if(gameData.roomState == RoomState.DRAWING && actualRoomState==RoomState.LOBBY){
-            setactualRoomState(RoomState.DRAWING)
-            roundStart.play()
-        }
-
-    }
+    
 
     const sendMessage = (message: ISocketMessageRequest) => {
         socket?.send(JSON.stringify(message));
-        roundStart.play()
     }
 
 
@@ -135,9 +128,33 @@ const GameView = ({
         })
     }, [socket]);
 
+    useEffect(()=>{
+        if(gameData.roomState == RoomState.DRAWING && ( actualRoomState==RoomState.LOBBY || actualRoomState==RoomState.END_ROUND)){
+            setactualRoomState(RoomState.DRAWING)
+            setactualPlayerGuess(0)
+            roundStart.play()
+        }else if(gameData.roomState == RoomState.END_ROUND && actualRoomState==RoomState.DRAWING) {
+            setactualRoomState(RoomState.END_ROUND)
+            roundEnd.play()
+        }
+        if(gameData.playerList.length<actualPlayerNumber){
+            setactualPlayerNumber(actualPlayerNumber-1)
+            gameLeave.play()
+        }
+        if(gameData.playerList.length>actualPlayerNumber){
+            setactualPlayerNumber(actualPlayerNumber+1)
+            gameJoin.play()
+        }
+        if(actualPlayerGuess<guessedList.length){
+            setactualPlayerGuess(actualPlayerGuess+1)
+            wordGuessed.play()
+        }
+    })
+
+
+
     return (
         <>
-            {soundManager()}
 
             <Row>
                 <Col xs={24} md={6}>
