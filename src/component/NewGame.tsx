@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {Button, Card, Divider, Row, Typography} from "antd";
-import {GameMode, IRoomConfig} from "../types/GameModel";
+import {GameMode, IRoomConfig, WordList} from "../types/GameModel";
 import {fetchUtil} from "../api/request";
 import {createNewRoom} from "../api/gameService";
 import {useNavigate} from 'react-router-dom';
@@ -14,9 +14,9 @@ const NewGame = () => {
     const [newGameConfig, setNewGameConfig] = useState<IRoomConfig>({
         gameMode: GameMode.CLASSIC,
         timeByTurn: 60,
-        cycleRoundByGame: 3
+        cycleRoundByGame: 3,
+        wordList: WordList.ANIMALS
     })
-
 
     const [loadingNewRoom, setLoadingNewRoom] = useState<boolean>(false);
     const [errorNewRoom, setErrorNewRoom] = useState<string>("");
