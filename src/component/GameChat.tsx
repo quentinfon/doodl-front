@@ -30,7 +30,8 @@ const GameChat = ({
     function autoScrollBottomChat() {
         const scrollBar = scrollbarRef.current?.getScrollElement();
         if (scrollBar) {
-            scrollBar.scrollTop = scrollBar.scrollHeight;
+            // scrollBar.scrollTop = scrollBar.scrollHeight;
+            scrollBar.scroll({ top: scrollBar.scrollHeight, behavior: 'smooth' });
         }
     }
 
