@@ -32,7 +32,8 @@ const RoomLobby = ({
 
             <Row
                 style={{
-                    margin: "2.5%"
+                    marginLeft: "2.5%",
+                    marginRight: "2.5%",
                 }}
                 gutter={[30, 30]}
             >
