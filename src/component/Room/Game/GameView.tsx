@@ -70,13 +70,22 @@ const GameView = ({
     const gameLeave = new Audio(Sound.GAME_LEAVE)
 
     const [guessedList, setGuessedList] = useState<IPlayer[]>([]);
-    const messageSound = new Audio("/message.mp3")
 
     const [canvasHeight, setCanvasHeight] = useState<number>(0);
 
+    const [actualRoomState,setactualRoomState] = useState<RoomState>(RoomState.LOBBY)
+
+    const soundManager = () => {
+        if(gameData.roomState == RoomState.DRAWING && actualRoomState==RoomState.LOBBY){
+            setactualRoomState(RoomState.DRAWING)
+            roundStart.play()
+        }
+
+    }
+
     const sendMessage = (message: ISocketMessageRequest) => {
         socket?.send(JSON.stringify(message));
-        messageSound.play()
+        roundStart.play()
     }
 
 
@@ -128,6 +137,7 @@ const GameView = ({
 
     return (
         <>
+            {soundManager()}
 
             <Row>
                 <Col xs={24} md={6}>
