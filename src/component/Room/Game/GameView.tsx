@@ -75,7 +75,7 @@ const GameView = ({
     const wordGuessed = new Audio(Sound.WORD_GUESSED)
     const gameJoin = new Audio(Sound.GAME_JOIN)
     const gameLeave = new Audio(Sound.GAME_LEAVE)
-    
+
 
     const sendMessage = (message: ISocketMessageRequest) => {
         socket?.send(JSON.stringify(message));
