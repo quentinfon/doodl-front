@@ -66,9 +66,9 @@ const GameView = ({
 
     const [canvasHeight, setCanvasHeight] = useState<number>(0);
 
-    const [actualRoomState,setactualRoomState] = useState<RoomState>(RoomState.LOBBY)
-    const [actualPlayerNumber,setactualPlayerNumber] = useState<number>(gameData.playerList.length)
-    const [actualPlayerGuess,setactualPlayerGuess] = useState<number>(0)
+    const [actualRoomState, setActualRoomState] = useState<RoomState>(RoomState.LOBBY)
+    const [actualPlayerNumber, setActualPlayerNumber] = useState<number>(gameData.playerList.length)
+    const [actualPlayerGuess, setActualPlayerGuess] = useState<number>(0)
     const gameDataRef = useRef<IDataInfoResponse>(gameData);
     const roundStart = new Audio(Sound.ROUND_START)
     const roundEnd = new Audio(Sound.ROUND_END)
@@ -128,29 +128,28 @@ const GameView = ({
         })
     }, [socket]);
 
-    useEffect(()=>{
-        if(gameData.roomState == RoomState.DRAWING && ( actualRoomState==RoomState.LOBBY || actualRoomState==RoomState.END_ROUND)){
-            setactualRoomState(RoomState.DRAWING)
-            setactualPlayerGuess(0)
+    useEffect(() => {
+        if (gameData.roomState == RoomState.DRAWING && (actualRoomState == RoomState.LOBBY || actualRoomState == RoomState.END_ROUND)) {
+            setActualRoomState(RoomState.DRAWING)
+            setActualPlayerGuess(0)
             roundStart.play()
-        }else if(gameData.roomState == RoomState.END_ROUND && actualRoomState==RoomState.DRAWING) {
-            setactualRoomState(RoomState.END_ROUND)
+        } else if (gameData.roomState == RoomState.END_ROUND && actualRoomState == RoomState.DRAWING) {
+            setActualRoomState(RoomState.END_ROUND)
             roundEnd.play()
         }
-        if(gameData.playerList.length<actualPlayerNumber){
-            setactualPlayerNumber(actualPlayerNumber-1)
+        if (gameData.playerList.length < actualPlayerNumber) {
+            setActualPlayerNumber(actualPlayerNumber - 1)
             gameLeave.play()
         }
-        if(gameData.playerList.length>actualPlayerNumber){
-            setactualPlayerNumber(actualPlayerNumber+1)
+        if (gameData.playerList.length > actualPlayerNumber) {
+            setActualPlayerNumber(actualPlayerNumber + 1)
             gameJoin.play()
         }
-        if(actualPlayerGuess<guessedList.length){
-            setactualPlayerGuess(actualPlayerGuess+1)
+        if (actualPlayerGuess < guessedList.length) {
+            setActualPlayerGuess(actualPlayerGuess + 1)
             wordGuessed.play()
         }
     })
-
 
 
     return (
