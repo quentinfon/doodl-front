@@ -21,6 +21,7 @@ const WordDisplayer = ({
 
     const [timerKey, setTimerKey] = useState<number>(0);
     const localTime = useRef<number>(timeLeft);
+    const localTotalTime = useRef<number>(totalTime);
 
     const onVisibilityChange = (e: any) => {
         if (document.visibilityState === "visible") {
@@ -42,6 +43,11 @@ const WordDisplayer = ({
         localTime.current = timeLeft;
         setTimerKey(timerKey + 1);
     }, [timeLeft]);
+
+    useEffect(() => {
+        localTotalTime.current = totalTime;
+        setTimerKey(timerKey + 1);
+    }, [totalTime]);
 
     return (
         <Card
@@ -85,9 +91,9 @@ const WordDisplayer = ({
                         isPlaying
                         key={timerKey}
                         initialRemainingTime={localTime.current}
-                        duration={totalTime}
+                        duration={localTotalTime.current}
                         colors={['#1890ff', '#F7B801', '#A30000', '#A30000']}
-                        colorsTime={[totalTime / 2, totalTime / 3, totalTime / 4, 0]}
+                        colorsTime={[localTotalTime.current / 2, localTotalTime.current / 3, localTotalTime.current / 4, 0]}
                         size={50}
                         strokeWidth={5}
                     >
