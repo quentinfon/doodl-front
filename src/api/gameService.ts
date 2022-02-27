@@ -16,3 +16,7 @@ export const createNewRoom = () => {
 export const getRoomData = (roomId: string) => {
     return fetchURL(`${service_endpoint}/room/${roomId}`, HttpMethod.GET);
 }
+
+export const getServerTime = () => {
+    return fetchURL(`${service_endpoint}/time`, HttpMethod.GET);
+}

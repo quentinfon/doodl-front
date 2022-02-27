@@ -21,6 +21,8 @@ import roundEndSound from '/sounds/roundEnd.mp3';
 import wordGuessedSound from '/sounds/guessed.mp3';
 import gameJoinSound from '/sounds/join.mp3';
 import gameLeaveSound from '/sounds/leave.mp3';
+import {getServerTime} from "../../../api/gameService";
+import {fetchUtil} from "../../../api/request";
 
 interface GameViewProps {
     playerIsAllowedToDraw: MutableRefObject<boolean>,
@@ -80,14 +82,29 @@ const GameView = ({
     const gameJoinAudio = new Audio(gameJoinSound);
     const gameLeaveAudio = new Audio(gameLeaveSound);
 
+    const serverTimeDiff = useRef<number>(0);
+
+    useEffect(() => {
+        const requestDate: Date = new Date();
+        fetchUtil(getServerTime(),
+            (res: any) => {
+                let servTime: Date = new Date(res.date);
+                serverTimeDiff.current = (servTime.getTime() - (new Date().getTime() + requestDate.getTime()) / 2)
+            },
+            () => {
+            },
+            () => {
+            });
+
+    }, [])
+
     const sendMessage = (message: ISocketMessageRequest) => {
         socket?.send(JSON.stringify(message));
     }
 
-
     const getRemainingTime = (): number => {
         if (gameDataRef.current?.roundData?.dateStateStarted == null) return 0;
-        return (new Date(gameDataRef.current.roundData.dateStateStarted).getTime() + totalChronoTimeRef.current * 1000 - new Date().getTime()) / 1000;
+        return (new Date(gameDataRef.current.roundData.dateStateStarted).getTime() + serverTimeDiff.current + totalChronoTimeRef.current * 1000 - new Date().getTime()) / 1000;
     }
 
     const [timeLeft, setTimeLeft] = useState<number>(0);
