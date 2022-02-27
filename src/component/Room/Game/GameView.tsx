@@ -16,6 +16,11 @@ import {
 } from "../../../types/GameSocketModel";
 import DisabledDisplay from "./DisabledDisplay";
 
+import roundStartSound from '/sounds/roundStart.mp3';
+import roundEndSound from '/sounds/roundEnd.mp3';
+import wordGuessedSound  from '/sounds/guessed.mp3';
+import gameJoinSound from '/sounds/join.mp3';
+import gameLeaveSound  from '/sounds/leave.mp3';
 
 interface GameViewProps {
     playerIsAllowedToDraw: MutableRefObject<boolean>,
@@ -61,11 +66,19 @@ const GameView = ({
                       setChooseWordList
                   }: GameViewProps) => {
 
-    const gameDataRef = useRef<IDataInfoResponse>(gameData);
-
     const [guessedList, setGuessedList] = useState<IPlayer[]>([]);
 
     const [canvasHeight, setCanvasHeight] = useState<number>(0);
+
+    const [actualRoomState, setActualRoomState] = useState<RoomState>(RoomState.LOBBY);
+    const [actualPlayerNumber, setActualPlayerNumber] = useState<number>(gameData.playerList.length);
+    const [actualPlayerGuess, setActualPlayerGuess] = useState<number>(0);
+    const gameDataRef = useRef<IDataInfoResponse>(gameData);
+    const roundStartAudio = new Audio(roundStartSound);
+    const roundEndAudio = new Audio(roundEndSound);
+    const wordGuessedAudio = new Audio(wordGuessedSound);
+    const gameJoinAudio = new Audio(gameJoinSound);
+    const gameLeaveAudio = new Audio(gameLeaveSound);
 
     const sendMessage = (message: ISocketMessageRequest) => {
         socket?.send(JSON.stringify(message));
@@ -117,6 +130,29 @@ const GameView = ({
             socket.removeEventListener("message", handleGuess);
         })
     }, [socket]);
+
+    useEffect(() => {
+        if (gameData.roomState == RoomState.DRAWING && (actualRoomState == RoomState.LOBBY || actualRoomState == RoomState.END_ROUND)) {
+            setActualRoomState(RoomState.DRAWING);
+            setActualPlayerGuess(0);
+            roundStartAudio.play();
+        } else if (gameData.roomState == RoomState.END_ROUND && actualRoomState == RoomState.DRAWING) {
+            setActualRoomState(RoomState.END_ROUND);
+            roundEndAudio.play()
+        }
+        if (gameData.playerList.length < actualPlayerNumber) {
+            setActualPlayerNumber(actualPlayerNumber - 1);
+            gameLeaveAudio.play();
+        }
+        if (gameData.playerList.length > actualPlayerNumber) {
+            setActualPlayerNumber(actualPlayerNumber + 1);
+            gameJoinAudio.play();
+        }
+        if (actualPlayerGuess < guessedList.length) {
+            setActualPlayerGuess(actualPlayerGuess + 1);
+            wordGuessedAudio.play();
+        }
+    })
 
     return (
         <>
