@@ -1,10 +1,9 @@
 import React from "react";
-import {Button, Card, Col, Row} from "antd";
+import {Card, Col, Row} from "antd";
 import {DrawTool} from "../../../types/GameModel";
 import ColorPicker from "./ColorPicker";
 import SizePicker from "./SizePicker";
 import ToolPicker from "./ToolPicker";
-import {DeleteOutlined} from '@ant-design/icons';
 
 interface DrawingToolTipsProps {
     clearCanvas: () => any,
@@ -35,7 +34,7 @@ const DrawingToolTips = ({
                 <Col xs={24} lg={12}>
 
                     <Row
-                        gutter={[10,20]}
+                        gutter={[10, 20]}
                     >
                         <Col xs={24} xxl={12}>
 
@@ -56,7 +55,6 @@ const DrawingToolTips = ({
                     </Row>
 
                 </Col>
-
 
 
                 <Col xs={24} lg={12}>
