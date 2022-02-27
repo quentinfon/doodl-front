@@ -15,7 +15,6 @@ import {
     ISocketMessageResponse
 } from "../../../types/GameSocketModel";
 import DisabledDisplay from "./DisabledDisplay";
-import {SoundEnum} from "../Component/SoundEnum";
 
 import roundStartSound from '/sounds/roundStart.mp3';
 import roundEndSound from '/sounds/roundEnd.mp3';
