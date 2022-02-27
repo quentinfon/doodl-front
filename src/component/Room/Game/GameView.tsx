@@ -86,7 +86,6 @@ const GameView = ({
 
 
     const getRemainingTime = (): number => {
-        if (gameDataRef.current?.roomState !== RoomState.DRAWING) return 0;
         if (gameDataRef.current?.roundData?.dateStateStarted == null) return 0;
         return (new Date(gameDataRef.current.roundData.dateStateStarted).getTime() + totalChronoTimeRef.current * 1000 - new Date().getTime()) / 1000;
     }
@@ -94,9 +93,11 @@ const GameView = ({
     const [timeLeft, setTimeLeft] = useState<number>(0);
 
     const [totalChronoTime, setTotalChronoTime] = useState<number>(gameData?.roomConfig.timeByTurn ?? 0);
+
     const totalChronoTimeRef = useRef(totalChronoTime);
     useEffect(() => {
         totalChronoTimeRef.current = totalChronoTime;
+        setTimeLeft(getRemainingTime());
     }, [totalChronoTime])
 
     useEffect(() => {
@@ -109,20 +110,18 @@ const GameView = ({
             setChooseWordList([]);
             setTotalChronoTime(gameData.roomConfig.timeByTurn);
         }
-        if (gameData.roomState === RoomState.CHOOSE_WORD) {
-            setTotalChronoTime(gameData?.roundData?.delay.chooseWord ?? 0)
+        if (gameData.roomState === RoomState.CHOOSE_WORD && gameData.roundData) {
+            setTotalChronoTime(gameData.roundData.delay.chooseWord)
         }
-        if (gameData.roomState === RoomState.END_ROUND) {
-            setTotalChronoTime(gameData?.roundData?.delay.endRound ?? 0)
+        if (gameData.roomState === RoomState.END_ROUND && gameData.roundData) {
+            setTotalChronoTime(gameData.roundData.delay.endRound)
         }
-        if (gameData.roomState === RoomState.END_GAME) {
-            setTotalChronoTime(gameData?.roundData?.delay.endGame ?? 0)
+        if (gameData.roomState === RoomState.END_GAME && gameData.roundData) {
+            setTotalChronoTime(gameData.roundData.delay.endGame)
         }
 
         if (gameData.roundData?.dateStateStarted != null) {
             setTimeLeft(getRemainingTime());
-        } else {
-            setTimeLeft(0);
         }
     }, [gameData]);
 
@@ -136,7 +135,6 @@ const GameView = ({
 
         setGuessedList(data.playersGuess);
     }
-
 
     useEffect(() => {
         socket.addEventListener("message", handleGuess);

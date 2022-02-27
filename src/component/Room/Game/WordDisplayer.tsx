@@ -92,8 +92,8 @@ const WordDisplayer = ({
                         key={timerKey}
                         initialRemainingTime={localTime.current}
                         duration={localTotalTime.current}
-                        colors={['#1890ff', '#F7B801', '#A30000', '#A30000']}
-                        colorsTime={[localTotalTime.current / 2, localTotalTime.current / 3, localTotalTime.current / 4, 0]}
+                        colors={['#1890ff', '#F7B801', '#ff0000']}
+                        colorsTime={[localTotalTime.current / 1.5, localTotalTime.current / 2, 0]}
                         size={50}
                         strokeWidth={5}
                     >
