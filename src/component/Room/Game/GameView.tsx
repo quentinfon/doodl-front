@@ -90,6 +90,7 @@ const GameView = ({
             (res: any) => {
                 let servTime: Date = new Date(res.date);
                 serverTimeDiff.current = (servTime.getTime() - (new Date().getTime() + requestDate.getTime()) / 2)
+                setTimeLeft(getRemainingTime());
             },
             () => {
             },
@@ -104,7 +105,7 @@ const GameView = ({
 
     const getRemainingTime = (): number => {
         if (gameDataRef.current?.roundData?.dateStateStarted == null) return 0;
-        return (new Date(gameDataRef.current.roundData.dateStateStarted).getTime() + serverTimeDiff.current + totalChronoTimeRef.current * 1000 - new Date().getTime()) / 1000;
+        return (new Date(gameDataRef.current.roundData.dateStateStarted).getTime() - serverTimeDiff.current + totalChronoTimeRef.current * 1000 - new Date().getTime()) / 1000;
     }
 
     const [timeLeft, setTimeLeft] = useState<number>(0);
