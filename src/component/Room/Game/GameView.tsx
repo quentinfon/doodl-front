@@ -18,9 +18,9 @@ import DisabledDisplay from "./DisabledDisplay";
 
 import roundStartSound from '/sounds/roundStart.mp3';
 import roundEndSound from '/sounds/roundEnd.mp3';
-import wordGuessedSound  from '/sounds/guessed.mp3';
+import wordGuessedSound from '/sounds/guessed.mp3';
 import gameJoinSound from '/sounds/join.mp3';
-import gameLeaveSound  from '/sounds/leave.mp3';
+import gameLeaveSound from '/sounds/leave.mp3';
 
 interface GameViewProps {
     playerIsAllowedToDraw: MutableRefObject<boolean>,
@@ -86,13 +86,19 @@ const GameView = ({
 
 
     const getRemainingTime = (): number => {
-        if (gameDataRef.current?.roomState !== RoomState.DRAWING) return 0;
-        if (gameDataRef.current?.roundData?.dateStartedDrawing == null) return 0;
-        return (new Date(gameDataRef.current.roundData.dateStartedDrawing).getTime() + gameDataRef.current.roomConfig.timeByTurn * 1000 - new Date().getTime()) / 1000;
+        if (gameDataRef.current?.roundData?.dateStateStarted == null) return 0;
+        return (new Date(gameDataRef.current.roundData.dateStateStarted).getTime() + totalChronoTimeRef.current * 1000 - new Date().getTime()) / 1000;
     }
 
     const [timeLeft, setTimeLeft] = useState<number>(0);
 
+    const [totalChronoTime, setTotalChronoTime] = useState<number>(gameData?.roomConfig.timeByTurn ?? 0);
+
+    const totalChronoTimeRef = useRef(totalChronoTime);
+    useEffect(() => {
+        totalChronoTimeRef.current = totalChronoTime;
+        setTimeLeft(getRemainingTime());
+    }, [totalChronoTime])
 
     useEffect(() => {
         gameDataRef.current = gameData;
@@ -102,11 +108,19 @@ const GameView = ({
         }
         if (gameData.roomState === RoomState.DRAWING) {
             setChooseWordList([]);
+            setTotalChronoTime(gameData.roomConfig.timeByTurn);
+        }
+        if (gameData.roomState === RoomState.CHOOSE_WORD && gameData.roundData) {
+            setTotalChronoTime(gameData.roundData.delay.chooseWord)
+        }
+        if (gameData.roomState === RoomState.END_ROUND && gameData.roundData) {
+            setTotalChronoTime(gameData.roundData.delay.endRound)
+        }
+        if (gameData.roomState === RoomState.END_GAME && gameData.roundData) {
+            setTotalChronoTime(gameData.roundData.delay.endGame)
         }
 
-        if (gameData.roomState !== RoomState.DRAWING) {
-            setTimeLeft(0);
-        } else if (gameData.roundData?.dateStartedDrawing != null) {
+        if (gameData.roundData?.dateStateStarted != null) {
             setTimeLeft(getRemainingTime());
         }
     }, [gameData]);
@@ -121,7 +135,6 @@ const GameView = ({
 
         setGuessedList(data.playersGuess);
     }
-
 
     useEffect(() => {
         socket.addEventListener("message", handleGuess);
@@ -148,11 +161,16 @@ const GameView = ({
             setActualPlayerNumber(actualPlayerNumber + 1);
             gameJoinAudio.play();
         }
+    }, [gameData])
+
+
+    useEffect(() => {
         if (actualPlayerGuess < guessedList.length) {
             setActualPlayerGuess(actualPlayerGuess + 1);
             wordGuessedAudio.play();
         }
-    })
+    }, [guessedList.length])
+
 
     return (
         <>
@@ -179,7 +197,7 @@ const GameView = ({
                     <WordDisplayer
                         wordToDisplay={gameData?.roundData?.word?.toUpperCase() ?? ""}
                         timeLeft={timeLeft}
-                        totalTime={gameData.roomConfig.timeByTurn}
+                        totalTime={totalChronoTime}
                         getRemainingTime={getRemainingTime}
                     />
 
