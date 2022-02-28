@@ -35,7 +35,7 @@ VITE_AVATAR_ENDPOINT=https://avatars.dicebear.com
 
 Pour lancer le projet :
 
-```node
+```console
 npm start
 ```
 
@@ -71,10 +71,11 @@ VITE_WEBSOCKET_ENDPOINT_ADMIN=ws://localhost:3000/adminws
 VITE_WEBSOCKET_ENDPOINT=ws://localhost:3000/ws
 VITE_API_ENDPOINT=http://localhost:3000
 VITE_AVATAR_ENDPOINT=https://avatars.dicebear.com
+```
 
 To start the project :
 
-```node
+```console
 npm start
 ```
 
@@ -82,4 +83,4 @@ npm start
 
 If you want the application to be fully functionnal, lauch the [backend](https://gitlab.ecole.ensicaen.fr/huaut/doodl-back)
 
-```
+
