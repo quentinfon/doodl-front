@@ -6,7 +6,7 @@
 
 ## Francais
 
-###Pr"requis
+### Prérequis
 
 [node](https://nodejs.org/en/)
 
@@ -35,7 +35,7 @@ VITE_AVATAR_ENDPOINT=https://avatars.dicebear.com
 
 ## English
 
-###Requirements
+### Requirements
 
 [node](https://nodejs.org/en/)
 
