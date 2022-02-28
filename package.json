@@ -26,6 +26,7 @@
     "start": "vite",
     "buildDev": "tsc && vite build --base http://localhost:3000/public/",
     "build": "tsc && vite build --base https://doodl.maner.fr/public/",
+    "buildProd": "tsc && vite build --base https://doodl.fun/public/",
     "serve": "vite preview"
   },
   "eslintConfig": {

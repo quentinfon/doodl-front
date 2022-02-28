@@ -36,6 +36,8 @@ const LobbyConfig = ({
     const [loadingParams, setLoadingParams] = useState<boolean>(false);
     const [error, setError] = useState<string>("");
 
+    const [loadingStart, setLoadingStart] = useState<boolean>(false);
+
     const getRoomConfigParam = () => {
         fetchUtil(getRoomCreationConfig(),
             setRoomConfigParam,
@@ -54,10 +56,12 @@ const LobbyConfig = ({
     }
 
     const sendConfig = (config: IRoomConfig) => {
+        setLoadingStart(true);
         webSocket?.send(JSON.stringify({
             channel: GameSocketChannel.CONFIG,
             data: config
         } as ISocketMessageRequest))
+        setTimeout(() => setLoadingStart(false), 1000);
     }
 
 
@@ -195,7 +199,8 @@ const LobbyConfig = ({
                             <Button
                                 onClick={startGame}
                                 type="primary"
-                                disabled={!canLaunchGame}
+                                disabled={!canLaunchGame || loadingStart}
+                                loading={loadingStart}
                             >
                                 Start
                             </Button>

@@ -96,7 +96,6 @@ const GameView = ({
             },
             () => {
             });
-
     }, [])
 
     const sendMessage = (message: ISocketMessageRequest) => {
