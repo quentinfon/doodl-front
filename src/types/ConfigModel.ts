@@ -1,4 +1,4 @@
-import {GameMode, WordList} from "./GameModel";
+import {GameMode} from "./GameModel";
 
 export interface IServerConfig {
     hostname: string;
@@ -26,5 +26,5 @@ export interface IRoomServerConfig {
 export interface IConfigResponse {
     gameMode: GameMode[];
     roomServerConfig: IRoomServerConfig;
-    wordList: WordList[];
+    wordList: string[];
 }
