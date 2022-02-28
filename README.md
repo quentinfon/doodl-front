@@ -6,6 +6,10 @@
 
 ## Francais
 
+###Pr"requis
+
+[node](https://nodejs.org/en/)
+
 ### Déploiement
 
 Pour déployer le projet, un fichier ```.env``` est nécessaire dans le dossier ```/src``` du projet. Le fichier doit
@@ -30,6 +34,11 @@ VITE_AVATAR_ENDPOINT=https://avatars.dicebear.com
 ```
 
 ## English
+
+###Requirements
+
+[node](https://nodejs.org/en/)
+
 
 ### Deploy
 
