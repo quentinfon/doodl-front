@@ -36,6 +36,8 @@ VITE_AVATAR_ENDPOINT=https://avatars.dicebear.com
 Pour lancer le projet :
 
 ```console
+//root
+nmp install
 npm start
 ```
 
@@ -76,6 +78,8 @@ VITE_AVATAR_ENDPOINT=https://avatars.dicebear.com
 To start the project :
 
 ```console
+//root
+npm install
 npm start
 ```
 
