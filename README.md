@@ -43,7 +43,7 @@ npm start
 
 ### Attention
 
-Pour que l'application soit pleinement fonctionnel avec un serveur local, lancez le [backend](https://gitlab.ecole.ensicaen.fr/huaut/doodl-back)
+Pour que l'application soit pleinement fonctionnel avec un serveur local, lancez le [backend](https://github.com/AntoninHuaut/Doodl-back)
 
 ## English
 
@@ -85,6 +85,6 @@ npm start
 
 ### Warning
 
-If you want the application to be fully functionnal with a local server, lauch the [backend](https://gitlab.ecole.ensicaen.fr/huaut/doodl-back)
+If you want the application to be fully functionnal with a local server, lauch the [backend](https://github.com/AntoninHuaut/Doodl-back)
 
 
